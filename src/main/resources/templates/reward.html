@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="assets/" data-template="vertical-menu-template" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <title>Dashboard - Menu Reward</title>
+    <meta name="description" content="" />
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/vendor/fonts/fontawesome.css" />
+    <link rel="stylesheet" href="assets/vendor/fonts/tabler-icons.css" />
+    <link rel="stylesheet" href="assets/vendor/css/rtl/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="assets/css/demo.css" />
+    <link rel="stylesheet" href="style.css" />
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
+
+    <script src="assets/vendor/js/helpers.js"></script>
+    <script src="assets/js/config.js"></script>
+</head>
+<style>
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+        color: white !important;
+        background-color: #5e54e6 !important;
+        border-color: #5e54e6 !important;
+        font-weight: bold !important;
+    }
+</style>
+
+<body>
+<div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+        <div th:replace="~{pisah/sidebar.html}"></div>
+        <div class="layout-page">
+            <div th:replace="~{pisah/navbar.html}"></div>
+
+            <div class="content-wrapper">
+                <div class="container-xxl flex-grow-1 container-p-y">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between">
+                                    <h4 class="card-title">Menu Reward</h4>
+                                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addRewardModal">Tambah Reward</button>
+                                </div>
+                                <div class="card-body">
+                                    <table id="tabel-custom" class="table table-striped table-bordered text-center">
+                                        <thead class="table-dark">
+                                        <tr>
+                                            <th style="text-align: center;">No</th>
+                                            <th style="text-align: center;">Nama Reward</th>
+                                            <th style="text-align: center;">Jumlah Point</th>
+                                            <th style="text-align: center;">Deskripsi Reward</th>
+                                            <th style="text-align: center;">Aksi</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>Sewa Gratis</td>
+                                            <td>500</td>
+                                            <td>1 jam sewa gratis untuk lapangan futsal</td>
+                                            <td>
+                                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editRewardModal"><i class="fas fa-edit"></i></button>
+                                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteRewardModal"><i class="fas fa-trash-alt"></i></button>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Tambah Reward -->
+                <div class="modal fade" id="addRewardModal" tabindex="-1" aria-labelledby="addRewardModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addRewardModalLabel">Tambah Reward Baru</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="mb-3">
+                                        <label for="rewardName" class="form-label">Nama Reward</label>
+                                        <input type="text" class="form-control" id="rewardName" placeholder="Masukkan Nama Reward">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="rewardPoint" class="form-label">Jumlah Point</label>
+                                        <input type="number" class="form-control" id="rewardPoint" placeholder="Masukkan Jumlah Point">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="rewardDescription" class="form-label">Deskripsi Reward</label>
+                                        <textarea class="form-control" id="rewardDescription" rows="3" placeholder="Masukkan Deskripsi Reward"></textarea>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-primary">Simpan</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Edit Reward -->
+                <div class="modal fade" id="editRewardModal" tabindex="-1" aria-labelledby="editRewardModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editRewardModalLabel">Edit Reward</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="mb-3">
+                                        <label for="editRewardName" class="form-label">Nama Reward</label>
+                                        <input type="text" class="form-control" id="editRewardName" placeholder="Masukkan Nama Reward">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editRewardPoint" class="form-label">Jumlah Point</label>
+                                        <input type="number" class="form-control" id="editRewardPoint" placeholder="Masukkan Jumlah Point">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editRewardDescription" class="form-label">Deskripsi Reward</label>
+                                        <textarea class="form-control" id="editRewardDescription" rows="3" placeholder="Masukkan Deskripsi Reward"></textarea>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Konfirmasi Hapus -->
+                <div class="modal fade" id="deleteRewardModal" tabindex="-1" aria-labelledby="deleteRewardModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteRewardModalLabel">Konfirmasi Hapus</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Apakah Anda yakin ingin menghapus reward ini?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                <button type="button" class="btn btn-danger">Hapus</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:replace="~{pisah/footer.html}"></div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/vendor/js/bootstrap.js"></script>
+    <script src="assets/vendor/js/menu.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#tabel-custom').DataTable({
+                "paging": true,
+                "pageLength": 5,
+                "lengthMenu": [5, 10, 15, 20],
+                "ordering": true,
+                "info": true
+            });
+            $('#tabel-custom_length').css('margin-bottom', '15px');
+            $('#tabel-custom_filter').css('margin-bottom', '15px');
+            $('#tabel-custom_info').css('margin-top', '10px');
+        });
+    </script>
+</div>
+</body>
+</html>

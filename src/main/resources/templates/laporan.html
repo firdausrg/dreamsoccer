@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="assets/" data-template="vertical-menu-template" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <title>Dashboard - Laporan</title>
+    <meta name="description" content="" />
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/vendor/fonts/fontawesome.css" />
+    <link rel="stylesheet" href="assets/vendor/fonts/tabler-icons.css" />
+    <link rel="stylesheet" href="assets/vendor/css/rtl/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="assets/css/demo.css" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <script src="assets/vendor/js/helpers.js"></script>
+    <script src="assets/js/config.js"></script>
+</head>
+<style>
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    color: white !important;
+    background-color: #5e54e6 !important;
+    border-color: #5e54e6 !important;
+    font-weight: bold !important;
+}
+</style>
+<body>
+<div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+        <div th:replace="~{pisah/sidebar.html}"></div>
+        <div class="layout-page">
+            <div th:replace="~{pisah/navbar.html}"></div>
+            <div class="content-wrapper">
+                <div class="container-xxl flex-grow-1 container-p-y">
+                    <h4 class="mb-4">Laporan</h4>
+
+                    <!-- Card: Laporan Booking -->
+                    <div class="card mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title">Laporan Booking</h5>
+                            <button class="btn btn-primary btn-sm" onclick="printReport('bookingReportTable')">
+                                <i class="fas fa-print"></i> Cetak Laporan
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <form id="bookingFilterForm" class="row g-3 mb-3">
+                                <div class="col-md-5">
+                                    <label for="bookingStartDate" class="form-label">Tanggal Awal</label>
+                                    <input type="date" id="bookingStartDate" class="form-control" />
+                                </div>
+                                <div class="col-md-5">
+                                    <label for="bookingEndDate" class="form-label">Tanggal Akhir</label>
+                                    <input type="date" id="bookingEndDate" class="form-control" />
+                                </div>
+                                <div class="col-md-2 d-flex align-items-end ms-auto gap-2 flex-grow-0"> <!-- Mengatur tombol lebih rapat -->
+                                    <button type="button" class="btn btn-success" onclick="filterTable('booking')">Filter</button>
+                                    <button type="button" class="btn btn-secondary" onclick="resetFilter('booking')">Refresh</button>
+                                </div>
+                            </form>
+                            <table id="bookingReportTable" class="table table-striped table-bordered">
+                                <thead class="table-dark">
+                                <tr>
+                                    <th>No</th>
+                                    <th>Tanggal</th>
+                                    <th>Kategori</th>
+                                    <th>Nama User</th>
+                                    <th>Detail Booking</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>2025-01-15</td>
+                                    <td>Futsal</td>
+                                    <td>Ahmad Fauzi</td>
+                                    <td>Booking lapangan untuk 2 jam</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>2025-01-18</td>
+                                    <td>Basket</td>
+                                    <td>Siti Nurhaliza</td>
+                                    <td>Booking lapangan untuk turnamen sekolah</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Card: Laporan Penukaran Reward -->
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title">Laporan Penukaran Reward</h5>
+                            <button class="btn btn-primary btn-sm" onclick="printReport('rewardReportTable')">
+                                <i class="fas fa-print"></i> Cetak Laporan
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <form id="rewardFilterForm" class="row g-3 mb-3">
+                                <div class="col-md-5">
+                                    <label for="rewardStartDate" class="form-label">Tanggal Awal</label>
+                                    <input type="date" id="rewardStartDate" class="form-control" />
+                                </div>
+                                <div class="col-md-5">
+                                    <label for="rewardEndDate" class="form-label">Tanggal Akhir</label>
+                                    <input type="date" id="rewardEndDate" class="form-control" />
+                                </div>
+                                <div class="col-md-2 d-flex align-items-end ms-auto gap-2 flex-grow-0">
+                                    <button type="button" class="btn btn-success" onclick="filterTable('reward')">Filter</button>
+                                    <button type="button" class="btn btn-secondary" onclick="resetFilter('reward')">Refresh</button>
+                                </div>
+                            </form>
+                            <table id="rewardReportTable" class="table table-striped table-bordered">
+                                <thead class="table-dark">
+                                <tr>
+                                    <th>No</th>
+                                    <th>Tanggal</th>
+                                    <th>Nama User</th>
+                                    <th>Nama Reward</th>
+                                    <th>Jumlah Poin</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>2025-01-20</td>
+                                    <td>Rina Susanti</td>
+                                    <td>Voucher Gratis Sewa</td>
+                                    <td>100</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>2025-01-22</td>
+                                    <td>Hadi Saputra</td>
+                                    <td>Kaos Eksklusif</td>
+                                    <td>200</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div th:replace="~{pisah/footer.html}"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="assets/vendor/js/bootstrap.js"></script>
+    <script src="assets/vendor/js/menu.js"></script>
+    <script src="assets/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Inisialisasi tabel booking
+            $('#bookingReportTable').DataTable({
+                "paging": true,
+                "pageLength": 5,
+                "lengthMenu": [5, 10, 15, 20],
+                "ordering": true,
+                "info": true
+            });
+            $('#bookingReportTable_length').css('margin-bottom', '15px');
+            $('#bookingReportTable_info').css('margin-top', '10px');
+
+            // Inisialisasi tabel reward
+            $('#rewardReportTable').DataTable({
+                "paging": true,
+                "pageLength": 5,
+                "lengthMenu": [5, 10, 15, 20],
+                "ordering": true,
+                "info": true
+            });
+            $('#rewardReportTable_length').css('margin-bottom', '15px');
+            $('#rewardReportTable_info').css('margin-top', '10px');
+        });
+
+        $(document).ready(function () {
+            const bookingTable = $('#bookingReportTable').DataTable();
+            const rewardTable = $('#rewardReportTable').DataTable();
+
+            // Filter function
+            function filterTable(type) {
+                const startDate = $(`#${type}StartDate`).val();
+                const endDate = $(`#${type}EndDate`).val();
+
+                if (!startDate || !endDate) {
+                    alert("Harap pilih tanggal awal dan akhir.");
+                    return;
+                }
+
+                // Convert dates to comparable format
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+
+                // Select correct DataTable instance
+                const table = type === 'booking' ? bookingTable : rewardTable;
+
+                // Apply filtering logic
+                $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+                    const date = new Date(data[1]); // Assume date is in the 2nd column (index 1)
+                    return date >= start && date <= end;
+                });
+                table.draw(); // Redraw table based on filter
+            }
+
+            // Expose filterTable function to global scope for buttons
+            window.filterTable = filterTable;
+        });
+
+        // Print function
+        function printReport(tableId) {
+            const table = document.getElementById(tableId);
+            const newWindow = window.open('', '', 'width=800,height=600');
+            newWindow.document.write('<html><head><title>Laporan</title></head><body>');
+            newWindow.document.write('<h2>Laporan</h2>');
+            newWindow.document.write(table.outerHTML);
+            newWindow.document.write('</body></html>');
+            newWindow.document.close();
+            newWindow.print();
+        }
+        // Reset filter function
+function resetFilter(type) {
+    // Reset date input fields
+    $(`#${type}StartDate`).val('');
+    $(`#${type}EndDate`).val('');
+
+    // Clear DataTable search and redraw table
+    const table = type === 'booking' ? bookingTable : rewardTable;
+    $.fn.dataTable.ext.search = []; // Clear all filters
+    table.draw(); // Redraw table without filter
+}
+
+    </script>
+</div>
+</body>
+</html>

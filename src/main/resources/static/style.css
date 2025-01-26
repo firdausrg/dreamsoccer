@@ -1,0 +1,276 @@
+.dataTables_paginate .paginate_button {
+    padding: 5px 10px !important;
+    border-radius: 10px !important;
+    margin: 0 5px !important;
+    background-color: #7367f0 !important;
+    border: 1px solid #7367f0 !important;
+    font-size: 10px !important;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.dataTables_paginate .paginate_button.previous,
+.dataTables_paginate .paginate_button.next {
+    border-radius: 10px !important;
+    padding: 5px 12px !important;
+    font-size: 10px !important;
+    background-color: #7367f0 !important;
+    border-color: #7367f0 !important;
+    color: white !important;
+}
+
+.dataTables_paginate .paginate_button:hover {
+    background-color: #5e54e6 !important;
+    color: white !important;
+    border-color: #5e54e6 !important;
+}
+
+.dataTables_paginate .paginate_button.current {
+    background-color: #5e54e6 !important;
+    border-color: #5e54e6 !important;
+    font-weight: bold !important;
+    color: white !important;
+}
+
+.dataTables_paginate .paginate_button.disabled {
+    background-color: #e0e0e0 !important;
+    color: #ccc !important;
+    cursor: not-allowed !important;
+    border-color: #e0e0e0 !important;
+}
+
+.dataTables_paginate .paginate_button span,
+.dataTables_paginate .paginate_button.current span,
+.dataTables_paginate .paginate_button.previous span,
+.dataTables_paginate .paginate_button.next span {
+    color: white !important;
+}
+
+.dataTables_paginate .paginate_button span {
+    color: white !important;
+}
+
+.dataTables_paginate .paginate_button {
+    font-weight: normal !important;
+}
+
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_paginate {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.dataTables_wrapper .dataTables_info {
+    margin-right: 20px;
+}
+
+.dataTables_wrapper .dataTables_paginate {
+    margin-left: 10px;
+}
+
+.dataTables_wrapper {
+    margin-top: 15px;
+}
+
+#tabel-custom {
+    margin-bottom: 15px;
+}
+
+#tabel-custom thead th {
+    background-color: #6c5ce7 !important;
+    color: white !important;
+    font-weight: bold !important;
+    font-size: 14px !important;
+    text-align: center !important;
+    padding: 12px 20px !important;
+    border: 1px solid #5e54e6 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#tabel-custom tbody td {
+    background-color: #ffffff !important;
+    color: #333 !important;
+    font-size: 14px !important;
+    text-align: center !important;
+    padding: 12px 20px !important;
+    border: 1px solid #ddd !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease;
+}
+
+#tabel-custom tbody tr:hover td {
+    background-color: #f5f5f5 !important;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+#tabel-custom tbody td button {
+    font-size: 13px !important;
+    padding: 8px 16px !important;
+    border-radius: 5px !important;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#tabel-custom tbody td button.btn-primary {
+    background-color: #4caf50 !important;
+    color: white !important;
+}
+
+#tabel-custom tbody td button.btn-primary:hover {
+    background-color: #45a049 !important;
+}
+
+#tabel-custom tbody td button.btn-danger {
+    background-color: #f44336 !important;
+    color: white !important;
+}
+
+#tabel-custom tbody td button.btn-danger:hover {
+    background-color: #e53935 !important;
+}
+
+#tabel-custom {
+    border-collapse: separate !important;
+    border-spacing: 0px !important;
+    border-radius: 10px !important;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#bookingReportTable {
+    margin-bottom: 15px;
+}
+
+#bookingReportTable thead th {
+    background-color: #6c5ce7 !important;
+    color: white !important;
+    font-weight: bold !important;
+    font-size: 14px !important;
+    text-align: center !important;
+    padding: 12px 20px !important;
+    border: 1px solid #5e54e6 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#bookingReportTable tbody td {
+    background-color: #ffffff !important;
+    color: #333 !important;
+    font-size: 14px !important;
+    text-align: center !important;
+    padding: 12px 20px !important;
+    border: 1px solid #ddd !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease;
+}
+
+#bookingReportTable tbody tr:hover td {
+    background-color: #f5f5f5 !important;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+#bookingReportTable tbody td button {
+    font-size: 13px !important;
+    padding: 8px 16px !important;
+    border-radius: 5px !important;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#bookingReportTable tbody td button.btn-primary {
+    background-color: #4caf50 !important;
+    color: white !important;
+}
+
+#bookingReportTable tbody td button.btn-primary:hover {
+    background-color: #45a049 !important;
+}
+
+#bookingReportTable tbody td button.btn-danger {
+    background-color: #f44336 !important;
+    color: white !important;
+}
+
+#bookingReportTable tbody td button.btn-danger:hover {
+    background-color: #e53935 !important;
+}
+
+#bookingReportTable {
+    border-collapse: separate !important;
+    border-spacing: 0px !important;
+    border-radius: 10px !important;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#rewardReportTable {
+    margin-bottom: 15px;
+}
+
+#rewardReportTable thead th {
+    background-color: #6c5ce7 !important;
+    color: white !important;
+    font-weight: bold !important;
+    font-size: 14px !important;
+    text-align: center !important;
+    padding: 12px 20px !important;
+    border: 1px solid #5e54e6 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#rewardReportTable tbody td {
+    background-color: #ffffff !important;
+    color: #333 !important;
+    font-size: 14px !important;
+    text-align: center !important;
+    padding: 12px 20px !important;
+    border: 1px solid #ddd !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease;
+}
+
+#rewardReportTable tbody tr:hover td {
+    background-color: #f5f5f5 !important;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+#rewardReportTable tbody td button {
+    font-size: 13px !important;
+    padding: 8px 16px !important;
+    border-radius: 5px !important;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#rewardReportTable tbody td button.btn-primary {
+    background-color: #4caf50 !important;
+    color: white !important;
+}
+
+#rewardReportTable tbody td button.btn-primary:hover {
+    background-color: #45a049 !important;
+}
+
+#rewardReportTable tbody td button.btn-danger {
+    background-color: #f44336 !important;
+    color: white !important;
+}
+
+#rewardReportTable tbody td button.btn-danger:hover {
+    background-color: #e53935 !important;
+}
+
+#rewardReportTable {
+    border-collapse: separate !important;
+    border-spacing: 0px !important;
+    border-radius: 10px !important;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}

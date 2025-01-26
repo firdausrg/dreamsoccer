@@ -1,0 +1,104 @@
+<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="app-brand demo">
+        <a href="/" th:href="@{/}" class="app-brand-link">
+            <span class="app-brand-logo demo">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="32" height="32">
+                    <circle cx="50" cy="50" r="48" fill="white" stroke="black" stroke-width="2" />
+                    <polygon points="50,20 60,35 50,50 40,35" fill="black" />
+                    <polygon points="50,50 60,35 75,40 70,55 60,60" fill="black" />
+                    <polygon points="50,50 60,60 50,75 40,60" fill="black" />
+                    <polygon points="50,50 40,35 25,40 30,55 40,60" fill="black" />
+                    <polygon points="50,20 40,35 25,40 35,20" fill="black" />
+                    <polygon points="50,20 60,35 65,20 55,10" fill="black" />
+                    <polygon points="50,75 60,60 70,80 60,90 40,90 30,80 40,60" fill="black" />
+                </svg>
+            </span>
+            <span class="app-brand-text demo menu-text fw-bold">DreamSoccer</span>
+        </a>
+    </div>
+
+    <div class="menu-inner-shadow"></div>
+
+    <ul class="menu-inner py-1">
+        <li th:classappend="${currentUrl == '/admin_dashboard' ? 'active' : ''}" class="menu-item">
+            <a href="/admin_dashboard" th:href="@{/admin_dashboard}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-smart-home"></i>
+                <div>Dashboard</div>
+            </a>
+        </li>
+
+        <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">MANAJEMEN</span>
+        </li>
+
+        <li th:classappend="${currentUrl == '/lapangan' ? 'active' : ''}" class="menu-item">
+            <a href="/lapangan" th:href="@{/lapangan}" class="menu-link">
+                <i class="menu-icon fa fa-futbol"></i>
+                <div>Lapangan</div>
+            </a>
+        </li>
+
+        <li th:classappend="${currentUrl == '/booking' ? 'active' : ''}" class="menu-item">
+            <a href="/booking" th:href="@{/booking}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-calendar"></i>
+                <div>Booking</div>
+            </a>
+        </li>
+
+        <li th:classappend="${currentUrl == '/user' ? 'active' : ''}" class="menu-item">
+            <a href="/user" th:href="@{/user}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-users"></i>
+                <div>User</div>
+            </a>
+        </li>
+
+        <li th:classappend="${currentUrl == '/reward' ? 'active' : ''}" class="menu-item">
+            <a href="/reward" th:href="@{/reward}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-gift"></i>
+                <div>Reward</div>
+            </a>
+        </li>
+
+        <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">Laporan</span>
+        </li>
+
+        <li th:classappend="${currentUrl == '/laporan' ? 'active' : ''}" class="menu-item">
+            <a href="/laporan" th:href="@{/laporan}" class="menu-link">
+                <i class="menu-icon fa fa-file-alt"></i>
+                <div>Laporan</div>
+            </a>
+        </li>
+
+        <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">Sistem</span>
+        </li>
+
+        <li class="menu-item" th:classappend="${currentUrl == '/profile-admin' || currentUrl == '/iklan' ? 'active open' : ''}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-settings"></i>
+                <div>Pengaturan Sistem</div>
+            </a>
+            <ul class="menu-sub" th:classappend="${currentUrl == '/profile-admin' || currentUrl == '/iklan' ? 'show' : ''}">
+                <li class="menu-item" th:classappend="${currentUrl == '/profile-admin' ? 'active' : ''}">
+                    <a href="/profile-admin" class="menu-link">
+                        <div>Profil Admin</div>
+                    </a>
+                </li>
+                <li class="menu-item" th:classappend="${currentUrl == '/iklan' ? 'active' : ''}">
+                    <a href="/iklan" class="menu-link">
+                        <div>Iklan</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+
+        <li th:classappend="${currentUrl == '/log-aktivitas' ? 'active' : ''}" class="menu-item">
+            <a href="/log-aktivitas" th:href="@{/log-aktivitas}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-clipboard"></i>
+                <div>Log Aktivitas</div>
+            </a>
+        </li>
+    </ul>
+</aside>

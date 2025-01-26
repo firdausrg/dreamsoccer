@@ -1,0 +1,472 @@
+
+<!DOCTYPE html>
+<html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="assets/" data-template="vertical-menu-template" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <title>Dashboard - Booking</title>
+    <meta name="description" content="" />
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/vendor/fonts/fontawesome.css" />
+    <link rel="stylesheet" href="assets/vendor/fonts/tabler-icons.css" />
+    <link rel="stylesheet" href="assets/vendor/css/rtl/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="assets/css/demo.css" />
+    <link rel="stylesheet" href="style.css" />
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@3.10.0/dist/fullcalendar.min.css' rel='stylesheet' />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="assets/vendor/js/helpers.js"></script>
+    <script src="assets/js/config.js"></script>
+</head>
+<style>
+    .container {
+        display: flex;
+        justify-content: space-between;
+        padding: 20px;
+        padding-top: 40px;
+        background-color: #fff;
+        margin-top: 20px;
+        border-radius: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    #calendar {
+        width: 70%;
+        padding-right: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    #calendar .fc-event {
+        background-color: #3c8dbc;
+        color: #fff;
+    }
+
+    #calendar .fc-event:hover {
+        background-color: #218838;
+        color: #fff;
+    }
+
+    .form-container {
+        width: 28%;
+        padding: 20px;
+        background-color: #ffffff;
+        border: 1px solid #e1e8f0;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-container h3 {
+        margin-bottom: 20px;
+        color: #3c8dbc;
+        font-size: 20px;
+    }
+
+    .form-container input, .form-container select, .form-container textarea {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        background-color: #f7f7f7;
+        font-size: 16px;
+    }
+
+    .form-container input:focus, .form-container select:focus, .form-container textarea:focus {
+        border-color: #3c8dbc;
+        outline: none;
+        box-shadow: 0 0 5px rgba(60, 141, 188, 0.5);
+    }
+
+    .price {
+        font-size: 18px;
+        color: #333;
+        margin-top: 10px;
+        font-weight: bold;
+    }
+
+    .d-flex.justify-content-between {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+        gap: 20px;
+    }
+
+    #cancel-edit {
+        display: none;
+        background-color: #dc3545;
+        color: #fff;
+        border: none;
+        font-size: 1rem;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    #cancel-edit:hover {
+        background-color: #c82333;
+    }
+
+    #submit-event {
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        font-size: 1rem;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    #submit-event:hover {
+        background-color: #218838;
+    }
+
+    #cancel-edit .bx,
+    #submit-event .bx {
+        font-size: 1.2rem;
+        margin-right: 8px;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #calendar {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .form-container {
+            width: 100%;
+        }
+    }
+</style>
+
+<body>
+<div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+        <div th:replace="~{pisah/sidebar.html}"></div>
+        <div class="layout-page">
+            <div th:replace="~{pisah/navbar.html}"></div>
+
+            <div class="content-wrapper">
+                <div class="container-xxl flex-grow-1 container-p-y">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between">
+                                    <h4 class="card-title">Data Booking</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="container">
+                                        <div id="calendar"></div>
+
+                                        <div class="form-container">
+                                            <h3>Booking Lapangan</h3>
+                                            <form id="event-form">
+                                                <div class="form-group">
+                                                    <label for="event-name">Nama</label>
+                                                    <input type="text" id="event-name" class="form-control" placeholder="Event Name" required>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="event-date">Tanggal Booking</label>
+                                                    <input type="date" id="event-date" class="form-control" required>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="event-start">Jam Mulai</label>
+                                                    <select id="event-start" class="form-control" required>
+                                                        <option value="">Pilih Jam Mulai</option>
+                                                        <option value="08:00">08:00</option>
+                                                        <option value="09:00">09:00</option>
+                                                        <option value="10:00">10:00</option>
+                                                        <option value="11:00">11:00</option>
+                                                        <option value="12:00">12:00</option>
+                                                        <option value="13:00">13:00</option>
+                                                        <option value="14:00">14:00</option>
+                                                        <option value="15:00">15:00</option>
+                                                        <option value="16:00">16:00</option>
+                                                        <option value="17:00">17:00</option>
+                                                        <option value="18:00">18:00</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="event-end">Jam Selesai</label>
+                                                    <select id="event-end" class="form-control" required>
+                                                        <option value="">Pilih Jam Selesai</option>
+                                                        <option value="09:00">09:00</option>
+                                                        <option value="10:00">10:00</option>
+                                                        <option value="11:00">11:00</option>
+                                                        <option value="12:00">12:00</option>
+                                                        <option value="13:00">13:00</option>
+                                                        <option value="14:00">14:00</option>
+                                                        <option value="15:00">15:00</option>
+                                                        <option value="16:00">16:00</option>
+                                                        <option value="17:00">17:00</option>
+                                                        <option value="18:00">18:00</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="court">Pilih Lapangan</label>
+                                                    <select id="court" class="form-control" required>
+                                                        <option value="">Pilih Lapangan</option>
+                                                        <option value="courtA" data-price="50000">Lapangan A (50.000/jam)</option>
+                                                        <option value="courtB" data-price="75000">Lapangan B (75.000/jam)</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="price-display">Harga</label>
+                                                    <input type="text" id="price-display" class="form-control" value="Rp. 0" disabled>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="event-description">Deskripsi Event (Opsional)</label>
+                                                    <textarea id="event-description" class="form-control" placeholder="Deskripsi Event (Opsional)"></textarea>
+                                                </div>
+
+                                                <div class="d-flex justify-content-between">
+                                                    <button type="button" id="cancel-edit" class="btn btn-danger" style="display: none;">
+                                                        <i class="bx bx-x-circle me-2"></i> Batal
+                                                    </button>
+
+                                                    <button type="submit" id="submit-event" class="btn btn-success">
+                                                        <i class="bx bx-check-circle me-2"></i> Simpan
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="eventModalLabel">Detail Booking</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p id="event-info"></p> <!-- Informasi event -->
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" id="delete-event">Delete</button>
+                                <button type="button" class="btn btn-primary" id="edit-event">Edit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:replace="~{pisah/footer.html}"></div>
+            </div>
+        </div>
+    </div>
+    <script src='https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.3.0/locale/id.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@3.10.0/dist/fullcalendar.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/vendor/js/bootstrap.js"></script>
+    <script src="assets/vendor/js/menu.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        $(document).ready(function() {
+            var calendar = $('#calendar').fullCalendar({
+                locale: 'id',
+                firstDay: 0,
+                events: [
+                    {
+                        title  : 'Booking 1',
+                        start  : '2025-01-21T08:00:00',
+                        end    : '2025-01-21T10:00:00'
+                    },
+                    {
+                        title  : 'Booking 2',
+                        start  : '2025-01-21T10:00:00',
+                        end    : '2025-01-21T12:00:00'
+                    },
+                    {
+                        title  : 'Booking 3',
+                        start  : '2025-01-21T13:00:00',
+                        end    : '2025-01-21T15:00:00'
+                    },
+                    {
+                        title  : 'Booking 4',
+                        start  : '2025-01-21T15:00:00',
+                        end    : '2025-01-21T17:00:00'
+                    },
+                    {
+                        title  : 'Booking 5',
+                        start  : '2025-01-21T09:00:00',
+                        end    : '2025-01-21T11:00:00'
+                    }
+                ],
+                slotDuration: '01:00:00',
+                slotLabelInterval: '01:00',
+                eventLimit: true,
+                eventLimitText: "+ more",
+                eventLimitClick: 'day',
+                header: {
+                    left: 'prev,next',
+                    center: 'title',
+                    right: 'month,list'
+                },
+                buttonText: {
+                    month: 'Bulan',
+                    list: 'Daftar'
+                },
+                viewRender: function(view, element) {
+                    if (view.name === 'list') {
+                        $('#calendar').fullCalendar('changeView', 'listMonth');
+                    }
+                },
+                selectable: true,
+                selectHelper: true,
+                select: function(start, end) {
+                    var selectedDate = moment(start).format('YYYY-MM-DD');
+                    var startTime = moment(start).format('HH:mm');
+                    var endTime = moment(end).format('HH:mm');
+
+                    $('#event-date').val(selectedDate);
+                    $('#event-start').val(startTime);
+                    $('#event-end').val(endTime);
+                },
+                eventClick: function(event) {
+
+                    var eventInfo = 'Nama: ' + event.title + '<br>' +
+                                    'Mulai: ' + moment(event.start).format('YYYY-MM-DD HH:mm') + '<br>' +
+                                    'Selesai: ' + moment(event.end).format('YYYY-MM-DD HH:mm') + '<br>' +
+                                    'Lapangan: ' + event.court + '<br>' +
+                                    'Deskripsi: ' + (event.description || 'No description') + '<br>' +
+                                    'Harga: ' + event.price;
+
+                    $('#event-info').html(eventInfo);
+                    $('#eventModal').modal('show');
+
+                    $('#edit-event').click(function() {
+                        $('#eventModal').modal('hide');
+
+                        $('.form-container h3').text('Edit Data Booking');
+                        $('#event-name').val(event.title);
+                        $('#event-date').val(moment(event.start).format('YYYY-MM-DD'));
+                        $('#event-start').val(moment(event.start).format('HH:mm'));
+                        $('#event-end').val(moment(event.end).format('HH:mm'));
+                        $('#court').val(event.court);
+                        $('#price-display').val('Rp. ' + event.price);
+                        $('#event-description').val(event.description);
+
+                        $('#cancel-edit').show();
+                        $('#submit-event').text('Update Event');
+
+                        $('#event-form').off('submit').on('submit', function(e) {
+                            e.preventDefault();
+
+                            var updatedEventName = $('#event-name').val();
+                            var updatedEventDate = $('#event-date').val();
+                            var updatedStartTime = $('#event-start').val();
+                            var updatedEndTime = $('#event-end').val();
+                            var updatedCourt = $('#court').val();
+                            var updatedDescription = $('#event-description').val();
+                            var updatedPrice = $('#court').find('option:selected').data('price');
+                            var duration = calculateDuration(updatedStartTime, updatedEndTime);
+                            var updatedTotalPrice = updatedPrice * duration;
+
+                            event.title = updatedEventName;
+                            event.start = updatedEventDate + 'T' + updatedStartTime;
+                            event.end = updatedEventDate + 'T' + updatedEndTime;
+                            event.description = updatedDescription;
+                            event.price = updatedTotalPrice;
+                            event.court = updatedCourt;
+
+                            $('#calendar').fullCalendar('updateEvent', event);
+
+                            // Reset form ke default (Add Event)
+                            $('#event-form')[0].reset();
+                            $('.form-container h3').text('Booking Lapangan'); // Mengubah header ke Booking Lapangan
+                            $('#submit-event').text('Add Event'); // Mengubah tombol submit kembali ke Add Event
+                            $('#cancel-edit').hide(); // Sembunyikan tombol Batal
+                            $('#eventModal').modal('hide'); // Menutup modal
+                        });
+                    });
+
+                    $('#cancel-edit').click(function() {
+                        // Reset form ke default
+                        $('#event-form')[0].reset();
+                        $('.form-container h3').text('Booking Lapangan');
+                        $('#submit-event').text('Add Event');
+                        $('#cancel-edit').hide();
+                        $('#eventModal').modal('hide');
+                    });
+
+                    $('#delete-event').click(function() {
+                        if (confirm('Are you sure you want to delete this event?')) {
+                            calendar.fullCalendar('removeEvents', event._id);
+                            $('#eventModal').modal('hide');
+                        }
+                    });
+                },
+                allDaySlot: false,
+                minTime: '00:00:00',
+                maxTime: '23:00:00',
+                timeFormat: 'HH:mm',
+                slotLabelFormat: 'HH:mm',
+            });
+
+            function calculateDuration(start, end) {
+                var startMoment = moment(start, 'HH:mm');
+                var endMoment = moment(end, 'HH:mm');
+                return endMoment.diff(startMoment, 'hours');
+            }
+
+            $('#event-form').submit(function(e) {
+                e.preventDefault();
+
+                var eventName = $('#event-name').val();
+                var eventDate = $('#event-date').val();
+                var startTime = $('#event-start').val();
+                var endTime = $('#event-end').val();
+                var court = $('#court').val();
+                var description = $('#event-description').val();
+                var price = $('#court').find('option:selected').data('price');
+                var duration = calculateDuration(startTime, endTime);
+                var totalPrice = price * duration;
+
+                $('#calendar').fullCalendar('renderEvent', {
+                    title: eventName,
+                    start: eventDate + 'T' + startTime,
+                    end: eventDate + 'T' + endTime,
+                    description: description,
+                    price: totalPrice
+                }, true);
+
+                // Clear form after submission
+                $('#event-form')[0].reset();
+            });
+
+            $('#court').change(function() {
+                var selectedCourt = $(this).find('option:selected');
+                var price = selectedCourt.data('price');
+                var duration = calculateDuration($('#event-start').val(), $('#event-end').val());
+                var totalPrice = price * duration;
+
+                $('#price-display').val('Rp. ' + totalPrice);
+            });
+        });
+    </script>
+</div>
+</body>
+</html>
