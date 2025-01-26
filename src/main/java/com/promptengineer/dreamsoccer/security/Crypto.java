@@ -59,7 +59,7 @@ public class Crypto {
     }
 
     public static void main(String[] args) {
-        String plainText = "12345";
+        String plainText = "sa";
         String encrypted = performEncrypt(plainText);
         System.out.println("Encrypted: " + encrypted);
 
