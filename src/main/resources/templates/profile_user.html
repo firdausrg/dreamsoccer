@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="assets/"
+      data-template="horizontal-menu-template" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <title>Profile | DreamSoccer</title>
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/vendor/css/rtl/theme-default.css" />
+    <link rel="stylesheet" href="assets/css/demo.css" />
+    <script src="assets/vendor/js/helpers.js"></script>
+    <script src="assets/vendor/js/template-customizer.js"></script>
+    <script src="assets/js/config.js"></script>
+    <style>
+        .profile-container {
+            display: flex;
+            gap: 40px;
+            margin-top: 30px;
+            align-items: flex-start;
+        }
+
+        .card-photo {
+            width: 250px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+            padding: 32px;
+            border-radius: 10px;
+        }
+
+        .card-photo img {
+            border-radius: 50%;
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            margin-bottom: 10px;
+            border: 3px solid #3c8dbc;
+        }
+
+        .card-tabs {
+            flex-grow: 1;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e0e0e0;
+            margin-bottom: 15px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            color: #3c8dbc;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab:hover {
+            background: #f5f5f5;
+            color: #007bff;
+        }
+
+        .tab.active {
+            border-bottom: 2px solid #3c8dbc;
+            color: #007bff;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        #edit-profile-btn {
+            float: right;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+@media (max-width: 768px) {
+    .profile-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .card-photo {
+        width: 80%;
+        text-align: center;
+        margin-bottom: 20px;
+        padding: 32px;
+        box-sizing: border-box;
+    }
+
+    .card-photo img {
+        display: block;
+        width: 100%;
+        max-width: 150px;
+        height: auto;
+        border-radius: 50%;
+        border: 3px solid #3c8dbc;
+        margin: 0 auto 10px auto;
+    }
+
+    .card-tabs {
+        width: 100%;
+    }
+
+    .tabs {
+        flex-direction: column;
+    }
+
+    .tab {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .tab-content {
+        padding: 15px;
+    }
+
+    #edit-profile-btn {
+        float: none;
+        margin-top: 10px;
+        text-align: center;
+        width: 100%;
+    }
+
+    .form-control {
+        width: 100%;
+    }
+}
+
+    </style>
+</head>
+
+<body>
+<div class="layout-wrapper layout-navbar-full layout-horizontal layout-without-menu">
+    <div class="layout-container">
+        <div th:replace="~{pisahuser/navbar.html}"></div>
+        <div class="layout-page">
+            <div class="content-wrapper">
+                <div th:replace="~{pisahuser/navbar2.html}"></div>
+                <div class="container-xxl flex-grow-1 container-p-y">
+                    <div class="profile-container">
+                        <div class="card card-photo">
+                            <img src="assets/img/avatars/1.png" alt="Foto Profil">
+                            <h3>John Doe</h3>
+                            <p>User</p>
+                            <p>Member DreamSoccer</p>
+                        </div>
+
+                        <div class="card card-tabs">
+                            <div class="tabs">
+                                <div class="tab active" data-tab="profile">Profile</div>
+                                <div class="tab" data-tab="ubah-password">Ubah Password</div>
+                            </div>
+
+                            <div class="tab-content active" id="profile">
+                                <h4>
+                                    Detail Profil
+                                    <button class="btn btn-primary" id="edit-profile-btn">Edit</button>
+                                </h4>
+                                <form id="profile-form">
+                                    <div id="profile-view-mode">
+                                        <p><strong>Nama:</strong> John Doe</p>
+                                        <p><strong>Alamat:</strong> Jalan Lapangan No. 123, Jakarta</p>
+                                        <p><strong>No Tlp:</strong> 0812-3456-7890</p>
+                                        <p><strong>Email:</strong> johndoe@example.com</p>
+                                    </div>
+                                    <div id="profile-edit-mode" style="display: none;">
+                                        <div style="margin-bottom: 10px;">
+                                            <label>Nama</label>
+                                            <input type="text" class="form-control" value="John Doe">
+                                        </div>
+                                        <div style="margin-bottom: 10px;">
+                                            <label>Email</label>
+                                            <input type="email" class="form-control" value="johndoe@example.com">
+                                        </div>
+                                        <div style="margin-bottom: 10px;">
+                                            <label>No Tlp</label>
+                                            <input type="text" class="form-control" value="0812-3456-7890">
+                                        </div>
+                                        <div style="margin-bottom: 10px;">
+                                            <label>Alamat</label>
+                                            <input type="text" class="form-control" value="Jalan Lapangan No. 123, Jakarta">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="tab-content" id="ubah-password">
+                                <h4>Ubah Password</h4>
+                                <form>
+                                    <div>
+                                        <label>Password Lama</label>
+                                        <input type="password" placeholder="Masukkan password lama" class="form-control">
+                                    </div>
+                                    <div style="margin-top: 10px;">
+                                        <label>Password Baru</label>
+                                        <input type="password" placeholder="Masukkan password baru" class="form-control">
+                                    </div>
+                                    <div style="margin-top: 10px;">
+                                        <label>Konfirmasi Password Baru</label>
+                                        <input type="password" placeholder="Konfirmasi password baru" class="form-control">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary" style="margin-top: 15px;">Simpan</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div th:replace="~{pisahuser/footer.html}"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="assets/vendor/libs/jquery/jquery.js"></script>
+<script src="assets/vendor/libs/popper/popper.js"></script>
+<script src="assets/vendor/js/menu.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            tab.classList.add('active');
+            document.getElementById(tab.dataset.tab).classList.add('active');
+        });
+    });
+
+    const editBtn = document.getElementById('edit-profile-btn');
+    const profileViewMode = document.getElementById('profile-view-mode');
+    const profileEditMode = document.getElementById('profile-edit-mode');
+
+    editBtn.addEventListener('click', () => {
+        if (editBtn.textContent === 'Edit') {
+            profileViewMode.style.display = 'none';
+            profileEditMode.style.display = 'block';
+            editBtn.textContent = 'Simpan';
+        } else {
+            profileViewMode.style.display = 'block';
+            profileEditMode.style.display = 'none';
+            editBtn.textContent = 'Edit';
+        }
+    });
+</script>
+</body>
+
+</html>

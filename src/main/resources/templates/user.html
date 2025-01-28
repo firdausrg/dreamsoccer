@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-    <title>Dashboard - Pengguna</title>
+    <title>Data User | DreamSoccer</title>
     <meta name="description" content="" />
     <link rel="icon" type="image/x-icon" href="assets/img/favicon/favicon.ico" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css" />
     <link rel="stylesheet" href="assets/css/demo.css" />
     <link rel="stylesheet" href="style.css" />
-    <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
 
     <script src="assets/vendor/js/helpers.js"></script>
@@ -87,7 +86,6 @@
                     </div>
                 </div>
 
-                <!-- Modal Add User -->
                 <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -109,6 +107,10 @@
                                         <label for="userPhone" class="form-label">No HP</label>
                                         <input type="text" class="form-control" id="userPhone" placeholder="Masukkan Nomor HP">
                                     </div>
+                                    <div class="mb-3">
+                                        <label for="userAddress" class="form-label">Alamat (Opsional)</label>
+                                        <textarea class="form-control" id="userAddress" placeholder="Masukkan Alamat Pengguna"></textarea>
+                                    </div>
                                 </form>
                             </div>
                             <div class="modal-footer">
@@ -119,7 +121,6 @@
                     </div>
                 </div>
 
-                <!-- Modal Edit User -->
                 <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -141,17 +142,20 @@
                                         <label for="editUserPhone" class="form-label">No HP</label>
                                         <input type="text" class="form-control" id="editUserPhone" placeholder="Masukkan Nomor HP">
                                     </div>
+                                    <div class="mb-3">
+                                        <label for="editUserAddress" class="form-label">Alamat (Opsional)</label>
+                                        <textarea class="form-control" id="editUserAddress" placeholder="Masukkan Alamat Pengguna"></textarea>
+                                    </div>
                                 </form>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                                <button type="submit" class="btn btn-primary">Simpan</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Modal Konfirmasi Hapus -->
                 <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">

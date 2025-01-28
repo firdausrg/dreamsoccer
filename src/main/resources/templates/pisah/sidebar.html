@@ -1,6 +1,6 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme" xmlns:th="http://www.w3.org/1999/xhtml">
     <div class="app-brand demo">
-        <a href="/" th:href="@{/}" class="app-brand-link">
+        <a href="/admin_dashboard" th:href="@{/}" class="app-brand-link">
             <span class="app-brand-logo demo">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="32" height="32">
                     <circle cx="50" cy="50" r="48" fill="white" stroke="black" stroke-width="2" />
@@ -74,14 +74,14 @@
             <span class="menu-header-text">Sistem</span>
         </li>
 
-        <li class="menu-item" th:classappend="${currentUrl == '/profile-admin' || currentUrl == '/iklan' ? 'active open' : ''}">
+        <li class="menu-item" th:classappend="${currentUrl == '/profile_admin' || currentUrl == '/iklan' ? 'active open' : ''}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-settings"></i>
                 <div>Pengaturan Sistem</div>
             </a>
-            <ul class="menu-sub" th:classappend="${currentUrl == '/profile-admin' || currentUrl == '/iklan' ? 'show' : ''}">
-                <li class="menu-item" th:classappend="${currentUrl == '/profile-admin' ? 'active' : ''}">
-                    <a href="/profile-admin" class="menu-link">
+            <ul class="menu-sub" th:classappend="${currentUrl == '/profile_admin' || currentUrl == '/iklan' ? 'show' : ''}">
+                <li class="menu-item" th:classappend="${currentUrl == '/profile_admin' ? 'active' : ''}">
+                    <a href="/profile_admin" class="menu-link">
                         <div>Profil Admin</div>
                     </a>
                 </li>
@@ -91,14 +91,6 @@
                     </a>
                 </li>
             </ul>
-        </li>
-
-
-        <li th:classappend="${currentUrl == '/log-aktivitas' ? 'active' : ''}" class="menu-item">
-            <a href="/log-aktivitas" th:href="@{/log-aktivitas}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-clipboard"></i>
-                <div>Log Aktivitas</div>
-            </a>
         </li>
     </ul>
 </aside>

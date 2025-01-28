@@ -1,92 +1,87 @@
-<aside id="layout-menu" class="layout-menu-horizontal menu-horizontal menu bg-menu-theme flex-grow-0">
+<aside id="layout-menu" class="layout-menu-horizontal menu-horizontal menu bg-menu-theme flex-grow-0"
+       xmlns:th="http://www.w3.org/1999/xhtml">
     <div class="container-xxl d-flex h-100">
         <ul class="menu-inner">
-            <li class="menu-item active">
-                <a href="javascript:void(0)" class="menu-link menu-toggle">
-                    <i class="menu-icon tf-icons ti ti-smart-home"></i>
+            <li class="menu-item" th:classappend="${currentUrl == '/user_dashboard' || currentUrl == '/event' || currentUrl == '/event/detail-event' || currentUrl == '/data_lapangan' || currentUrl == '/data_lapangan/detail-lapangan' ? 'active open' : ''}">
+            <a href="javascript:void(0)" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons ti ti-home"></i>
                     <div data-i18n="Dashboard">Dashboard</div>
                 </a>
-                <ul class="menu-sub">
-                    <li class="menu-item">
-                        <a href="user-events.html" class="menu-link">
+                <ul class="menu-sub" th:classappend="${currentUrl == '/event' || currentUrl == '/data_lapangan' ? 'show' : ''}">
+                    <li class="menu-item" th:classappend="${currentUrl == '/event' ? 'active' : ''}">
+                        <a href="/event" class="menu-link">
                             <i class="menu-icon tf-icons ti ti-calendar"></i>
                             <div data-i18n="Events">Events</div>
                         </a>
                     </li>
-                    <li class="menu-item">
-                        <a href="user-book-lapangan.html" class="menu-link">
-                            <i class="menu-icon tf-icons ti ti-bookmark"></i>
-                            <div data-i18n="Book Lapangan">Book Lapangan</div>
+                    <li class="menu-item" th:classappend="${currentUrl == '/data_lapangan' ? 'active' : ''}">
+                        <a href="/data_lapangan" class="menu-link">
+                            <i class="menu-icon tf-icons ti ti-map"></i>
+                            <div data-i18n="Book Lapangan">Data Lapangan</div>
                         </a>
                     </li>
                 </ul>
             </li>
 
-            <li class="menu-item">
+            <li class="menu-item" th:classappend="${currentUrl == '/booking_lapangan' || currentUrl == '/history_booking' ? 'active open' : ''}">
                 <a href="javascript:void(0)" class="menu-link menu-toggle">
-                    <i class="menu-icon tf-icons ti ti-check-circle"></i>
+                    <i class="menu-icon tf-icons ti ti-book"></i>
                     <div data-i18n="Pemesanan">Pemesanan</div>
                 </a>
-                <ul class="menu-sub">
-                    <li class="menu-item">
-                        <a href="user-booking-status.html" class="menu-link">
+                <ul class="menu-sub" th:classappend="${currentUrl == '/booking_lapangan' || currentUrl == '/history_booking' ? 'show' : ''}">
+                    <li class="menu-item" th:classappend="${currentUrl == '/booking_lapangan' ? 'active' : ''}">
+                        <a href="/booking_lapangan" class="menu-link">
                             <i class="menu-icon tf-icons ti ti-calendar-check"></i>
-                            <div data-i18n="Status Pemesanan">Status Pemesanan</div>
+                            <div data-i18n="Status Pemesanan">Booking Lapangan</div>
                         </a>
                     </li>
-                    <li class="menu-item">
-                        <a href="user-my-bookings.html" class="menu-link">
+                    <li class="menu-item" th:classappend="${currentUrl == '/history_booking' ? 'active' : ''}">
+                        <a href="/history_booking" class="menu-link">
                             <i class="menu-icon tf-icons ti ti-list"></i>
-                            <div data-i18n="Daftar Pemesanan">Daftar Pemesanan</div>
+                            <div data-i18n="Daftar Pemesanan">History Booking</div>
                         </a>
                     </li>
                 </ul>
             </li>
 
-            <li class="menu-item">
+            <li class="menu-item" th:classappend="${currentUrl == '/daftar_reward' || currentUrl == '/history_penukaran_reward' ? 'active open' : ''}">
                 <a href="javascript:void(0)" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons ti ti-gift"></i>
                     <div data-i18n="Reward">Reward</div>
                 </a>
-                <ul class="menu-sub">
-                    <li class="menu-item">
-                        <a href="user-reward-list.html" class="menu-link">
+                <ul class="menu-sub" th:classappend="${currentUrl == '/daftar_reward' || currentUrl == '/history_penukaran_reward' ? 'show' : ''}">
+                    <li class="menu-item" th:classappend="${currentUrl == '/daftar_reward' ? 'active' : ''}">
+                        <a href="/daftar_reward" class="menu-link">
                             <i class="menu-icon tf-icons ti ti-trophy"></i>
                             <div data-i18n="Daftar Reward">Daftar Reward</div>
                         </a>
                     </li>
-                    <li class="menu-item">
-                        <a href="user-reward-redemption.html" class="menu-link">
-                            <i class="menu-icon tf-icons ti ti-arrow-right"></i>
-                            <div data-i18n="Penukaran Reward">Penukaran Reward</div>
+                    <li class="menu-item" th:classappend="${currentUrl == '/history_penukaran_reward' ? 'active' : ''}">
+                        <a href="/history_penukaran_reward" class="menu-link">
+                            <i class="menu-icon tf-icons ti ti-exchange-vertical"></i>
+                            <div data-i18n="Penukaran Reward">History Penukaran Reward</div>
                         </a>
                     </li>
                 </ul>
             </li>
 
-            <li class="menu-item">
+            <li class="menu-item" th:classappend="${currentUrl == '/profile_user' ? 'active open' : ''}">
                 <a href="javascript:void(0)" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons ti ti-user"></i>
                     <div data-i18n="Akun">Akun</div>
                 </a>
-                <ul class="menu-sub">
-                    <li class="menu-item">
-                        <a href="user-profile.html" class="menu-link">
+                <ul class="menu-sub" th:classappend="${currentUrl == '/profile_user' ? 'show' : ''}">
+                    <li class="menu-item" th:classappend="${currentUrl == '/profile_user' ? 'active' : ''}">
+                        <a href="/profile_user" class="menu-link">
                             <i class="menu-icon tf-icons ti ti-pencil-alt"></i>
-                            <div data-i18n="Edit Profil">Edit Profil</div>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="user-change-password.html" class="menu-link">
-                            <i class="menu-icon tf-icons ti ti-lock"></i>
-                            <div data-i18n="Ganti Password">Ganti Password</div>
+                            <div data-i18n="Edit Profil">Profil</div>
                         </a>
                     </li>
                 </ul>
             </li>
 
-            <li class="menu-item">
-                <a href="user-contact-us.html" class="menu-link">
+            <li th:classappend="${currentUrl == '/contact' ? 'active' : ''}" class="menu-item">
+                <a href="/contact" class="menu-link">
                     <i class="menu-icon tf-icons ti ti-phone"></i>
                     <div data-i18n="Hubungi Kami">Hubungi Kami</div>
                 </a>

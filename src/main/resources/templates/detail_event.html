@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<html
+        lang="en"
+        class="light-style layout-menu-fixed"
+        dir="ltr"
+        data-theme="theme-default"
+        data-assets-path="assets/"
+        data-template="horizontal-menu-template" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+  <title>Detail Event | DreamSoccer</title>
+
+  <meta name="description" content="" />
+  <link rel="icon" type="image/x-icon" href="assets/img/favicon/favicon.ico" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+          href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+          rel="stylesheet" />
+  <link rel="stylesheet" href="assets/vendor/fonts/fontawesome.css" />
+  <link rel="stylesheet" href="assets/vendor/fonts/tabler-icons.css" />
+  <link rel="stylesheet" href="assets/vendor/fonts/flag-icons.css" />
+  <link rel="stylesheet" href="assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css" />
+  <link rel="stylesheet" href="assets/css/demo.css" />
+  <script src="assets/vendor/js/helpers.js"></script>
+  <script src="assets/vendor/js/template-customizer.js"></script>
+  <script src="assets/js/config.js"></script>
+</head>
+
+<body>
+<div class="layout-wrapper layout-navbar-full layout-horizontal layout-without-menu">
+  <div class="layout-container">
+    <div th:replace="~{pisahuser/navbar.html}"></div>
+    <div class="layout-page">
+      <div class="content-wrapper">
+        <div th:replace="~{pisahuser/navbar2.html}"></div>
+        <div class="container-xxl flex-grow-1 container-p-y">
+          <div class="row">
+            <div class="col-12 col-md-8">
+              <div class="card mb-4">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                  <h5 class="mb-0">Event Perlombaan</h5>
+                  <a href="/event" class="text-decoration-none">
+                    <i class="fas fa-arrow-left"></i>
+                  </a>
+                </div>
+                <div class="card-body">
+                  <p>
+                    Bla bla bla, bla bla bla bla bla, bla bla bla, bla bla bla...
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-4 d-flex justify-content-end">
+              <div class="card mb-4" style="height: 100%;">
+                <div class="card-body d-flex align-items-start justify-content-center">
+                  <img src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/soccer-futsal-tournament-flyer-poster-design-template-5f738e76f11e1c8c40513248ed6b7079_screen.jpg?ts=1698496989" class="img-fluid" style="max-width: 80%; height: auto;" alt="Event Image">
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div th:replace="~{pisahuser/footer.html}"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<script src="assets/vendor/libs/jquery/jquery.js"></script>
+<script src="assets/vendor/libs/popper/popper.js"></script>
+<script src="assets/vendor/js/bootstrap.js"></script>
+<script src="assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+<script src="assets/vendor/libs/node-waves/node-waves.js"></script>
+<script src="assets/vendor/libs/hammer/hammer.js"></script>
+<script src="assets/vendor/js/menu.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

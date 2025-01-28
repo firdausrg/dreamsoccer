@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-    <title>Dashboard - Booking</title>
+    <title>Booking Lapangan | DreamSoccer</title>
     <meta name="description" content="" />
     <link rel="icon" type="image/x-icon" href="assets/img/favicon/favicon.ico" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -233,8 +233,26 @@
                                                 </div>
 
                                                 <div class="form-group">
+                                                    <label for="dp">DP</label>
+                                                    <input type="text" id="dp" class="form-control" placeholder="Masukkan DP" required>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="remaining-payment">Sisa Pembayaran</label>
+                                                    <input type="text" id="remaining-payment" class="form-control" value="Rp. 0" disabled>
+                                                </div>
+
+                                                <div class="form-group">
                                                     <label for="event-description">Deskripsi Event (Opsional)</label>
                                                     <textarea id="event-description" class="form-control" placeholder="Deskripsi Event (Opsional)"></textarea>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="event-status">Status Pembayaran</label>
+                                                    <select id="event-status" class="form-control" required>
+                                                        <option value="Belum Lunas">Belum Lunas</option>
+                                                        <option value="Lunas">Lunas</option>
+                                                    </select>
                                                 </div>
 
                                                 <div class="d-flex justify-content-between">
@@ -243,7 +261,7 @@
                                                     </button>
 
                                                     <button type="submit" id="submit-event" class="btn btn-success">
-                                                        <i class="bx bx-check-circle me-2"></i> Simpan
+                                                        <i class="bx bx-check-circle me-2"></i> Add Event
                                                     </button>
                                                 </div>
                                             </form>
@@ -279,7 +297,6 @@
     <script src='https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.3.0/locale/id.js"></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@3.10.0/dist/fullcalendar.min.js'></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/vendor/js/bootstrap.js"></script>
     <script src="assets/vendor/js/menu.js"></script>
     <script src="assets/js/main.js"></script>
@@ -288,33 +305,7 @@
             var calendar = $('#calendar').fullCalendar({
                 locale: 'id',
                 firstDay: 0,
-                events: [
-                    {
-                        title  : 'Booking 1',
-                        start  : '2025-01-21T08:00:00',
-                        end    : '2025-01-21T10:00:00'
-                    },
-                    {
-                        title  : 'Booking 2',
-                        start  : '2025-01-21T10:00:00',
-                        end    : '2025-01-21T12:00:00'
-                    },
-                    {
-                        title  : 'Booking 3',
-                        start  : '2025-01-21T13:00:00',
-                        end    : '2025-01-21T15:00:00'
-                    },
-                    {
-                        title  : 'Booking 4',
-                        start  : '2025-01-21T15:00:00',
-                        end    : '2025-01-21T17:00:00'
-                    },
-                    {
-                        title  : 'Booking 5',
-                        start  : '2025-01-21T09:00:00',
-                        end    : '2025-01-21T11:00:00'
-                    }
-                ],
+                events: [],
                 slotDuration: '01:00:00',
                 slotLabelInterval: '01:00',
                 eventLimit: true,
@@ -340,71 +331,81 @@
                     var selectedDate = moment(start).format('YYYY-MM-DD');
                     var startTime = moment(start).format('HH:mm');
                     var endTime = moment(end).format('HH:mm');
-
                     $('#event-date').val(selectedDate);
                     $('#event-start').val(startTime);
                     $('#event-end').val(endTime);
                 },
                 eventClick: function(event) {
-
                     var eventInfo = 'Nama: ' + event.title + '<br>' +
                                     'Mulai: ' + moment(event.start).format('YYYY-MM-DD HH:mm') + '<br>' +
                                     'Selesai: ' + moment(event.end).format('YYYY-MM-DD HH:mm') + '<br>' +
                                     'Lapangan: ' + event.court + '<br>' +
                                     'Deskripsi: ' + (event.description || 'No description') + '<br>' +
-                                    'Harga: ' + event.price;
-
+                                    'Harga: ' + event.price + '<br>' +
+                                    'DP: ' + event.dp + '<br>' +
+                                    'Sisa Pembayaran: ' + event.remainingBalance.toLocaleString() + '<br>' +
+                                    'Status: ' + event.status;
                     $('#event-info').html(eventInfo);
                     $('#eventModal').modal('show');
 
                     $('#edit-event').click(function() {
-                        $('#eventModal').modal('hide');
+    $('#eventModal').modal('hide');
+    $('.form-container h3').text('Edit Data Booking');
+    $('#event-name').val(event.title);
+    $('#event-date').val(moment(event.start).format('YYYY-MM-DD'));
+    $('#event-start').val(moment(event.start).format('HH:mm'));
+    $('#event-end').val(moment(event.end).format('HH:mm'));
+    $('#court').val(event.court);
+    $('#price-display').val('Rp. ' + event.price);
+    $('#event-description').val(event.description);
+    $('#dp').val('Rp. ' + event.dp.toLocaleString());
+    $('#remaining-payment').val('Rp. ' + event.remainingBalance.toLocaleString());
+    $('#event-status').val(event.status);
+    $('#cancel-edit').show();
+    $('#submit-event').text('Update Event');
 
-                        $('.form-container h3').text('Edit Data Booking');
-                        $('#event-name').val(event.title);
-                        $('#event-date').val(moment(event.start).format('YYYY-MM-DD'));
-                        $('#event-start').val(moment(event.start).format('HH:mm'));
-                        $('#event-end').val(moment(event.end).format('HH:mm'));
-                        $('#court').val(event.court);
-                        $('#price-display').val('Rp. ' + event.price);
-                        $('#event-description').val(event.description);
+    $('#event-form').off('submit').on('submit', function(e) {
+        e.preventDefault();
+        var updatedEventName = $('#event-name').val();
+        var updatedEventDate = $('#event-date').val();
+        var updatedStartTime = $('#event-start').val();
+        var updatedEndTime = $('#event-end').val();
+        var updatedCourt = $('#court').val();
+        var updatedDescription = $('#event-description').val();
+        var updatedPrice = $('#court').find('option:selected').data('price');
+        var duration = calculateDuration(updatedStartTime, updatedEndTime);
+        var updatedTotalPrice = updatedPrice * duration;
+        var dp = $('#dp').val().replace(/[^0-9]/g, '');
+        dp = parseFloat(dp) || 0;
+        var remainingPayment = updatedTotalPrice - dp;
+        var statuss = remainingPayment <= 0 ? 'Lunas' : 'Belum Lunas';
 
-                        $('#cancel-edit').show();
-                        $('#submit-event').text('Update Event');
+        event.title = updatedEventName;
+        event.start = updatedEventDate + 'T' + updatedStartTime;
+        event.end = updatedEventDate + 'T' + updatedEndTime;
+        event.description = updatedDescription;
+        event.price = updatedTotalPrice;
+        event.court = updatedCourt;
+        event.dp = dp;
+        event.remainingBalance = remainingPayment;
+        event.status = statuss;
 
-                        $('#event-form').off('submit').on('submit', function(e) {
-                            e.preventDefault();
+        $('#calendar').fullCalendar('updateEvent', event);
 
-                            var updatedEventName = $('#event-name').val();
-                            var updatedEventDate = $('#event-date').val();
-                            var updatedStartTime = $('#event-start').val();
-                            var updatedEndTime = $('#event-end').val();
-                            var updatedCourt = $('#court').val();
-                            var updatedDescription = $('#event-description').val();
-                            var updatedPrice = $('#court').find('option:selected').data('price');
-                            var duration = calculateDuration(updatedStartTime, updatedEndTime);
-                            var updatedTotalPrice = updatedPrice * duration;
+        $('#price-display').val('Rp. ' + updatedTotalPrice.toLocaleString());
+        $('#dp').val('Rp. ' + dp.toLocaleString());
+        $('#remaining-payment').val('Rp. ' + remainingPayment.toLocaleString());
 
-                            event.title = updatedEventName;
-                            event.start = updatedEventDate + 'T' + updatedStartTime;
-                            event.end = updatedEventDate + 'T' + updatedEndTime;
-                            event.description = updatedDescription;
-                            event.price = updatedTotalPrice;
-                            event.court = updatedCourt;
+        $('#event-form')[0].reset();
+        $('.form-container h3').text('Booking Lapangan');
+        $('#submit-event').text('Add Event');
+        $('#cancel-edit').hide();
+        $('#eventModal').modal('hide');
+    });
+});
 
-                            $('#calendar').fullCalendar('updateEvent', event);
-
-                            // Reset form ke default (Add Event)
-                            $('#event-form')[0].reset();
-                            $('.form-container h3').text('Booking Lapangan'); // Mengubah header ke Booking Lapangan
-                            $('#submit-event').text('Add Event'); // Mengubah tombol submit kembali ke Add Event
-                            $('#cancel-edit').hide(); // Sembunyikan tombol Batal
-                            $('#eventModal').modal('hide'); // Menutup modal
-                        });
-                    });
 
                     $('#cancel-edit').click(function() {
-                        // Reset form ke default
                         $('#event-form')[0].reset();
                         $('.form-container h3').text('Booking Lapangan');
                         $('#submit-event').text('Add Event');
@@ -419,11 +420,14 @@
                         }
                     });
                 },
-                allDaySlot: false,
-                minTime: '00:00:00',
-                maxTime: '23:00:00',
-                timeFormat: 'HH:mm',
-                slotLabelFormat: 'HH:mm',
+                eventRender: function(event, element) {
+                if (event.status === 'Belum Lunas') {
+                    element.css({
+                        'background-color': 'red', // Mengubah latar belakang menjadi merah
+                        'color': 'white'            // Mengubah warna teks menjadi putih
+                    });
+                }
+            }
             });
 
             function calculateDuration(start, end) {
@@ -434,7 +438,6 @@
 
             $('#event-form').submit(function(e) {
                 e.preventDefault();
-
                 var eventName = $('#event-name').val();
                 var eventDate = $('#event-date').val();
                 var startTime = $('#event-start').val();
@@ -444,29 +447,86 @@
                 var price = $('#court').find('option:selected').data('price');
                 var duration = calculateDuration(startTime, endTime);
                 var totalPrice = price * duration;
+                var dp = $('#dp').val().replace(/[^0-9]/g, '');
+                var remainingPayment = totalPrice - parseFloat(dp);
+                 var status = remainingPayment <= 0 ? 'Lunas' : 'Belum Lunas';
 
                 $('#calendar').fullCalendar('renderEvent', {
                     title: eventName,
                     start: eventDate + 'T' + startTime,
                     end: eventDate + 'T' + endTime,
                     description: description,
-                    price: totalPrice
+                    price: totalPrice,
+                    dp: dp,
+                    remainingBalance: remainingPayment,
+                    court: court,
+                    status: status
                 }, true);
 
-                // Clear form after submission
                 $('#event-form')[0].reset();
             });
 
             $('#court').change(function() {
-                var selectedCourt = $(this).find('option:selected');
+                updatePrice();
+            });
+
+            $('#event-start, #event-end').change(function() {
+                updatePrice();
+            });
+
+            function updatePrice() {
+                var selectedCourt = $('#court').find('option:selected');
                 var price = selectedCourt.data('price');
+                var startTime = $('#event-start').val();
+                var endTime = $('#event-end').val();
+
+                if (!selectedCourt.val()) {
+                    $('#price-display').val('Pilih lapangan terlebih dahulu');
+                    return;
+                }
+
+                if (!startTime || !endTime) {
+                    $('#price-display').val('Pilih jam awal dan jam akhir');
+                    return;
+                }
+
+                if (new Date('1970-01-01T' + endTime) <= new Date('1970-01-01T' + startTime)) {
+                    $('#price-display').val('Jam akhir tidak boleh lebih awal dari jam mulai');
+                    return;
+                }
+
+                var start = new Date('1970-01-01T' + startTime);
+                var end = new Date('1970-01-01T' + endTime);
+                var duration = (end - start) / (1000 * 60 * 60);
+
+                if (duration <= 0) {
+                    $('#price-display').val('Durasi tidak valid');
+                    return;
+                }
+
+                var totalPrice = price * duration;
+                $('#price-display').val('Rp. ' + totalPrice);
+            }
+
+            $('#dp').on('input', function() {
+                var val = $(this).val().replace(/[^0-9]/g, '');
+                var price = $('#court').find('option:selected').data('price');
                 var duration = calculateDuration($('#event-start').val(), $('#event-end').val());
                 var totalPrice = price * duration;
 
-                $('#price-display').val('Rp. ' + totalPrice);
+                var dp = Math.min(parseFloat(val) || 0, totalPrice);
+                $(this).val('Rp. ' + dp.toLocaleString());
+
+                var remainingPayment = totalPrice - dp;
+                $('#remaining-payment').val('Rp. ' + remainingPayment.toLocaleString());
+
+                var statusPembayaran = (remainingPayment <= 0) ? 'Lunas' : 'Belum Lunas';
+                $('#event-status').val(statusPembayaran);
+                console.log("Status Pembayaran: ", statusPembayaran);
             });
         });
     </script>
+
 </div>
 </body>
 </html>

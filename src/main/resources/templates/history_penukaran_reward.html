@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        class="light-style layout-menu-fixed"
+        dir="ltr"
+        data-theme="theme-default"
+        data-assets-path="assets/"
+        data-template="horizontal-menu-template" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+  <title>History Penukaran Reward | DreamSoccer</title>
+  <meta name="description" content="" />
+  <link rel="icon" type="image/x-icon" href="assets/img/favicon/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/vendor/fonts/fontawesome.css" />
+  <link rel="stylesheet" href="assets/vendor/fonts/tabler-icons.css" />
+  <link rel="stylesheet" href="assets/vendor/fonts/flag-icons.css" />
+  <link rel="stylesheet" href="assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css" />
+  <link rel="stylesheet" href="assets/css/demo.css" />
+  <script src="assets/vendor/js/helpers.js"></script>
+  <script src="assets/vendor/js/template-customizer.js"></script>
+  <script src="assets/js/config.js"></script>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .search-container {
+      margin-left: 20px;
+      flex-shrink: 0;
+    }
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+    .card-header {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+
+<body>
+<div class="layout-wrapper layout-navbar-full layout-horizontal layout-without-menu">
+  <div class="layout-container">
+    <div th:replace="~{pisahuser/navbar.html}"></div>
+    <div class="layout-page">
+      <div class="content-wrapper">
+        <div th:replace="~{pisahuser/navbar2.html}"></div>
+        <div class="container-xxl flex-grow-1 container-p-y">
+          <div class="header-container">
+            <h2>History Penukaran Reward</h2>
+            <div class="search-container">
+              <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari reward..." title="Cari berdasarkan nama reward atau status">
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h5>Daftar Penukaran Reward</h5>
+            </div>
+            <table id="historyTable">
+              <thead>
+              <tr>
+                <th>No</th>
+                <th>Nama Reward</th>
+                <th>Tanggal Penukaran</th>
+                <th>Poin yang Digunakan</th>
+                <th>Status</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>1</td>
+                <td>Voucher Gratis Bermain</td>
+                <td>2025-01-15</td>
+                <td>150</td>
+                <td>Berhasil</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Kaos Eksklusif</td>
+                <td>2025-01-20</td>
+                <td>200</td>
+                <td>Berhasil</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>Voucher Diskon</td>
+                <td>2025-01-22</td>
+                <td>100</td>
+                <td>Dalam Proses</td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td>Voucher Makanan</td>
+                <td>2025-01-25</td>
+                <td>250</td>
+                <td>Berhasil</td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td>Kaos Sport</td>
+                <td>2025-01-27</td>
+                <td>300</td>
+                <td>Gagal</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div th:replace="~{pisahuser/footer.html}"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  function searchTable() {
+    let input = document.getElementById('searchInput');
+    let filter = input.value.toLowerCase();
+    let table = document.getElementById('historyTable');
+    let tr = table.getElementsByTagName('tr');
+
+    for (let i = 1; i < tr.length; i++) {
+      let td = tr[i].getElementsByTagName('td');
+      let found = false;
+
+      for (let j = 0; j < td.length; j++) {
+        if (td[j]) {
+          let txtValue = td[j].textContent || td[j].innerText;
+          if (txtValue.toLowerCase().indexOf(filter) > -1) {
+            found = true;
+          }
+        }
+      }
+
+      if (found) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
+  }
+</script>
+
+<script src="assets/vendor/libs/jquery/jquery.js"></script>
+<script src="assets/vendor/libs/popper/popper.js"></script>
+<script src="assets/vendor/js/menu.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

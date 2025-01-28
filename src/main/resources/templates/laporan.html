@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-    <title>Dashboard - Laporan</title>
+    <title>Laporan | DreamSoccer</title>
     <meta name="description" content="" />
     <link rel="icon" type="image/x-icon" href="assets/img/favicon/favicon.ico" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -38,7 +38,6 @@
                 <div class="container-xxl flex-grow-1 container-p-y">
                     <h4 class="mb-4">Laporan</h4>
 
-                    <!-- Card: Laporan Booking -->
                     <div class="card mb-4">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="card-title">Laporan Booking</h5>
@@ -66,7 +65,6 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Tanggal</th>
-                                    <th>Kategori</th>
                                     <th>Nama User</th>
                                     <th>Detail Booking</th>
                                 </tr>
@@ -75,14 +73,12 @@
                                 <tr>
                                     <td>1</td>
                                     <td>2025-01-15</td>
-                                    <td>Futsal</td>
                                     <td>Ahmad Fauzi</td>
                                     <td>Booking lapangan untuk 2 jam</td>
                                 </tr>
                                 <tr>
                                     <td>2</td>
                                     <td>2025-01-18</td>
-                                    <td>Basket</td>
                                     <td>Siti Nurhaliza</td>
                                     <td>Booking lapangan untuk turnamen sekolah</td>
                                 </tr>
@@ -91,7 +87,6 @@
                         </div>
                     </div>
 
-                    <!-- Card: Laporan Penukaran Reward -->
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="card-title">Laporan Penukaran Reward</h5>
@@ -149,7 +144,6 @@
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="assets/vendor/js/bootstrap.js"></script>
@@ -158,7 +152,6 @@
 
     <script>
         $(document).ready(function() {
-            // Inisialisasi tabel booking
             $('#bookingReportTable').DataTable({
                 "paging": true,
                 "pageLength": 5,
@@ -169,7 +162,6 @@
             $('#bookingReportTable_length').css('margin-bottom', '15px');
             $('#bookingReportTable_info').css('margin-top', '10px');
 
-            // Inisialisasi tabel reward
             $('#rewardReportTable').DataTable({
                 "paging": true,
                 "pageLength": 5,
@@ -185,7 +177,6 @@
             const bookingTable = $('#bookingReportTable').DataTable();
             const rewardTable = $('#rewardReportTable').DataTable();
 
-            // Filter function
             function filterTable(type) {
                 const startDate = $(`#${type}StartDate`).val();
                 const endDate = $(`#${type}EndDate`).val();
@@ -195,26 +186,21 @@
                     return;
                 }
 
-                // Convert dates to comparable format
                 const start = new Date(startDate);
                 const end = new Date(endDate);
 
-                // Select correct DataTable instance
                 const table = type === 'booking' ? bookingTable : rewardTable;
 
-                // Apply filtering logic
                 $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
                     const date = new Date(data[1]); // Assume date is in the 2nd column (index 1)
                     return date >= start && date <= end;
                 });
-                table.draw(); // Redraw table based on filter
+                table.draw();
             }
 
-            // Expose filterTable function to global scope for buttons
             window.filterTable = filterTable;
         });
 
-        // Print function
         function printReport(tableId) {
             const table = document.getElementById(tableId);
             const newWindow = window.open('', '', 'width=800,height=600');
@@ -225,13 +211,11 @@
             newWindow.document.close();
             newWindow.print();
         }
-        // Reset filter function
 function resetFilter(type) {
     // Reset date input fields
     $(`#${type}StartDate`).val('');
     $(`#${type}EndDate`).val('');
 
-    // Clear DataTable search and redraw table
     const table = type === 'booking' ? bookingTable : rewardTable;
     $.fn.dataTable.ext.search = []; // Clear all filters
     table.draw(); // Redraw table without filter
