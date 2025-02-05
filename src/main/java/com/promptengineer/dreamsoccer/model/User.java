@@ -21,7 +21,7 @@ public class User {
     private String email;
     @Column(name = "Username", length = 50)
     private String username;
-    @Column(name = "Password", length = 50)
+    @Column(name = "Password")
     private String password;
     @Column(name = "Verified", length = 1)
     private boolean verified;
