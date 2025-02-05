@@ -57,28 +57,7 @@
                                             <th style="text-align: center;">Aksi</th>
                                         </tr>
                                         </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>John Doe</td>
-                                            <td>john.doe@example.com</td>
-                                            <td>08123456789</td>
-                                            <td>
-                                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editUserModal"><i class="fas fa-edit"></i></button>
-                                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal"><i class="fas fa-trash-alt"></i></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Jane Smith</td>
-                                            <td>-</td>
-                                            <td>08129876543</td>
-                                            <td>
-                                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editUserModal"><i class="fas fa-edit"></i></button>
-                                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal"><i class="fas fa-trash-alt"></i></button>
-                                            </td>
-                                        </tr>
-                                        </tbody>
+                                        <tbody id="userTable"></tbody>
                                     </table>
                                 </div>
                             </div>
@@ -93,30 +72,30 @@
                                 <h5 class="modal-title" id="addUserModalLabel">Tambah Pengguna Baru</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <div class="modal-body">
-                                <form>
-                                    <div class="mb-3">
-                                        <label for="userName" class="form-label">Nama</label>
-                                        <input type="text" class="form-control" id="userName" placeholder="Masukkan Nama Pengguna">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="userEmail" class="form-label">Email (Opsional)</label>
-                                        <input type="email" class="form-control" id="userEmail" placeholder="Masukkan Email (Opsional)">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="userPhone" class="form-label">No HP</label>
-                                        <input type="text" class="form-control" id="userPhone" placeholder="Masukkan Nomor HP">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="userAddress" class="form-label">Alamat (Opsional)</label>
-                                        <textarea class="form-control" id="userAddress" placeholder="Masukkan Alamat Pengguna"></textarea>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                <button type="submit" class="btn btn-primary">Simpan</button>
-                            </div>
+                            <form id="userForm">
+                                <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="userName" class="form-label">Nama</label>
+                                            <input type="text" class="form-control" id="userName" placeholder="Masukkan Nama Pengguna">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="userEmail" class="form-label">Email (Opsional)</label>
+                                            <input type="email" class="form-control" id="userEmail" placeholder="Masukkan Email (Opsional)">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="userPhone" class="form-label">No HP</label>
+                                            <input type="text" class="form-control" id="userPhone" placeholder="Masukkan Nomor HP">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="userAddress" class="form-label">Alamat (Opsional)</label>
+                                            <textarea class="form-control" id="userAddress" placeholder="Masukkan Alamat Pengguna"></textarea>
+                                        </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -128,30 +107,31 @@
                                 <h5 class="modal-title" id="editUserModalLabel">Edit Pengguna</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <div class="modal-body">
-                                <form>
-                                    <div class="mb-3">
-                                        <label for="editUserName" class="form-label">Nama</label>
-                                        <input type="text" class="form-control" id="editUserName" placeholder="Masukkan Nama Pengguna">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="editUserEmail" class="form-label">Email (Opsional)</label>
-                                        <input type="email" class="form-control" id="editUserEmail" placeholder="Masukkan Email (Opsional)">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="editUserPhone" class="form-label">No HP</label>
-                                        <input type="text" class="form-control" id="editUserPhone" placeholder="Masukkan Nomor HP">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="editUserAddress" class="form-label">Alamat (Opsional)</label>
-                                        <textarea class="form-control" id="editUserAddress" placeholder="Masukkan Alamat Pengguna"></textarea>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                <button type="submit" class="btn btn-primary">Simpan</button>
-                            </div>
+                            <form id="editUserForm">
+                                <div class="modal-body">
+                                        <input type="hidden" id="editUserId" name="id">
+                                        <div class="mb-3">
+                                            <label for="editUserName" class="form-label">Nama</label>
+                                            <input type="text" class="form-control" id="editUserName" placeholder="Masukkan Nama Pengguna">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="editUserEmail" class="form-label">Email (Opsional)</label>
+                                            <input type="email" class="form-control" id="editUserEmail" placeholder="Masukkan Email (Opsional)">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="editUserPhone" class="form-label">No HP</label>
+                                            <input type="text" class="form-control" id="editUserPhone" placeholder="Masukkan Nomor HP">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="editUserAddress" class="form-label">Alamat (Opsional)</label>
+                                            <textarea class="form-control" id="editUserAddress" placeholder="Masukkan Alamat Pengguna"></textarea>
+                                        </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -168,7 +148,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                <button type="button" class="btn btn-danger">Hapus</button>
+                                <button type="button" class="btn btn-danger" id="confirmDelete">Hapus</button>
                             </div>
                         </div>
                     </div>
@@ -186,7 +166,140 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        function loadUsers() {
+            $.get("/user/list", function(users) {
+                let tableContent = "";
+                users.forEach((user, index) => {
+                    tableContent += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${user.nama}</td>
+                            <td>${user.email}</td>
+                            <td>${user.noTelpon}</td>
+                            <td>
+                                <button class="btn btn-primary btn-sm btn-edit"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editUserModal"
+                                    data-id="${user.id}"
+                                    data-nama="${user.nama}"
+                                    data-email="${user.email}"
+                                    data-telepon="${user.noTelpon}"
+                                    data-alamat="${user.alamat}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-danger btn-sm btn-delete"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteConfirmationModal"
+                                    data-id="${user.id}">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </td>
+                        </tr>`;
+                });
+                $("#userTable").html(tableContent);
+            });
+        }
+
         $(document).ready(function() {
+            loadUsers();
+
+            $("#userForm").submit(function(event) {
+                event.preventDefault();
+
+                const userData = {
+                  nama: $("#userName").val(),
+                  email: $("#userEmail").val(),
+                  noTelpon: $("#userPhone").val(),
+                  alamat: $("#userAddress").val()
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/user/save",
+                    contentType: "application/json",
+                    data: JSON.stringify(userData),
+                    success: function(response) {
+                        alert(response);
+
+                        let modalElement = document.getElementById('addUserModal');
+                        let modalInstance = bootstrap.Modal.getInstance(modalElement);
+                        modalInstance.hide();
+                        modalInstance.dispose();
+
+                        $("#userForm")[0].reset();
+
+                        loadUsers();
+                    }
+                });
+            });
+
+            $(document).on("click", ".btn-edit", function() {
+                let id = $(this).data("id");
+                let nama = $(this).data("nama");
+                let email = $(this).data("email");
+                let telepon = $(this).data("telepon");
+                let alamat = $(this).data("alamat");
+
+                $("#editUserId").val(id);
+                $("#editUserName").val(nama);
+                $("#editUserEmail").val(email);
+                $("#editUserPhone").val(telepon);
+                $("#editUserAddress").val(alamat);
+            });
+
+            $("#editUserForm").submit(function(event) {
+                event.preventDefault();
+
+                let userData = {
+                    id: $("#editUserId").val(),
+                    nama: $("#editUserName").val(),
+                    email: $("#editUserEmail").val(),
+                    noTelpon: $("#editUserPhone").val(),
+                    alamat: $("#editUserAddress").val(),
+                };
+
+                $.ajax({
+                    type: "PUT",
+                    url: "/user/update",
+                    contentType: "application/json",
+                    data: JSON.stringify(userData),
+                    success: function(response) {
+                        alert(response);
+
+                        let modalElement = document.getElementById('editUserModal');
+                        let modalInstance = bootstrap.Modal.getInstance(modalElement);
+                        modalInstance.hide();
+                        modalInstance.dispose();
+
+                        loadUsers();
+                    }
+                });
+            });
+
+            let userIdToDelete = null;
+            $(document).on("click", ".btn-delete", function() {
+                userIdToDelete = $(this).data("id");
+            });
+
+            $('#confirmDelete').click(function() {
+                if (userIdToDelete) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: "/user/delete/" + userIdToDelete,
+                        success: function(response) {
+                            alert(response);
+
+                            let modalElement = document.getElementById('deleteConfirmationModal');
+                            let modalInstance = bootstrap.Modal.getInstance(modalElement);
+                            modalInstance.hide();
+                            modalInstance.dispose();
+
+                            loadUsers();
+                        }
+                    });
+                }
+            });
+
             var table = $('#tabel-custom').DataTable({
                 "paging": true,
                 "pageLength": 5,
@@ -198,6 +311,8 @@
             $('#tabel-custom_filter').css('margin-bottom', '15px');
             $('#tabel-custom_info').css('margin-top', '10px');
         });
+
+
     </script>
 </div>
 </body>
