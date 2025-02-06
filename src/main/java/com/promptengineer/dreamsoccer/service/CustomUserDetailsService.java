@@ -1,5 +1,6 @@
 package com.promptengineer.dreamsoccer.service;
 
+import com.promptengineer.dreamsoccer.model.Status;
 import com.promptengineer.dreamsoccer.model.User;
 import com.promptengineer.dreamsoccer.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
                 user.getPassword(),
-                user.isVerified(),
+                user.getVerified() == Status.AKTIF,
                 true,
                 true,
                 true,

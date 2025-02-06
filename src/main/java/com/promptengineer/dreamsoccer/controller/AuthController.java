@@ -1,11 +1,19 @@
 package com.promptengineer.dreamsoccer.controller;
 
+import com.promptengineer.dreamsoccer.dto.validasi.ValLoginDTO;
+import com.promptengineer.dreamsoccer.dto.validasi.ValOtpDTO;
+import com.promptengineer.dreamsoccer.dto.validasi.ValRegisDTO;
 import com.promptengineer.dreamsoccer.model.User;
 import com.promptengineer.dreamsoccer.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @Controller
 @RequestMapping("/auth")
@@ -20,26 +28,39 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String register(@RequestParam String username, @RequestParam String email, @RequestParam String password, Model model) {
+    public String register(@Valid ValRegisDTO valRegisDTO, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "register";
+        }
         try {
-            User user = userService.registerUser(username, email, password);
-            model.addAttribute("message", "Pendaftaran berhasil! Silakan periksa email Anda untuk memverifikasi akun.");
-            return "login";
+            User user = userService.registerUser(valRegisDTO.getUsername(), valRegisDTO.getEmail(), valRegisDTO.getPassword());
+            userService.sendOtpEmail(user);
+            model.addAttribute("userId", user.getId());
+            model.addAttribute("message", "Pendaftaran berhasil!");
+            return "otp";
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
             return "register";
         }
     }
 
-    @GetMapping("/verify")
-    public String verifyAccount(@RequestParam String token, Model model) {
-        boolean isVerified = userService.verifyAccount(token);
-        if (isVerified) {
-            model.addAttribute("message", "Akun Anda telah berhasil diverifikasi.");
-        } else {
-            model.addAttribute("error", "Token verifikasi tidak valid.");
+    @GetMapping("/otp")
+    public String otpPage() {
+        return "otp";
+    }
+
+    @PostMapping("/verify-otp")
+    public String verifyOtp(@RequestParam Long userId, @Valid ValOtpDTO valOtpDTO, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "otp";
         }
-        return "login";
+        boolean success = userService.verifyOtp(userId, valOtpDTO.getOtp());
+        if (success) {
+            model.addAttribute("message", "Akun Anda telah berhasil diverifikasi.");
+            return "login";
+        }
+        model.addAttribute("error", "OTP tidak valid atau telah kedaluwarsa.");
+        return "otp";
     }
 
     @GetMapping("/login")
@@ -48,13 +69,21 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String username, @RequestParam String password, Model model) {
-        boolean success = userService.loginUser(username, password);
-        if (success) {
-            User user = userService.findUserByUsername(username).orElseThrow();
-            return "redirect:/dashboard";
+    public String login(@Valid ValLoginDTO valLoginDTO, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "login";
         }
-        model.addAttribute("error", "Username atau password salah, atau akun belum diverifikasi.");
-        return "login";
+        try {
+            userService.loginUser(valLoginDTO.getUsername(), valLoginDTO.getPassword());
+            return "redirect:/dashboard";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
+            return "login";
+        }
+    }
+    @PostMapping("/resend-otp")
+    public ResponseEntity<Map<String, Object>> resendOtp(@RequestParam Long userId) {
+        userService.resendOtp(userId);
+        return ResponseEntity.ok(Map.of("success", true));
     }
 }

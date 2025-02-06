@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" class="light-style customizer-hide" dir="ltr" data-theme="theme-default"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <title>Verifikasi OTP | DreamSoccer</title>
+    <link rel="icon" type="image/x-icon" href="/assets/img/favicon/favicon.ico" />
+    <link rel="stylesheet" href="/assets/vendor/css/rtl/core.css" />
+    <link rel="stylesheet" href="/assets/vendor/css/rtl/theme-default.css" />
+    <link rel="stylesheet" href="/assets/css/demo.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            font-family: 'Poppins', sans-serif;
+        }
+        .card {
+            width: 100%;
+            max-width: 400px;
+            padding: 25px;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        .title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #333;
+        }
+        .subtitle {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 20px;
+        }
+        .form-control {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 3px;
+        }
+        .btn {
+            background: #6e8efb;
+            border: none;
+            font-weight: bold;
+            transition: 0.3s ease-in-out;
+        }
+        .btn:hover {
+            background: #5a7be7;
+        }
+        .alert {
+            transition: opacity 0.5s ease-in-out;
+        }
+        #timer {
+            font-weight: bold;
+            color: #6e8efb;
+        }
+        #resend-otp {
+            color: #ff6b6b;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        #resend-otp:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h4 class="title">🔐 Verifikasi OTP</h4>
+    <p class="subtitle">Kami telah mengirimkan kode OTP ke email Anda. Masukkan kode untuk melanjutkan.</p>
+
+    <form action="/auth/verify-otp" method="post">
+        <input type="hidden" name="userId" th:value="${userId}" />
+        <div class="mb-3">
+            <input type="text" name="otp" class="form-control form-control-lg text-center" id="otp" placeholder="••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Verifikasi Kode</button>
+    </form>
+
+    <div th:if="${error}" class="alert alert-danger mt-3" th:text="${error}" id="error-message"></div>
+    <div th:if="${message}" class="alert alert-success mt-3" th:text="${message}" id="success-message"></div>
+
+    <p class="mt-3">
+        <span id="timer">60</span> detik lagi sebelum Anda bisa mengirim ulang OTP. <br>
+        <a href="javascript:void(0);" id="resend-otp" style="display: none;">Kirim Ulang OTP</a>
+    </p>
+</div>
+
+<script>
+    setTimeout(() => {
+        document.getElementById('error-message')?.classList.add('d-none');
+        document.getElementById('success-message')?.classList.add('d-none');
+    }, 5000);
+
+    let timeLeft = 60;
+    const timerElement = document.getElementById('timer');
+    const resendButton = document.getElementById('resend-otp');
+
+    resendButton.style.display = 'none';
+
+    const countdown = setInterval(() => {
+        if (timeLeft <= 0) {
+            clearInterval(countdown);
+            timerElement.innerHTML = 'Waktu habis!';
+            resendButton.style.display = 'inline'; // Tampilkan tombol kirim ulang
+        } else {
+            timerElement.innerHTML = timeLeft;
+        }
+        timeLeft--;
+    }, 1000);
+
+    resendButton.addEventListener('click', () => {
+        const userId = document.querySelector('input[name="userId"]').value;
+        fetch(`/auth/resend-otp?userId=${userId}`, { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'OTP Terkirim!',
+                        text: 'Silakan cek kembali kotak masuk Anda.',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    timeLeft = 60;
+                    timerElement.innerHTML = timeLeft;
+                    resendButton.style.display = 'none';
+                    startCountdown();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: 'Tidak dapat mengirim ulang OTP saat ini.'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Kesalahan!',
+                    text: 'Terjadi kesalahan saat mengirim OTP.'
+                });
+            });
+    });
+
+    function startCountdown() {
+        timeLeft = 60;
+        timerElement.innerHTML = timeLeft;
+        const countdown = setInterval(() => {
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                timerElement.innerHTML = '0!';
+                resendButton.style.display = 'inline';
+            } else {
+                timerElement.innerHTML = timeLeft;
+            }
+            timeLeft--;
+        }, 1000);
+    }
+</script>
+</body>
+</html>

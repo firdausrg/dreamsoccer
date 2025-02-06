@@ -12,7 +12,7 @@ public class HistoryPenukaranReward {
     @JoinColumn(name = "idReward")
     private DataReward dataReward;
     @ManyToOne
-    @JoinColumn(name = "idUser")
+    @JoinColumn(name = "id_user")
     private User user;
     private String namaRewardPenukaran;
     private String jumlahPointPenukaran;
