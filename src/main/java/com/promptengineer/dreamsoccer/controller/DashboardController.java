@@ -68,23 +68,19 @@ public class DashboardController {
     }
     @GetMapping("/back")
     public String goBack(Authentication authentication) {
-        // Cek role pengguna
         if (authentication != null) {
             String role = authentication.getAuthorities().stream()
                     .map(grantedAuthority -> grantedAuthority.getAuthority())
                     .collect(Collectors.joining());
 
-            // Jika role USER, arahkan ke /user_dashboard
             if (role.contains("ROLE_USER")) {
                 return "redirect:/user_dashboard";
             }
-            // Jika role ADMIN, arahkan ke /admin_dashboard
             else if (role.contains("ROLE_ADMIN")) {
                 return "redirect:/admin_dashboard";
             }
         }
 
-        // Jika role tidak ditemukan atau tidak terautentikasi, arahkan ke halaman 404 atau home
         return "redirect:/404";
     }
 

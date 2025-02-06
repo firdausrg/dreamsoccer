@@ -2,17 +2,19 @@ package com.promptengineer.dreamsoccer.dto.validasi;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
 public class ValRegisDTO {
-
-    @NotEmpty
+    @NotEmpty(message = "Username tidak boleh kosong")
+    @Size(min = 3, max = 50, message = "Username harus antara 3 dan 50 karakter")
     private String username;
 
-    @NotEmpty
+    @NotEmpty(message = "Password tidak boleh kosong")
+    @Size(min = 6, max = 50, message = "Password harus antara 6 dan 50 karakter")
     private String password;
 
-    @Email
-    @NotEmpty
+    @Email(message = "Email tidak valid")
+    @NotEmpty(message = "Email tidak boleh kosong")
     private String email;
 
     public String getUsername() {

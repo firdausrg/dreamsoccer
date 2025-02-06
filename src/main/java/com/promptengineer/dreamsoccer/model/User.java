@@ -1,7 +1,7 @@
 package com.promptengineer.dreamsoccer.model;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -11,24 +11,38 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "Nama", length = 100)
     private String nama;
+
     @Column(name = "Alamat")
     private String alamat;
+
     @Column(name = "NoTelp", length = 15)
     private String noTelpon;
+
     @Column(name = "Email", length = 30)
     private String email;
+
     @Column(name = "Username", length = 50)
     private String username;
+
     @Column(name = "Password")
     private String password;
-    @Column(name = "Verified", length = 1)
-    private boolean verified;
-    @Column(name = "VerificationToken", length = 100)
-    private String verificationToken;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "Verified")
+    private Status verified;
+
+    @Column(name = "Otp")
+    private String otp;
+
+    @Column(name = "OtpCreatedAt")
+    private LocalDateTime otpCreatedAt;
+
     @Column(name = "CreatedBy", length = 50)
     private String createdBy;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "Role")
     private Role role;
@@ -122,28 +136,28 @@ public class User {
         this.password = password;
     }
 
-    public boolean isVerified() {
+    public Status getVerified() {
         return verified;
     }
 
-    public void setVerified(boolean verified) {
+    public void setVerified(Status verified) {
         this.verified = verified;
     }
 
-    public String getVerificationToken() {
-        return verificationToken;
+    public String getOtp() {
+        return otp;
     }
 
-    public void setVerificationToken(String verificationToken) {
-        this.verificationToken = verificationToken;
+    public void setOtp(String otp) {
+        this.otp = otp;
     }
 
-    public String getCreatedBy() {
-        return createdBy;
+    public LocalDateTime getOtpCreatedAt() {
+        return otpCreatedAt;
     }
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
+    public void setOtpCreatedAt(LocalDateTime otpCreatedAt) {
+        this.otpCreatedAt = otpCreatedAt;
     }
 
     public Role getRole() {

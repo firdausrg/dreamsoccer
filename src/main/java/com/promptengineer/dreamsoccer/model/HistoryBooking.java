@@ -13,7 +13,7 @@ public class HistoryBooking {
     @JoinColumn(name = "idBooking")
     private Booking booking;
     @ManyToOne
-    @JoinColumn(name = "idUser")
+    @JoinColumn(name = "id_user")
     private User user;
     private LocalDateTime createdAt;
 

@@ -1,7 +1,6 @@
 package com.promptengineer.dreamsoccer.model;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -16,7 +15,7 @@ public class Booking {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "idUser", nullable = false)
+    @JoinColumn(name = "id_user", nullable = false)
     private User user;
 
     @ManyToOne
@@ -32,7 +31,10 @@ public class Booking {
     @Column(name = "JamSelesai")
     private LocalTime jamSelesai;
 
-    @Column(name = "NamaLapanganBooking", length = 30)
+    @Column(name = "NamaUserBooking", length = 50)
+    private String namaUserBooking;
+
+    @Column(name = "NamaLapanganBooking", length = 50)
     private String namaLapanganBooking;
 
     @Column(name = "HargaPerjamBooking")
@@ -68,7 +70,6 @@ public class Booking {
     @Column(name = "UpdatedBy", length = 50)
     private String updatedBy;
 
-    // Constructor Default (Wajib untuk JPA)
     public Booking() {}
 
     @PrePersist
@@ -81,7 +82,7 @@ public class Booking {
         this.updatedAt = LocalDateTime.now();
     }
 
-    // Getter & Setter
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -128,6 +129,14 @@ public class Booking {
 
     public void setJamSelesai(LocalTime jamSelesai) {
         this.jamSelesai = jamSelesai;
+    }
+
+    public String getNamaUserBooking() {
+        return namaUserBooking;
+    }
+
+    public void setNamaUserBooking(String namaUserBooking) {
+        this.namaUserBooking = namaUserBooking;
     }
 
     public String getNamaLapanganBooking() {

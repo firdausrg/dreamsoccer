@@ -33,14 +33,9 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/auth/register", "/auth/login").permitAll()
-                        .requestMatchers("/admin_dashboard", "/lapangan", "/booking", "/reward",
-                                "/laporan", "/profile_admin", "/iklan").hasRole("ADMIN")
-                        .requestMatchers("/user_dashboard", "/event", "/data-lapangan", "/booking_lapangan",
-                                "/history_booking", "/daftar_reward", "/history_penukaran_reward",
-                                "/profile_user", "/contact", "/event/detail-event", "/data_lapangan/detail-lapangan")
-                        .hasRole("USER")
-                        .requestMatchers("/assets/**").permitAll()
+                        .requestMatchers(SecurityPage.PUBLIC_URLS).permitAll()
+                        .requestMatchers(SecurityPage.ADMIN_URLS).hasRole("ADMIN")
+                        .requestMatchers(SecurityPage.USER_URLS).hasRole("USER")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
