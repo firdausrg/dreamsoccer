@@ -16,7 +16,6 @@
     <link rel="stylesheet" href="assets/css/demo.css" />
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
-
     <script src="assets/vendor/js/helpers.js"></script>
     <script src="assets/js/config.js"></script>
 
@@ -57,25 +56,7 @@
                                             <th style="text-align: center;">Aksi</th>
                                         </tr>
                                         </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Lapangan A</td>
-                                            <td>Rp 100.000</td>
-                                            <td>
-                                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editFieldModal"><i class="fas fa-edit"></i></button>
-                                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal"><i class="fas fa-trash-alt"></i></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Lapangan B</td>
-                                            <td>Rp 150.000</td>
-                                            <td>
-                                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editFieldModal"><i class="fas fa-edit"></i></button>
-                                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal"><i class="fas fa-trash-alt"></i></button>
-                                            </td>
-                                        </tr>
+                                        <tbody id="lapangan-list">
                                         </tbody>
                                     </table>
                                 </div>
@@ -92,26 +73,28 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form>
+                                <form id= "form-add-lapangan" enctype="multipart/form-data">
                                     <div class="mb-3">
                                         <label for="fieldName" class="form-label">Nama Lapangan</label>
-                                        <input type="text" class="form-control" id="fieldName" placeholder="Masukkan Nama Lapangan">
+                                        <input type="text" class="form-control" id="fieldName" name="fieldName" placeholder="Masukkan Nama Lapangan" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="rentalPrice" class="form-label">Harga Sewa</label>
-                                        <input type="text" class="form-control" id="rentalPrice" placeholder="Masukkan Harga Sewa">
+                                        <input type="number" class="form-control" id="rentalPrice" name="rentalPrice" placeholder="Masukkan Harga Sewa" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="fieldImages" class="form-label">Gambar Lapangan</label>
-                                        <input type="file" class="form-control" id="fieldImages" multiple>
-                                        <small class="form-text text-muted">Pilih minimal 3 gambar lapangan</small>
+                                        <input type="file" class="form-control" id="fieldImages" name="fieldImages" accept="image/*" required>
+                                        <small class="form-text text-muted">Pilih gambar lapangan</small>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                        <button type="submit" class="btn btn-primary">Simpan</button>
                                     </div>
                                 </form>
+
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                <button type="submit" class="btn btn-primary">Simpan</button>
-                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -140,11 +123,11 @@
                                         <input type="file" class="form-control" id="editFieldImages" multiple>
                                         <small class="form-text text-muted">Pilih gambar baru untuk lapangan. Kamu bisa memilih lebih dari satu gambar.</small>
                                     </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Gambar yang Sudah Ada</label>
-                                        <div id="currentFieldImages" class="d-flex flex-wrap">
-                                        </div>
-                                    </div>
+<!--                                    <div class="mb-3">-->
+<!--                                        <label class="form-label">Gambar yang Sudah Ada</label>-->
+<!--                                        <div id="currentFieldImages" class="d-flex flex-wrap">-->
+<!--                                        </div>-->
+<!--                                    </div>-->
                                 </form>
                             </div>
                             <div class="modal-footer">
@@ -167,7 +150,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                <button type="button" class="btn btn-danger">Hapus</button>
+                                <button type="button" class="btn btn-danger" id="confirmDeleteButton">Hapus</button>
                             </div>
                         </div>
                     </div>
@@ -183,20 +166,168 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script>
-        $(document).ready(function() {
-            var table = $('#tabel-custom').DataTable({
-                "paging": true,
-                "pageLength": 5,
-                "lengthMenu": [5, 10, 15, 20],
-                "ordering": true,
-                "info": true
-            });
-            $('#tabel-custom_length').css('margin-bottom', '15px');
-            $('#tabel-custom_filter').css('margin-bottom', '15px');
-            $('#tabel-custom_info').css('margin-top', '10px');
-        });
-    </script>
+        $(document).ready(function () {
+     let lapanganIdToDelete = null;
+     // Load data lapangan saat halaman pertama kali dibuka
+     loadLapangan();
+     // Event delegation untuk tombol delete
+     $(document).on("click", ".delete-btn", function () {
+         lapanganIdToDelete = $(this).attr("data-bs-id"); // Ambil ID dengan attr()
+     });
 
+     // Handle tombol konfirmasi hapus
+     $("#confirmDeleteButton").click(function () {
+         if (lapanganIdToDelete) {
+             $.ajax({
+                 url: `/api/lapangan/delete/${lapanganIdToDelete}`,
+                 type: "DELETE",
+                 success: function (message) {
+                     alert(message);
+                     $("#deleteConfirmationModal").modal("hide"); // Tutup modal
+                     loadLapangan(); // Reload data tanpa refresh halaman
+                 },
+                 error: function (xhr) {
+                     alert("Gagal menghapus lapangan: " + xhr.responseText);
+                 }
+             });
+         }
+     });
+
+    let lapanganIdToUpdate = null;
+
+
+    // Event ketika tombol edit ditekan
+    $(document).on("click", ".btn-primary[data-bs-target='#editFieldModal']", function () {
+        lapanganIdToUpdate = $(this).closest("tr").find(".delete-btn").attr("data-bs-id");
+
+        // Ambil data dari tabel
+        let namaLapangan = $(this).closest("tr").find("td:eq(1)").text();
+        let hargaPerjam = $(this).closest("tr").find("td:eq(2)").text();
+        let gambarLapangan = $(this).closest("tr").find("td:eq(3) img").attr("src"); // Ambil gambar
+
+        // Isi form modal update
+        $("#editFieldName").val(namaLapangan);
+        $("#editRentalPrice").val(hargaPerjam);
+
+        // Tampilkan gambar yang sudah ada
+<!--        let imageContainer = $("#currentFieldImages");-->
+<!--        imageContainer.empty();-->
+<!--        if (gambarLapangan) {-->
+<!--            imageContainer.append(`<img src="${gambarLapangan}" class="img-thumbnail me-2" width="100">`);-->
+<!--        } else {-->
+<!--            imageContainer.append(`<span class="text-muted">Tidak ada gambar</span>`);-->
+<!--        }-->
+
+        $("#editFieldModal").modal("show");
+    });
+
+    // Handle form update
+    $("#saveEditField").click(function (event) {
+        event.preventDefault();
+
+        let formData = new FormData();
+        formData.append("fieldName", $("#editFieldName").val());
+        formData.append("rentalPrice", $("#editRentalPrice").val());
+
+        let fileInput = $("#editFieldImages")[0].files;
+        if (fileInput.length > 0) {
+            formData.append("fieldImages", fileInput[0]); // Hanya ambil satu gambar
+        }
+
+        $.ajax({
+            url: `/api/lapangan/update/${lapanganIdToUpdate}`,
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            beforeSend: function () {
+                $("#saveEditField").prop("disabled", true).text("Menyimpan...");
+            },
+            success: function (response) {
+                alert(response);
+                $("#editFieldModal").modal("hide");
+                loadLapangan();
+            },
+            error: function (xhr) {
+                alert("Gagal memperbarui lapangan: " + xhr.responseText);
+            },
+            complete: function () {
+                $("#saveEditField").prop("disabled", false).text("Simpan");
+            }
+        });
+    });
+
+     function loadLapangan() {
+         $.ajax({
+             url: "/api/lapangan/list",
+             type: "GET",
+             success: function (data) {
+                 let tableBody = "";
+                 data.forEach((lapangan, index) => {
+                     tableBody += `
+                         <tr>
+                             <td>${index + 1}</td>
+                             <td>${lapangan.namaLapangan}</td>
+                             <td>${lapangan.hargaPerjam}</td>
+                             <td>
+                                 <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#editFieldModal">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+
+                                 <button class="btn btn-danger btn-sm delete-btn"
+                                     data-bs-id="${lapangan.id}"
+                                     data-bs-toggle="modal"
+                                     data-bs-target="#deleteConfirmationModal">
+                                     <i class="fas fa-trash-alt"></i>
+                                 </button>
+                             </td>
+                         </tr>`;
+                 });
+                 $("#lapangan-list").html(tableBody);
+             }
+         });
+     }
+
+     $('#form-add-lapangan').submit(function (event) {
+         event.preventDefault(); // Mencegah form reload
+         let formData = new FormData(this); // Ambil data form
+         $.ajax({
+             url: '/api/lapangan/add', // Endpoint backend
+             type: 'POST',
+             data: formData,
+             processData: false,
+             contentType: false,
+             beforeSend: function () {
+                 $('.btn-primary').prop('disabled', true).text('Menyimpan...');
+             },
+             success: function (response) {
+                 alert(response); // Tampilkan pesan sukses
+                 $('#form-add-lapangan')[0].reset(); // Reset form
+                 loadLapangan(); // Reload daftar lapangan setelah menambah
+             },
+             error: function (xhr) {
+                 alert('Gagal menambahkan lapangan: ' + xhr.responseText);
+             },
+             complete: function () {
+                 $('.btn-primary').prop('disabled', false).text('Simpan');
+             }
+         });
+     });
+     var table = $('#tabel-custom').DataTable({
+         "paging": true,
+         "pageLength": 5,
+         "lengthMenu": [5, 10, 15, 20],
+         "ordering": true,
+         "info": true
+     });
+
+     $('#tabel-custom_length').css('margin-bottom', '15px');
+     $('#tabel-custom_filter').css('margin-bottom', '15px');
+     $('#tabel-custom_info').css('margin-top', '10px');
+ });
+
+    </script>
 </div>
 </body>
 </html>
