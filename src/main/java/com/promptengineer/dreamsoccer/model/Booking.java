@@ -1,6 +1,7 @@
 package com.promptengineer.dreamsoccer.model;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -15,7 +16,7 @@ public class Booking {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "id_user", nullable = false)
+    @JoinColumn(name = "idUser", nullable = false)
     private User user;
 
     @ManyToOne
@@ -25,20 +26,20 @@ public class Booking {
     @Column(name = "TanggalBooking")
     private LocalDate tanggalBooking;
 
-    @Column(name = "JamMulai")
+    @Column(name = "jamMulai", columnDefinition = "TIME(0)")
     private LocalTime jamMulai;
 
-    @Column(name = "JamSelesai")
+    @Column(name = "jamSelesai", columnDefinition = "TIME(0)")
     private LocalTime jamSelesai;
 
-    @Column(name = "NamaUserBooking", length = 50)
-    private String namaUserBooking;
-
-    @Column(name = "NamaLapanganBooking", length = 50)
+    @Column(name = "NamaLapanganBooking", length = 30)
     private String namaLapanganBooking;
 
     @Column(name = "HargaPerjamBooking")
     private double hargaPerjamBooking;
+
+    @Column(name = "NamaUserBooking")
+    private String namaUserBooking;
 
     @Column(name = "TotalHarga")
     private double totalHarga;
@@ -82,7 +83,6 @@ public class Booking {
         this.updatedAt = LocalDateTime.now();
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -131,14 +131,6 @@ public class Booking {
         this.jamSelesai = jamSelesai;
     }
 
-    public String getNamaUserBooking() {
-        return namaUserBooking;
-    }
-
-    public void setNamaUserBooking(String namaUserBooking) {
-        this.namaUserBooking = namaUserBooking;
-    }
-
     public String getNamaLapanganBooking() {
         return namaLapanganBooking;
     }
@@ -185,6 +177,14 @@ public class Booking {
 
     public void setBuktiDp(String buktiDp) {
         this.buktiDp = buktiDp;
+    }
+
+    public String getNamaUserBooking() {
+        return namaUserBooking;
+    }
+
+    public void setNamaUserBooking(String namaUserBooking) {
+        this.namaUserBooking = namaUserBooking;
     }
 
     public String getDeskripsi() {

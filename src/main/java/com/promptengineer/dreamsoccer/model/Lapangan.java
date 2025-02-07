@@ -1,5 +1,6 @@
 package com.promptengineer.dreamsoccer.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class Lapangan {
     private String gambarLapangan;
 
     @OneToMany(mappedBy = "lapangan")
+    @JsonIgnore
     private List<Booking> bookings;
 
     public Long getId() {

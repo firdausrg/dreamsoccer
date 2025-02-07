@@ -15,7 +15,7 @@ public class SecurityPage {
     };
 
     public static final String[] ADMIN_URLS = {
-            "/admin_dashboard", "/lapangan","/api/lapangan", "/booking","/api/bookings", "/reward",
+            "/admin_dashboard", "/lapangan","/api/lapangan","/user/list", "/booking","/api/booking", "/reward",
             "/laporan", "/profile_admin", "/iklan"
     };
 
