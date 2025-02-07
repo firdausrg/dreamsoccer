@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="assets/" data-template="vertical-menu-template" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
@@ -16,140 +15,14 @@
     <link rel="stylesheet" href="assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css" />
     <link rel="stylesheet" href="assets/css/demo.css" />
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="booking.css" />
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@3.10.0/dist/fullcalendar.min.css' rel='stylesheet' />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="assets/vendor/js/helpers.js"></script>
     <script src="assets/js/config.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<style>
-    .container {
-        display: flex;
-        justify-content: space-between;
-        padding: 20px;
-        padding-top: 40px;
-        background-color: #fff;
-        margin-top: 20px;
-        border-radius: 20px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    #calendar {
-        width: 70%;
-        padding-right: 20px;
-        background-color: #fff;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    #calendar .fc-event {
-        background-color: #3c8dbc;
-        color: #fff;
-    }
-
-    #calendar .fc-event:hover {
-        background-color: #218838;
-        color: #fff;
-    }
-
-    .form-container {
-        width: 28%;
-        padding: 20px;
-        background-color: #ffffff;
-        border: 1px solid #e1e8f0;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .form-container h3 {
-        margin-bottom: 20px;
-        color: #3c8dbc;
-        font-size: 20px;
-    }
-
-    .form-container input, .form-container select, .form-container textarea {
-        width: 100%;
-        padding: 12px;
-        margin-bottom: 15px;
-        border-radius: 8px;
-        border: 1px solid #ddd;
-        background-color: #f7f7f7;
-        font-size: 16px;
-    }
-
-    .form-container input:focus, .form-container select:focus, .form-container textarea:focus {
-        border-color: #3c8dbc;
-        outline: none;
-        box-shadow: 0 0 5px rgba(60, 141, 188, 0.5);
-    }
-
-    .price {
-        font-size: 18px;
-        color: #333;
-        margin-top: 10px;
-        font-weight: bold;
-    }
-
-    .d-flex.justify-content-between {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 20px;
-        gap: 20px;
-    }
-
-    #cancel-edit {
-        display: none;
-        background-color: #dc3545;
-        color: #fff;
-        border: none;
-        font-size: 1rem;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    #cancel-edit:hover {
-        background-color: #c82333;
-    }
-
-    #submit-event {
-        background-color: #28a745;
-        color: #fff;
-        border: none;
-        font-size: 1rem;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    #submit-event:hover {
-        background-color: #218838;
-    }
-
-    #cancel-edit .bx,
-    #submit-event .bx {
-        font-size: 1.2rem;
-        margin-right: 8px;
-    }
-
-    @media (max-width: 768px) {
-        .container {
-            flex-direction: column;
-            align-items: center;
-        }
-
-        #calendar {
-            width: 100%;
-            margin-bottom: 20px;
-        }
-
-        .form-container {
-            width: 100%;
-        }
-    }
-</style>
 
 <body>
 <div class="layout-wrapper layout-content-navbar">
@@ -174,18 +47,21 @@
                                             <h3>Booking Lapangan</h3>
                                             <form id="event-form">
                                                 <div class="form-group">
-                                                    <label for="event-name">Nama</label>
-                                                    <input type="text" id="event-name" class="form-control" placeholder="Event Name" required>
+                                                    <label for="id-user">Nama</label>
+                                                    <select id="id-user" class="form-control" required onchange="document.getElementById('nama-user-booking').value = this.options[this.selectedIndex].text;">
+                                                        <option value="">Pilih Nama</option>
+                                                    </select>
+                                                    <input type="hidden" id="nama-user-booking" name="nama-user-booking">
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label for="event-date">Tanggal Booking</label>
-                                                    <input type="date" id="event-date" class="form-control" required>
+                                                    <label for="tanggal-booking">Tanggal Booking</label>
+                                                    <input type="date" id="tanggal-booking" class="form-control" required>
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label for="event-start">Jam Mulai</label>
-                                                    <select id="event-start" class="form-control" required>
+                                                    <label for="jam-mulai">Jam Mulai</label>
+                                                    <select id="jam-mulai" class="form-control" required>
                                                         <option value="">Pilih Jam Mulai</option>
                                                         <option value="08:00">08:00</option>
                                                         <option value="09:00">09:00</option>
@@ -202,8 +78,8 @@
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label for="event-end">Jam Selesai</label>
-                                                    <select id="event-end" class="form-control" required>
+                                                    <label for="jam-selesai">Jam Selesai</label>
+                                                    <select id="jam-selesai" class="form-control" required>
                                                         <option value="">Pilih Jam Selesai</option>
                                                         <option value="09:00">09:00</option>
                                                         <option value="10:00">10:00</option>
@@ -219,17 +95,17 @@
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label for="court">Pilih Lapangan</label>
-                                                    <select id="court" class="form-control" required>
+                                                    <label for="id-lapangan">Pilih Lapangan</label>
+                                                    <select id="id-lapangan" class="form-control" required onchange="document.getElementById('nama-lapangan-booking').value = this.options[this.selectedIndex].text; document.getElementById('harga-perjam-booking').value = this.options[this.selectedIndex].getAttribute('data-price');">
                                                         <option value="">Pilih Lapangan</option>
-                                                        <option value="courtA" data-price="50000">Lapangan A (50.000/jam)</option>
-                                                        <option value="courtB" data-price="75000">Lapangan B (75.000/jam)</option>
                                                     </select>
+                                                    <input type="hidden" id="nama-lapangan-booking" name="nama-lapangan-booking">
+                                                    <input type="hidden" id="harga-perjam-booking" name="harga-perjam-booking">
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label for="price-display">Harga</label>
-                                                    <input type="text" id="price-display" class="form-control" value="Rp. 0" disabled>
+                                                    <label for="total-harga">Harga</label>
+                                                    <input type="text" id="total-harga" class="form-control" value="Rp. 0" disabled>
                                                 </div>
 
                                                 <div class="form-group">
@@ -238,18 +114,18 @@
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label for="remaining-payment">Sisa Pembayaran</label>
-                                                    <input type="text" id="remaining-payment" class="form-control" value="Rp. 0" disabled>
+                                                    <label for="sisa-pembayaran">Sisa Pembayaran</label>
+                                                    <input type="text" id="sisa-pembayaran" class="form-control" value="Rp. 0" disabled>
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label for="event-description">Deskripsi Event (Opsional)</label>
-                                                    <textarea id="event-description" class="form-control" placeholder="Deskripsi Event (Opsional)"></textarea>
+                                                    <label for="deskripsi">Deskripsi Event (Opsional)</label>
+                                                    <textarea id="deskripsi" class="form-control" placeholder="Deskripsi Event (Opsional)"></textarea>
                                                 </div>
 
-                                                <div class="form-group">
-                                                    <label for="event-status">Status Pembayaran</label>
-                                                    <select id="event-status" class="form-control" required>
+                                                <div class="form-group" hidden>
+                                                    <label for="status">Status Pembayaran</label>
+                                                    <select id="status" class="form-control" required>
                                                         <option value="Belum Lunas">Belum Lunas</option>
                                                         <option value="Lunas">Lunas</option>
                                                     </select>
@@ -261,7 +137,7 @@
                                                     </button>
 
                                                     <button type="submit" id="submit-event" class="btn btn-success">
-                                                        <i class="bx bx-check-circle me-2"></i> Add Event
+                                                        <i class="bx bx-check-circle me-2"></i> Simpan
                                                     </button>
                                                 </div>
                                             </form>
@@ -276,12 +152,13 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="eventModalLabel">Detail Booking</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <p id="event-info"></p>
+                                <div id="event-info" class="event-info-container">
+                                </div>
                             </div>
+
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-danger" id="delete-event">Delete</button>
                                 <button type="button" class="btn btn-primary" id="edit-event">Edit</button>
@@ -302,132 +179,386 @@
     <script src="assets/js/main.js"></script>
     <script>
         $(document).ready(function() {
-            var calendar = $('#calendar').fullCalendar({
-                locale: 'id',
-                firstDay: 0,
-                events: [],
-                slotDuration: '01:00:00',
-                slotLabelInterval: '01:00',
-                eventLimit: true,
-                eventLimitText: "+ more",
-                eventLimitClick: 'day',
-                header: {
-                    left: 'prev,next',
-                    center: 'title',
-                    right: 'month,list'
-                },
-                buttonText: {
-                    month: 'Bulan',
-                    list: 'Daftar'
-                },
-                viewRender: function(view, element) {
-                    if (view.name === 'list') {
-                        $('#calendar').fullCalendar('changeView', 'listMonth');
+            $.ajax({
+                url: '/user/list',
+                type: 'GET',
+                dataType: 'json',
+                success: function(users) {
+                    console.log('Daftar pengguna:', users);
+                    var userDropdown = $('#id-user');
+                    userDropdown.empty();
+                    userDropdown.append('<option value="">Pilih Nama</option>');
+                    if (users && users.length > 0) {
+                        users.forEach(function(user) {
+                            if (user.role !== 'ADMIN') {
+                                userDropdown.append('<option value="' + user.id + '">' + user.nama + '</option>');
+                            }
+                        });
+                    } else {
+                        console.warn('Tidak ada data pengguna yang diterima');
                     }
                 },
-                selectable: true,
-                selectHelper: true,
-                select: function(start, end) {
-                    var selectedDate = moment(start).format('YYYY-MM-DD');
-                    var startTime = moment(start).format('HH:mm');
-                    var endTime = moment(end).format('HH:mm');
-                    $('#event-date').val(selectedDate);
-                    $('#event-start').val(startTime);
-                    $('#event-end').val(endTime);
+                error: function(xhr, status, error) {
+                    console.error('Terjadi kesalahan saat mengambil data pengguna:', error);
+                    console.log('Respon server:', xhr.responseText);
+                    alert('Terjadi kesalahan saat mengambil data pengguna: ' + error);
+                }
+            });
+
+           $.ajax({
+                url: '/api/lapangan',
+                type: 'GET',
+                dataType: 'json',
+                success: function(lapanganList) {
+                    console.log('Daftar lapangan:', lapanganList);
+                    var lapanganDropdown = $('#id-lapangan');
+                    lapanganDropdown.empty();
+                    lapanganDropdown.append('<option value="">Pilih Lapangan</option>');
+                    if (lapanganList && lapanganList.length > 0) {
+                        lapanganList.forEach(function(lapangan) {
+                            lapanganDropdown.append('<option value="' + lapangan.id + '" data-price="' + lapangan.hargaPerjam + '">' + lapangan.namaLapangan + ' (' + lapangan.hargaPerjam.toLocaleString() + '/jam)</option>');
+                        });
+                    } else {
+                        console.warn('Tidak ada data lapangan yang diterima');
+                    }
                 },
-                eventClick: function(event) {
-                    var eventInfo = 'Nama: ' + event.title + '<br>' +
-                                    'Mulai: ' + moment(event.start).format('YYYY-MM-DD HH:mm') + '<br>' +
-                                    'Selesai: ' + moment(event.end).format('YYYY-MM-DD HH:mm') + '<br>' +
-                                    'Lapangan: ' + event.court + '<br>' +
-                                    'Deskripsi: ' + (event.description || 'No description') + '<br>' +
-                                    'Harga: ' + event.price + '<br>' +
-                                    'DP: ' + event.dp + '<br>' +
-                                    'Sisa Pembayaran: ' + event.remainingBalance.toLocaleString() + '<br>' +
-                                    'Status: ' + event.status;
-                    $('#event-info').html(eventInfo);
-                    $('#eventModal').modal('show');
+                error: function(xhr, status, error) {
+                    console.error('Terjadi kesalahan saat mengambil data lapangan:', error);
+                    console.log('Respon server:', xhr.responseText);
+                    alert('Terjadi kesalahan saat mengambil data lapangan: ' + error);
+                }
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#cancel-edit').hide();
+            var colors = ['#00FFFF', '#7FFFD4', '#ADFF2F', '#00FA9A', '#F5DEB3'];
 
-                    $('#edit-event').click(function() {
-    $('#eventModal').modal('hide');
-    $('.form-container h3').text('Edit Data Booking');
-    $('#event-name').val(event.title);
-    $('#event-date').val(moment(event.start).format('YYYY-MM-DD'));
-    $('#event-start').val(moment(event.start).format('HH:mm'));
-    $('#event-end').val(moment(event.end).format('HH:mm'));
-    $('#court').val(event.court);
-    $('#price-display').val('Rp. ' + event.price);
-    $('#event-description').val(event.description);
-    $('#dp').val('Rp. ' + event.dp.toLocaleString());
-    $('#remaining-payment').val('Rp. ' + event.remainingBalance.toLocaleString());
-    $('#event-status').val(event.status);
-    $('#cancel-edit').show();
-    $('#submit-event').text('Update Event');
+            function getRandomColor() {
+                return colors[Math.floor(Math.random() * colors.length)];
+            }
+            $.ajax({
+                url: '/api/booking',
+                type: 'GET',
+                dataType: 'json',
+                success: function(bookings) {
+                    console.log('Bookings:', bookings);
+                    var events = bookings.map(function(booking) {
 
-    $('#event-form').off('submit').on('submit', function(e) {
-        e.preventDefault();
-        var updatedEventName = $('#event-name').val();
-        var updatedEventDate = $('#event-date').val();
-        var updatedStartTime = $('#event-start').val();
-        var updatedEndTime = $('#event-end').val();
-        var updatedCourt = $('#court').val();
-        var updatedDescription = $('#event-description').val();
-        var updatedPrice = $('#court').find('option:selected').data('price');
-        var duration = calculateDuration(updatedStartTime, updatedEndTime);
-        var updatedTotalPrice = updatedPrice * duration;
-        var dp = $('#dp').val().replace(/[^0-9]/g, '');
-        dp = parseFloat(dp) || 0;
-        var remainingPayment = updatedTotalPrice - dp;
-        var statuss = remainingPayment <= 0 ? 'Lunas' : 'Belum Lunas';
-
-        event.title = updatedEventName;
-        event.start = updatedEventDate + 'T' + updatedStartTime;
-        event.end = updatedEventDate + 'T' + updatedEndTime;
-        event.description = updatedDescription;
-        event.price = updatedTotalPrice;
-        event.court = updatedCourt;
-        event.dp = dp;
-        event.remainingBalance = remainingPayment;
-        event.status = statuss;
-
-        $('#calendar').fullCalendar('updateEvent', event);
-
-        $('#price-display').val('Rp. ' + updatedTotalPrice.toLocaleString());
-        $('#dp').val('Rp. ' + dp.toLocaleString());
-        $('#remaining-payment').val('Rp. ' + remainingPayment.toLocaleString());
-
-        $('#event-form')[0].reset();
-        $('.form-container h3').text('Booking Lapangan');
-        $('#submit-event').text('Add Event');
-        $('#cancel-edit').hide();
-        $('#eventModal').modal('hide');
-    });
-});
-
-
-                    $('#cancel-edit').click(function() {
-                        $('#event-form')[0].reset();
-                        $('.form-container h3').text('Booking Lapangan');
-                        $('#submit-event').text('Add Event');
-                        $('#cancel-edit').hide();
-                        $('#eventModal').modal('hide');
+                        if (!booking.user || !booking.lapangan) {
+                            console.warn('Data booking tidak memiliki bidang yang diperlukan:', booking);
+                            return null;
+                        }
+                        return {
+                            title: booking.namaUserBooking,
+                            start: booking.tanggalBooking + 'T' + booking.jamMulai,
+                            end: booking.tanggalBooking + 'T' + booking.jamSelesai,
+                            description: booking.deskripsi,
+                            price: booking.totalHarga,
+                            dp: booking.downPayment,
+                            remainingBalance: booking.sisaPembayaran,
+                            idLapangan: booking.lapangan.id,
+                            lapanganNama: booking.namaLapanganBooking,
+                            status: booking.status,
+                            userId: booking.user.id,
+                            hargaPerjam: booking.lapangan.hargaPerjam,
+                            userName: booking.namaUserBooking,
+                            id: booking.id
+                        };
+                    }).filter(event => event !== null);
+                    var dateWithEvents = {};
+                    events.forEach(function(event) {
+                        var date = moment(event.start).format('YYYY-MM-DD');
+                        if (!dateWithEvents[date]) {
+                            dateWithEvents[date] = getRandomColor();
+                        }
                     });
 
-                    $('#delete-event').click(function() {
-                        if (confirm('Are you sure you want to delete this event?')) {
-                            calendar.fullCalendar('removeEvents', event._id);
-                            $('#eventModal').modal('hide');
+                    $('#calendar').fullCalendar({
+                        locale: 'id',
+                        firstDay: 0,
+                        events: events,
+                        slotDuration: '01:00:00',
+                        slotLabelInterval: '01:00',
+                        eventLimit: true,
+                        eventLimitText: "+ more",
+                        eventLimitClick: 'day',
+                        header: {
+                            left: 'prev,next',
+                            center: 'title',
+                            right: 'month,list'
+                        },
+                        buttonText: {
+                            month: 'Bulan',
+                            list: 'Daftar'
+                        },
+                        viewRender: function(view, element) {
+                            if (view.name === 'list') {
+                                $('#calendar').fullCalendar('changeView', 'listMonth');
+                            }
+                        },
+                        selectable: true,
+                        selectHelper: true,
+                        select: function(start, end) {
+                            var selectedDate = moment(start).format('YYYY-MM-DD');
+                            var startTime = moment(start).format('HH:mm');
+                            var endTime = moment(end).format('HH:mm');
+                            $('#tanggal-booking').val(selectedDate);
+                            $('#jam-mulai').val(startTime);
+                            $('#jam-selesai').val(endTime);
+                        },
+                        eventClick: function(event) {
+                            var eventInfo = `
+                            <h5>DETAIL BOOKING EVENT</h5>
+                            <div class="event-info-section">
+                                <span>Nama:</span>
+                                <p>${event.userName}</p>
+                            </div>
+                            <div class="event-info-section">
+                                <span>Mulai:</span>
+                                <p>${moment(event.start).format('YYYY-MM-DD HH:mm')}</p>
+                            </div>
+                            <div class="event-info-section">
+                                <span>Selesai:</span>
+                                <p>${moment(event.end).format('YYYY-MM-DD HH:mm')}</p>
+                            </div>
+                            <div class="event-info-section">
+                                <span>Lapangan:</span>
+                                <p>${event.lapanganNama}</p>
+                            </div>
+                            <div class="event-info-section">
+                                <span>Deskripsi:</span>
+                                <p>${event.description || 'Tidak ada deskripsi'}</p>
+                            </div>
+                            <div class="event-info-section">
+                                <span>Harga:</span>
+                                <p>Rp ${event.price.toLocaleString()}</p>
+                            </div>
+                            <div class="event-info-section">
+                                <span>DP (Down Payment):</span>
+                                <p>Rp ${event.dp.toLocaleString()}</p>
+                            </div>
+                            <div class="event-info-section">
+                                <span>Sisa Pembayaran:</span>
+                                <p>Rp ${event.remainingBalance.toLocaleString()}</p>
+                            </div>
+                            <div class="event-info-section">
+                                <span>Status:</span>
+                                <p class="event-info-status">${event.status}</p>
+                            </div>
+
+                            <div class="event-info-footer">
+                                Terima kasih telah melakukan booking. Kami berharap Anda menikmati lapangan kami!
+                            </div>
+                        `;
+
+                        $('#event-info').html(eventInfo);
+
+                            $('#eventModal').modal('show');
+
+                           $('#edit-event').click(function() {
+
+                                if (!event || !event.id) {
+                                    Swal.fire({
+                                        title: 'ID Booking Tidak Ditemukan!',
+                                        text: 'Booking yang Anda pilih tidak valid. Silakan coba lagi.',
+                                        icon: 'error',
+                                        confirmButtonText: 'OK'
+                                    });
+                                    return;
+                                }
+
+                                $('#eventModal').modal('hide');
+                                $('.form-container h3').text('Edit Data Booking');
+                                $('#id-user').val(event.userId);
+                                $('#id-lapangan').val(event.idLapangan);
+                                let selectedUser = $('#id-user option:selected').text();
+                                let selectedLapangan = $('#id-lapangan option:selected').text().split(' (')[0];
+                                let selectedPrice = $('#id-lapangan option:selected').data('price');
+                                $('#nama-user-booking').val(selectedUser ? selectedUser : event.namaUserBooking);
+                                $('#nama-lapangan-booking').val(selectedLapangan ? selectedLapangan : event.namaLapanganBooking);
+                                $('#harga-perjam-booking').val(selectedPrice ? selectedPrice : event.hargaPerjamBooking);
+                                $('#tanggal-booking').val(moment(event.start).format('YYYY-MM-DD'));
+                                $('#jam-mulai').val(moment(event.start).format('HH:mm'));
+                                $('#jam-selesai').val(moment(event.end).format('HH:mm'));
+                                $('#total-harga').val('Rp. ' + (event.price || 0).toLocaleString());
+                                $('#deskripsi').val(event.description || '');
+                                $('#dp').val('Rp. ' + (event.dp || 0).toLocaleString());
+                                $('#sisa-pembayaran').val('Rp. ' + (event.remainingBalance || 0).toLocaleString());
+                                $('#status').val(event.status || '');
+
+                                $('#cancel-edit').show();
+                                $('#submit-event').text('Edit');
+
+
+                                $('#event-form').off('submit').on('submit', function(e) {
+                                    e.preventDefault();
+
+                                    var updatedBookingData = {
+                                        id: event.id,
+                                        user: { id: $('#id-user').val() },
+                                        lapangan: { id: $('#id-lapangan').val() },
+                                        namaUserBooking: $('#id-user option:selected').text(),
+                                        namaLapanganBooking: $('#id-lapangan option:selected').text().split(' (')[0],
+                                        hargaPerjamBooking: $('#id-lapangan option:selected').data('price'),
+                                        tanggalBooking: $('#tanggal-booking').val(),
+                                        jamMulai: $('#jam-mulai').val() + ':00',
+                                        jamSelesai: $('#jam-selesai').val() + ':00',
+                                        downPayment: $('#dp').val().replace(/[^0-9]/g, ''),
+                                        sisaPembayaran: $('#sisa-pembayaran').val().replace(/[^0-9]/g, ''),
+                                        totalHarga: $('#total-harga').val().replace(/[^0-9]/g, ''),
+                                        status: $('#status').val(),
+                                        deskripsi: $('#deskripsi').val()
+                                    };
+
+                                    $.ajax({
+                                        url: '/api/booking/' + event.id,
+                                        type: 'PUT',
+                                        contentType: 'application/json',
+                                        data: JSON.stringify(updatedBookingData),
+                                        success: function(response) {
+                                            console.log('Booking berhasil diperbarui:', response);
+
+                                            event.userId = updatedBookingData.user.id;
+                                            event.lapanganId = updatedBookingData.lapangan.id;
+                                            event.namaUserBooking = updatedBookingData.namaUserBooking;
+                                            event.namaLapanganBooking = updatedBookingData.namaLapanganBooking;
+                                            event.hargaPerjamBooking = updatedBookingData.hargaPerjamBooking;
+                                            event.start = updatedBookingData.tanggalBooking + 'T' + updatedBookingData.jamMulai;
+                                            event.end = updatedBookingData.tanggalBooking + 'T' + updatedBookingData.jamSelesai;
+                                            event.price = updatedBookingData.totalHarga;
+                                            event.dp = updatedBookingData.downPayment;
+                                            event.remainingBalance = updatedBookingData.sisaPembayaran;
+                                            event.status = updatedBookingData.status;
+                                            event.description = updatedBookingData.deskripsi;
+
+                                            $('#calendar').fullCalendar('updateEvent', event);
+                                            $('#eventModal').modal('hide');
+                                            $('#event-form')[0].reset();
+                                            Swal.fire({
+                                                title: 'Berhasil!',
+                                                text: 'Booking berhasil diperbarui.',
+                                                icon: 'success',
+                                                timer: 2000,
+                                                showConfirmButton: false
+                                            }).then(() => {
+                                                location.reload();
+                                            });
+                                        },
+                                        error: function(xhr, status, error) {
+                                            Swal.fire({
+                                                title: 'Gagal!',
+                                                text: 'Gagal memperbarui booking: ' + error,
+                                                icon: 'error'
+                                            });
+                                        }
+                                    });
+                                });
+                            });
+
+                            $('#cancel-edit').click(function() {
+                                $('#event-form')[0].reset();
+                                $('.form-container h3').text('Booking Lapangan');
+                                $('#submit-event').text('Simpan');
+                                $('#cancel-edit').hide();
+                                $('#eventModal').modal('hide');
+                            });
+
+                            $('#delete-event').off('click').on('click', function() {
+                                $('#eventModal').modal('hide');
+                                Swal.fire({
+                                    title: 'Apakah Anda yakin?',
+                                    text: 'Event ini akan dihapus permanen!',
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonText: 'Ya, Hapus!',
+                                    cancelButtonText: 'Batal',
+                                    reverseButtons: true
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        $.ajax({
+                                            url: '/api/booking/' + event.id,
+                                            type: 'DELETE',
+                                            success: function(response) {
+                                                console.log('Event berhasil dihapus:', response);
+                                                $('#calendar').fullCalendar('removeEvents', event._id);
+                                                $('#eventModal').modal('hide');
+                                                Swal.fire({
+                                                    title: 'Dihapus!',
+                                                    text: 'Event berhasil dihapus.',
+                                                    icon: 'success',
+                                                    timer: 2000,
+                                                    showConfirmButton: false
+                                                }).then(() => {
+                                                  location.reload();
+                                                  });
+                                            },
+                                            error: function(xhr, status, error) {
+                                                console.error('Gagal menghapus event:', error);
+                                                Swal.fire({
+                                                    title: 'Gagal!',
+                                                    text: 'Terjadi kesalahan saat menghapus event.',
+                                                    icon: 'error'
+                                                });
+                                            }
+                                        });
+                                    }
+                                });
+                            });
+                        },
+                       eventRender: function(event, element) {
+                            if (event.status === 'Belum Lunas') {
+                                element.css({
+                                    'background-color': '#ffe4e1',
+                                    'border-color': '#e53935',
+                                    'color': '#e53935',
+                                    'padding-left': '10px',
+                                });
+
+                                element.find('.fc-title').prepend(
+                                    '<i class="fas fa-exclamation-circle" style="color: #e53935; margin-right: 5px;"></i>'
+                                );
+                                element.find('.fc-event-dot').remove();
+                                element.find('.fc-list-item-title').prepend(
+                                    '<i class="fas fa-exclamation-circle" style="color: #e53935; margin-right: 5px;"></i>'
+                                );
+                            } else if (event.status === 'Lunas') {
+                                element.css({
+                                    'background-color': '#e8f5e9',
+                                    'border-color': '#2e7d32',
+                                    'color': '#2e7d32',
+                                    'padding-left': '10px',
+                                });
+
+                                element.find('.fc-title').prepend(
+                                    '<i class="fas fa-check-circle" style="color: #2e7d32; margin-right: 5px;"></i>'
+                                );
+                                element.find('.fc-event-dot').remove();
+                                element.find('.fc-list-item-title').prepend(
+                                    '<i class="fas fa-check-circle" style="color: #2e7d32; margin-right: 5px;"></i>'
+                                );
+                            }
+                        },
+                            dayRender: function(date, cell) {
+                            var formattedDate = date.format('YYYY-MM-DD');
+                            if (dateWithEvents[formattedDate]) {
+                                cell.css('background-color', dateWithEvents[formattedDate]);
+                            }
                         }
                     });
                 },
-                eventRender: function(event, element) {
-                if (event.status === 'Belum Lunas') {
-                    element.css({
-                        'background-color': 'red', // Mengubah latar belakang menjadi merah
-                        'color': 'white'            // Mengubah warna teks menjadi putih
+                error: function(xhr, status, error) {
+                    console.error('Error fetching bookings:', error);
+                    console.error('Response text:', xhr.responseText);
+                    Swal.fire({
+                        title: 'Gagal!',
+                        text: 'Terjadi kesalahan saat mengambil data booking.',
+                        icon: 'error',
+                        confirmButtonText: 'Tutup'
                     });
                 }
-            }
+
             });
 
             function calculateDuration(start, end) {
@@ -438,60 +569,96 @@
 
             $('#event-form').submit(function(e) {
                 e.preventDefault();
-                var eventName = $('#event-name').val();
-                var eventDate = $('#event-date').val();
-                var startTime = $('#event-start').val();
-                var endTime = $('#event-end').val();
-                var court = $('#court').val();
-                var description = $('#event-description').val();
-                var price = $('#court').find('option:selected').data('price');
-                var duration = calculateDuration(startTime, endTime);
-                var totalPrice = price * duration;
-                var dp = $('#dp').val().replace(/[^0-9]/g, '');
-                var remainingPayment = totalPrice - parseFloat(dp);
-                 var status = remainingPayment <= 0 ? 'Lunas' : 'Belum Lunas';
 
-                $('#calendar').fullCalendar('renderEvent', {
-                    title: eventName,
-                    start: eventDate + 'T' + startTime,
-                    end: eventDate + 'T' + endTime,
-                    description: description,
-                    price: totalPrice,
-                    dp: dp,
-                    remainingBalance: remainingPayment,
-                    court: court,
-                    status: status
-                }, true);
+                var bookingData = {
+                    user: {
+                        id: $('#id-user').val()
+                    },
+                    lapangan: {
+                        id: $('#id-lapangan').val()
+                    },
+                    namaUserBooking: $('#id-user').find('option:selected').text(),
+                    namaLapanganBooking: $('#id-lapangan').find('option:selected').text().split(' (')[0],
+                    hargaPerjamBooking: $('#id-lapangan').find('option:selected').data('price'),
+                    tanggalBooking: $('#tanggal-booking').val(),
+                    jamMulai: $('#jam-mulai').val() + ':00',
+                    jamSelesai: $('#jam-selesai').val() + ':00',
+                    downPayment: $('#dp').val().replace(/[^0-9]/g, ''),
+                    sisaPembayaran: $('#sisa-pembayaran').val().replace(/[^0-9]/g, ''),
+                    totalHarga: $('#total-harga').val().replace(/[^0-9]/g, ''),
+                    status: $('#status').val(),
+                    deskripsi: $('#deskripsi').val()
+                };
 
-                $('#event-form')[0].reset();
+                $.ajax({
+                    url: '/api/booking',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(bookingData),
+                    success: function(response) {
+                        $('#calendar').fullCalendar('renderEvent', {
+                            title: bookingData.namaUserBooking,
+                            start: bookingData.tanggalBooking + 'T' + bookingData.jamMulai,
+                            end: bookingData.tanggalBooking + 'T' + bookingData.jamSelesai,
+                            description: bookingData.deskripsi,
+                            price: bookingData.totalHarga,
+                            dp: bookingData.downPayment,
+                            remainingBalance: bookingData.sisaPembayaran,
+                            idLapangan: bookingData.lapangan.id,
+                            lapanganNama: bookingData.namaLapanganBooking,
+                            status: bookingData.status
+                        }, true);
+                       $('#calendar').fullCalendar('updateEvent', event);
+                       $('#eventModal').modal('hide');
+                       $('#event-form')[0].reset();
+                            Swal.fire({
+                                 title: 'Berhasil!',
+                                 text: 'Booking berhasil ditambahkan!.',
+                                 icon: 'success',
+                                 timer: 2000,
+                                                showConfirmButton: false
+                                 }).then(() => {
+                                  location.reload();
+                                  });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error saving booking:', error);
+                        Swal.fire({
+                            title: 'Gagal!',
+                            text: 'Terjadi kesalahan saat menyimpan booking: ' + error,
+                            icon: 'error',
+                            confirmButtonText: 'Tutup'
+                        });
+                    }
+                });
             });
 
-            $('#court').change(function() {
+            $('#id-lapangan').change(function() {
                 updatePrice();
             });
 
-            $('#event-start, #event-end').change(function() {
+            $('#jam-mulai, #jam-selesai').change(function() {
                 updatePrice();
             });
 
             function updatePrice() {
-                var selectedCourt = $('#court').find('option:selected');
+                var selectedCourt = $('#id-lapangan').find('option:selected');
                 var price = selectedCourt.data('price');
-                var startTime = $('#event-start').val();
-                var endTime = $('#event-end').val();
+                var startTime = $('#jam-mulai').val();
+                var endTime = $('#jam-selesai').val();
 
                 if (!selectedCourt.val()) {
-                    $('#price-display').val('Pilih lapangan terlebih dahulu');
+                    $('#total-harga').val('Pilih lapangan terlebih dahulu');
                     return;
                 }
 
                 if (!startTime || !endTime) {
-                    $('#price-display').val('Pilih jam awal dan jam akhir');
+                    $('#total-harga').val('Pilih jam awal dan jam akhir');
                     return;
                 }
 
                 if (new Date('1970-01-01T' + endTime) <= new Date('1970-01-01T' + startTime)) {
-                    $('#price-display').val('Jam akhir tidak boleh lebih awal dari jam mulai');
+                    $('#total-harga').val('Jam akhir tidak boleh lebih awal dari jam mulai');
                     return;
                 }
 
@@ -500,29 +667,37 @@
                 var duration = (end - start) / (1000 * 60 * 60);
 
                 if (duration <= 0) {
-                    $('#price-display').val('Durasi tidak valid');
+                    $('#total-harga').val('Durasi tidak valid');
                     return;
                 }
 
                 var totalPrice = price * duration;
-                $('#price-display').val('Rp. ' + totalPrice);
+                $('#total-harga').val('Rp. ' + totalPrice.toLocaleString());
+
+                var dp = $('#dp').val().replace(/[^0-9]/g, '');
+                dp = parseFloat(dp) || 0;
+                var remainingPayment = totalPrice - dp;
+                $('#sisa-pembayaran').val('Rp. ' + remainingPayment.toLocaleString());
+
+                var statusPembayaran = (remainingPayment <= 0) ? 'Lunas' : 'Belum Lunas';
+                $('#status').val(statusPembayaran);
+                console.log("Status Pembayaran: ", statusPembayaran);
             }
 
             $('#dp').on('input', function() {
                 var val = $(this).val().replace(/[^0-9]/g, '');
-                var price = $('#court').find('option:selected').data('price');
-                var duration = calculateDuration($('#event-start').val(), $('#event-end').val());
+                var price = $('#id-lapangan').find('option:selected').data('price');
+                var duration = calculateDuration($('#jam-mulai').val(), $('#jam-selesai').val());
                 var totalPrice = price * duration;
 
                 var dp = Math.min(parseFloat(val) || 0, totalPrice);
                 $(this).val('Rp. ' + dp.toLocaleString());
 
                 var remainingPayment = totalPrice - dp;
-                $('#remaining-payment').val('Rp. ' + remainingPayment.toLocaleString());
+                $('#sisa-pembayaran').val('Rp. ' + remainingPayment.toLocaleString());
 
                 var statusPembayaran = (remainingPayment <= 0) ? 'Lunas' : 'Belum Lunas';
-                $('#event-status').val(statusPembayaran);
-                console.log("Status Pembayaran: ", statusPembayaran);
+                $('#status').val(statusPembayaran);
             });
         });
     </script>

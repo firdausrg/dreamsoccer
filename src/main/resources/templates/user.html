@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="assets/css/demo.css" />
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script src="assets/vendor/js/helpers.js"></script>
     <script src="assets/js/config.js"></script>
@@ -219,18 +221,30 @@
                     contentType: "application/json",
                     data: JSON.stringify(userData),
                     success: function(response) {
-                        alert(response);
+                        $('#addUserModal').modal('hide');
+                        $('.modal-backdrop').remove();
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Pengguna berhasil disimpan!',
+                            icon: 'success',
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
 
-                        let modalElement = document.getElementById('addUserModal');
-                        let modalInstance = bootstrap.Modal.getInstance(modalElement);
-                        modalInstance.hide();
-                        modalInstance.dispose();
+                        setTimeout(function() {
+                            let modalElement = document.getElementById('addUserModal');
+                            let modalInstance = bootstrap.Modal.getInstance(modalElement);
+                            modalInstance.hide();
+                            modalInstance.dispose();
 
-                        $("#userForm")[0].reset();
+                            $("#userForm")[0].reset();
 
-                        loadUsers();
+                            loadUsers();
+                            location.reload();
+                        }, 2000);
                     }
                 });
+
             });
 
             $(document).on("click", ".btn-edit", function() {
@@ -264,14 +278,25 @@
                     contentType: "application/json",
                     data: JSON.stringify(userData),
                     success: function(response) {
-                        alert(response);
+                        $('#editUserModal').modal('hide');
+                        $('.modal-backdrop').remove();
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Pengguna berhasil diperbarui!',
+                            icon: 'success',
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
 
-                        let modalElement = document.getElementById('editUserModal');
-                        let modalInstance = bootstrap.Modal.getInstance(modalElement);
-                        modalInstance.hide();
-                        modalInstance.dispose();
+                        setTimeout(function() {
+                            let modalElement = document.getElementById('editUserModal');
+                            let modalInstance = bootstrap.Modal.getInstance(modalElement);
+                            modalInstance.hide();
+                            modalInstance.dispose();
 
-                        loadUsers();
+                            loadUsers();
+                            location.reload();
+                        }, 2000);
                     }
                 });
             });
@@ -287,19 +312,29 @@
                         type: "DELETE",
                         url: "/user/delete/" + userIdToDelete,
                         success: function(response) {
-                            alert(response);
+                            $('#deleteConfirmationModal').modal('hide');
+                            $('.modal-backdrop').remove();
+                            Swal.fire({
+                                title: 'Berhasil!',
+                                text: 'Pengguna berhasil dihapus!',
+                                icon: 'success',
+                                showConfirmButton: false,
+                                timer: 2000
+                            });
 
-                            let modalElement = document.getElementById('deleteConfirmationModal');
-                            let modalInstance = bootstrap.Modal.getInstance(modalElement);
-                            modalInstance.hide();
-                            modalInstance.dispose();
+                            setTimeout(function() {
+                                let modalElement = document.getElementById('deleteConfirmationModal');
+                                let modalInstance = bootstrap.Modal.getInstance(modalElement);
+                                modalInstance.hide();
+                                modalInstance.dispose();
 
-                            loadUsers();
+                                loadUsers();
+                                location.reload();
+                            }, 2000);
                         }
                     });
                 }
             });
-
             var table = $('#tabel-custom').DataTable({
                 "paging": true,
                 "pageLength": 5,

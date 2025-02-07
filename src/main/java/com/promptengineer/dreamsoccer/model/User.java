@@ -1,5 +1,6 @@
 package com.promptengineer.dreamsoccer.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -48,6 +49,7 @@ public class User {
     private Role role;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Booking> bookings;
 
     @OneToMany(mappedBy = "user")

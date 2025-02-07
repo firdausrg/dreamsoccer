@@ -18,6 +18,6 @@ public class LapanganService {
 
     public Lapangan getLapanganById(Long id) {
         return lapanganRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Lapangan not found"));
+                .orElseThrow(() -> new RuntimeException("Lapangan tidak ditemukan!"));
     }
 }

@@ -27,6 +27,9 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
     public User registerUser(String username, String email, String password) {
         if (userRepository.findByUsername(username).isPresent()) {
             throw new IllegalArgumentException("Username Sudah Terdaftar");
@@ -134,11 +137,5 @@ public class UserService {
             System.err.println("Gagal mengirim ulang OTP: " + e.getMessage());
         }
     }
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-    public User getUserById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-    }
+
 }
