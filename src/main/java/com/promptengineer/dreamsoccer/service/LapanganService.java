@@ -32,16 +32,16 @@ public class LapanganService {
     public void addLapangan(String namaLapangan, Double hargaPerjam, MultipartFile file) throws IOException {
         String fileName = null;
         if (file != null && !file.isEmpty()) {
-            fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename(); // Rename untuk unique
+            fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
             Path filePath = Paths.get(uploadDir, fileName);
-            Files.createDirectories(filePath.getParent()); // Buat folder jika belum ada
+            Files.createDirectories(filePath.getParent());
             Files.write(filePath, file.getBytes());
         }
 
         Lapangan lapangan = new Lapangan();
         lapangan.setNamaLapangan(namaLapangan);
         lapangan.setHargaPerjam(hargaPerjam);
-        lapangan.setGambarLapangan(fileName != null ? "/uploads/" + fileName : null); // Path yang disimpan di DB
+        lapangan.setGambarLapangan(fileName != null ? "/uploads/" + fileName : null);
         lapanganRepository.save(lapangan);
     }
 
