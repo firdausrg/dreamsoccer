@@ -47,7 +47,8 @@ public class BookingController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Booking> updateBooking(@PathVariable Long id, @RequestBody Booking updatedBooking) {
+    public ResponseEntity<Booking> updateBooking(@PathVariable Long id,
+                                                 @RequestBody Booking updatedBooking) {
         try {
             String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
             User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User Tidak Ada!"));

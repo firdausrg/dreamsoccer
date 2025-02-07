@@ -17,7 +17,7 @@ public class Lapangan {
     @Column(name = "HargaPerjam")
     private Double hargaPerjam;
 
-    @Column(name = "GambarLapangan", length = 100)
+    @Column(name = "GambarLapangan")
     private String gambarLapangan;
 
     @OneToMany(mappedBy = "lapangan")
