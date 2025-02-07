@@ -1,17 +1,6 @@
 package com.promptengineer.dreamsoccer.model;
-
 import jakarta.persistence.*;
-
 import java.util.List;
-
-/*
-Created By IntelliJ IDEA 2024.3 (Community Edition)
-Build #IC-243.21565.193, built on November 13, 2024
-@Author pirda Pirdaus Ripa Atullah Gopur
-Created on 26/01/2025 15:46
-@Last Modified 26/01/2025 15:46
-Version 1.0
-*/
 @Entity
 public class Lapangan {
 
@@ -22,7 +11,7 @@ public class Lapangan {
     private String namaLapangan;
     @Column(name = "HargaPerjam")
     private Double hargaPerjam;
-    @Column(name = "GambarLapangan", length = 100)
+    @Column(name = "GambarLapangan")
     private String gambarLapangan;
 
     @OneToMany(mappedBy = "lapangan")

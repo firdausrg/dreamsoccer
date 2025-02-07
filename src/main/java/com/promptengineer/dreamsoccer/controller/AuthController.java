@@ -1,5 +1,4 @@
 package com.promptengineer.dreamsoccer.controller;
-
 import com.promptengineer.dreamsoccer.model.User;
 import com.promptengineer.dreamsoccer.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

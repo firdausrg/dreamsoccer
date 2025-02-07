@@ -34,7 +34,7 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/auth/register", "/auth/login").permitAll()
-                        .requestMatchers("/admin_dashboard", "/lapangan", "/booking", "/reward",
+                        .requestMatchers("/admin_dashboard", "/lapangan","/api/lapangan", "/booking", "/reward",
                                 "/laporan", "/profile_admin", "/iklan").hasRole("ADMIN")
                         .requestMatchers("/user_dashboard", "/event", "/data-lapangan", "/booking_lapangan",
                                 "/history_booking", "/daftar_reward", "/history_penukaran_reward",

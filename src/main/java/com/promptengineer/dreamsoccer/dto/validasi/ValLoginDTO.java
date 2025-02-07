@@ -1,7 +1,6 @@
 package com.promptengineer.dreamsoccer.dto.validasi;
 
 public class ValLoginDTO {
-
     private String username;
     private String password;
 

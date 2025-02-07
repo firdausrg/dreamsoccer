@@ -1,5 +1,4 @@
 package com.promptengineer.dreamsoccer.service;
-
 import com.promptengineer.dreamsoccer.model.Role;
 import com.promptengineer.dreamsoccer.model.User;
 import com.promptengineer.dreamsoccer.repository.UserRepository;
@@ -8,7 +7,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
 import java.util.UUID;
 
@@ -36,12 +34,11 @@ public class UserService {
         user.setUsername(username);
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
-        user.setVerified(false);
+        //nanti diganti
+        user.setVerified(true);
         user.setRole(Role.USER);
-
         String token = UUID.randomUUID().toString();
         user.setVerificationToken(token);
-
         userRepository.save(user);
         sendVerificationEmail(user);
         return user;
