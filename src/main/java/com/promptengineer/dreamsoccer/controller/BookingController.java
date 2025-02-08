@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/booking")
@@ -23,15 +24,28 @@ public class BookingController {
     private UserService userService;
 
     @PostMapping
-    public ResponseEntity<Booking> createBooking(@RequestBody Booking booking) {
+    public ResponseEntity<?> createBooking(@RequestBody Booking booking) {
         String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User Tidak Ada!"));
+
         booking.setCreatedBy(user.getNama());
         booking.setUpdatedBy(user.getNama());
+
+        boolean isOverlapping = bookingService.isBookingOverlapExists(
+                booking.getTanggalBooking(),
+                booking.getLapangan().getId(),
+                booking.getJamMulai(),
+                booking.getJamSelesai()
+        );
+
+        if (isOverlapping) {
+            return ResponseEntity.badRequest().body(Map.of("gagal", "Jam sudah terisi, silakan pilih jam lain."));
+        }
 
         Booking savedBooking = bookingService.saveBooking(booking);
         return ResponseEntity.ok(savedBooking);
     }
+
 
     @GetMapping
     public ResponseEntity<List<Booking>> getAllBookings() {
@@ -47,19 +61,35 @@ public class BookingController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Booking> updateBooking(@PathVariable Long id,
-                                                 @RequestBody Booking updatedBooking) {
+    public ResponseEntity<?> updateBooking(@PathVariable Long id,
+                                           @RequestBody Booking updatedBooking) {
         try {
             String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-            User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User Tidak Ada!"));
+            User user = userService.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("User Tidak Ada!"));
 
             updatedBooking.setUpdatedBy(user.getNama());
+
+            boolean isOverlapping = bookingService.isBookingOverlapExistsForUpdate(
+                    updatedBooking.getTanggalBooking(),
+                    updatedBooking.getLapangan().getId(),
+                    updatedBooking.getJamMulai(),
+                    updatedBooking.getJamSelesai(),
+                    id
+            );
+
+            if (isOverlapping) {
+                return ResponseEntity.badRequest().body(Map.of("gagal", "Jam sudah terisi, silakan pilih jam lain."));
+            }
+
             Booking updated = bookingService.updateBooking(id, updatedBooking);
             return ResponseEntity.ok(updated);
+
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBooking(@PathVariable Long id) {

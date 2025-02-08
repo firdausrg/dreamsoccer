@@ -56,6 +56,7 @@
                                             <th style="text-align: center;">Nama</th>
                                             <th style="text-align: center;">Email (Opsional)</th>
                                             <th style="text-align: center;">No HP</th>
+                                            <th style="text-align: center;">Status</th>
                                             <th style="text-align: center;">Aksi</th>
                                         </tr>
                                         </thead>
@@ -76,22 +77,29 @@
                             </div>
                             <form id="userForm">
                                 <div class="modal-body">
-                                        <div class="mb-3">
-                                            <label for="userName" class="form-label">Nama</label>
-                                            <input type="text" class="form-control" id="userName" placeholder="Masukkan Nama Pengguna">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="userEmail" class="form-label">Email (Opsional)</label>
-                                            <input type="email" class="form-control" id="userEmail" placeholder="Masukkan Email (Opsional)">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="userPhone" class="form-label">No HP</label>
-                                            <input type="text" class="form-control" id="userPhone" placeholder="Masukkan Nomor HP">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="userAddress" class="form-label">Alamat (Opsional)</label>
-                                            <textarea class="form-control" id="userAddress" placeholder="Masukkan Alamat Pengguna"></textarea>
-                                        </div>
+                                    <div class="mb-3">
+                                        <label for="userName" class="form-label">Nama</label>
+                                        <input type="text" class="form-control" id="userName" placeholder="Masukkan Nama Pengguna">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="userEmail" class="form-label">Email (Opsional)</label>
+                                        <input type="email" class="form-control" id="userEmail" placeholder="Masukkan Email (Opsional)">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="userPhone" class="form-label">No HP</label>
+                                        <input type="text" class="form-control" id="userPhone" placeholder="Masukkan Nomor HP">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="userAddress" class="form-label">Alamat (Opsional)</label>
+                                        <textarea class="form-control" id="userAddress" placeholder="Masukkan Alamat Pengguna"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="UserVerified" class="form-label">Status</label>
+                                        <select class="form-select" id="UserVerified" name="verified">
+                                            <option value="AKTIF">AKTIF</option>
+                                            <option value="TIDAK_AKTIF">TIDAK AKTIF</option>
+                                        </select>
+                                    </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -111,23 +119,30 @@
                             </div>
                             <form id="editUserForm">
                                 <div class="modal-body">
-                                        <input type="hidden" id="editUserId" name="id">
-                                        <div class="mb-3">
-                                            <label for="editUserName" class="form-label">Nama</label>
-                                            <input type="text" class="form-control" id="editUserName" placeholder="Masukkan Nama Pengguna">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="editUserEmail" class="form-label">Email (Opsional)</label>
-                                            <input type="email" class="form-control" id="editUserEmail" placeholder="Masukkan Email (Opsional)">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="editUserPhone" class="form-label">No HP</label>
-                                            <input type="text" class="form-control" id="editUserPhone" placeholder="Masukkan Nomor HP">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="editUserAddress" class="form-label">Alamat (Opsional)</label>
-                                            <textarea class="form-control" id="editUserAddress" placeholder="Masukkan Alamat Pengguna"></textarea>
-                                        </div>
+                                    <input type="hidden" id="editUserId" name="id">
+                                    <div class="mb-3">
+                                        <label for="editUserName" class="form-label">Nama</label>
+                                        <input type="text" class="form-control" id="editUserName" placeholder="Masukkan Nama Pengguna">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editUserEmail" class="form-label">Email (Opsional)</label>
+                                        <input type="email" class="form-control" id="editUserEmail" placeholder="Masukkan Email (Opsional)">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editUserPhone" class="form-label">No HP</label>
+                                        <input type="text" class="form-control" id="editUserPhone" placeholder="Masukkan Nomor HP">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editUserAddress" class="form-label">Alamat (Opsional)</label>
+                                        <textarea class="form-control" id="editUserAddress" placeholder="Masukkan Alamat Pengguna"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editUserVerified" class="form-label">Status</label>
+                                        <select class="form-select" id="editUserVerified" name="verified">
+                                            <option value="AKTIF">AKTIF</option>
+                                            <option value="TIDAK_AKTIF">TIDAK AKTIF</option>
+                                        </select>
+                                    </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -172,12 +187,20 @@
             $.get("/user/list", function(users) {
                 let tableContent = "";
                 users.forEach((user, index) => {
+                    let verifiedText = user.verified.toUpperCase();
+                    let verifiedClass = verifiedText === "AKTIF"
+                        ? "bg-success text-white fw-bold px-2 py-1 d-inline-block rounded"
+                        : "bg-danger text-white fw-bold px-2 py-1 d-inline-block rounded";
+
                     tableContent += `
                         <tr>
                             <td>${index + 1}</td>
                             <td>${user.nama}</td>
                             <td>${user.email}</td>
                             <td>${user.noTelpon}</td>
+                            <td class="text-center">
+                                <span class="${verifiedClass}">${verifiedText}</span>
+                            </td>
                             <td>
                                 <button class="btn btn-primary btn-sm btn-edit"
                                     data-bs-toggle="modal"
@@ -186,7 +209,8 @@
                                     data-nama="${user.nama}"
                                     data-email="${user.email}"
                                     data-telepon="${user.noTelpon}"
-                                    data-alamat="${user.alamat}">
+                                    data-alamat="${user.alamat}"
+                                    data-verified="${user.verified}">
                                     <i class="fas fa-edit"></i>
                                 </button>
                                 <button class="btn btn-danger btn-sm btn-delete"
@@ -200,6 +224,7 @@
                 });
                 $("#userTable").html(tableContent);
             });
+
         }
 
         $(document).ready(function() {
@@ -212,7 +237,8 @@
                   nama: $("#userName").val(),
                   email: $("#userEmail").val(),
                   noTelpon: $("#userPhone").val(),
-                  alamat: $("#userAddress").val()
+                  alamat: $("#userAddress").val(),
+                  verified: $("#UserVerified").val()
                 };
 
                 $.ajax({
@@ -244,7 +270,6 @@
                         }, 2000);
                     }
                 });
-
             });
 
             $(document).on("click", ".btn-edit", function() {
@@ -253,12 +278,14 @@
                 let email = $(this).data("email");
                 let telepon = $(this).data("telepon");
                 let alamat = $(this).data("alamat");
+                let verified = $(this).data("verified");
 
                 $("#editUserId").val(id);
                 $("#editUserName").val(nama);
                 $("#editUserEmail").val(email);
                 $("#editUserPhone").val(telepon);
                 $("#editUserAddress").val(alamat);
+                $("#editUserVerified").val(verified);
             });
 
             $("#editUserForm").submit(function(event) {
@@ -270,6 +297,7 @@
                     email: $("#editUserEmail").val(),
                     noTelpon: $("#editUserPhone").val(),
                     alamat: $("#editUserAddress").val(),
+                    verified: $("#editUserVerified").val(),
                 };
 
                 $.ajax({

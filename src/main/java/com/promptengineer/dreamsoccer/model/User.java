@@ -161,6 +161,13 @@ public class User {
     public void setOtpCreatedAt(LocalDateTime otpCreatedAt) {
         this.otpCreatedAt = otpCreatedAt;
     }
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
 
     public Role getRole() {
         return role;

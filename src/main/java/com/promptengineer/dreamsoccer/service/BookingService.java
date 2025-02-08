@@ -1,10 +1,13 @@
 package com.promptengineer.dreamsoccer.service;
 
 import com.promptengineer.dreamsoccer.model.Booking;
+import com.promptengineer.dreamsoccer.model.Lapangan;
 import com.promptengineer.dreamsoccer.repository.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,6 +52,13 @@ public class BookingService {
 
                     return bookingRepository.save(booking);
                 }).orElseThrow(() -> new RuntimeException("Booking tidak ditemukan!"));
+
+    }
+    public boolean isBookingOverlapExistsForUpdate(LocalDate tanggalBooking, Long lapanganId, LocalTime jamMulai, LocalTime jamSelesai, Long bookingId) {
+        return bookingRepository.existsOverlappingBookingForUpdate(tanggalBooking, lapanganId, jamSelesai, jamMulai, bookingId) > 0;
+    }
+    public boolean isBookingOverlapExists(LocalDate tanggalBooking, Long lapanganId, LocalTime jamMulai, LocalTime jamSelesai) {
+        return bookingRepository.existsOverlappingBooking(tanggalBooking, lapanganId, jamSelesai, jamMulai) > 0;
     }
 
 }

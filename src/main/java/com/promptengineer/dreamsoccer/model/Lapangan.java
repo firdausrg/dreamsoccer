@@ -20,6 +20,9 @@ public class Lapangan {
     @Column(name = "GambarLapangan")
     private String gambarLapangan;
 
+    @Column(name = "DeskripsiLapangan")
+    private String deskripsiLapangan;
+
     @OneToMany(mappedBy = "lapangan")
     @JsonIgnore
     private List<Booking> bookings;
