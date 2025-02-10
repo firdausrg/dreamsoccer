@@ -10,13 +10,13 @@ Version 1.0
 */
 public class SecurityPage {
     public static final String[] PUBLIC_URLS = {
-            "/auth/register", "/auth/login", "/auth/otp",
+            "/auth/register", "/auth/login","/auth/login?error", "/auth/otp",
             "/auth/verify-otp", "/auth/resend-otp", "/assets/**"
     };
 
     public static final String[] ADMIN_URLS = {
             "/admin_dashboard", "/lapangan","/api/lapangan","/user/list", "/booking","/api/booking", "/reward",
-            "/laporan", "/profile_admin", "/iklan"
+            "/laporan", "/profile_admin","/updateProfile", "/iklan"
     };
 
     public static final String[] USER_URLS = {

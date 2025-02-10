@@ -17,8 +17,10 @@ public class Lapangan {
     @Column(name = "HargaPerjam")
     private Double hargaPerjam;
 
+    @ElementCollection
+    @CollectionTable(name = "lapangan_images", joinColumns = @JoinColumn(name = "lapangan_id"))
     @Column(name = "GambarLapangan")
-    private String gambarLapangan;
+    private List<String> gambarLapangan;
 
     @Column(name = "DeskripsiLapangan")
     private String deskripsiLapangan;
@@ -43,6 +45,14 @@ public class Lapangan {
         this.namaLapangan = namaLapangan;
     }
 
+    public String getDeskripsiLapangan() {
+        return deskripsiLapangan;
+    }
+
+    public void setDeskripsiLapangan(String deskripsiLapangan) {
+        this.deskripsiLapangan = deskripsiLapangan;
+    }
+
     public Double getHargaPerjam() {
         return hargaPerjam;
     }
@@ -51,11 +61,11 @@ public class Lapangan {
         this.hargaPerjam = hargaPerjam;
     }
 
-    public String getGambarLapangan() {
+    public List<String> getGambarLapangan() {
         return gambarLapangan;
     }
 
-    public void setGambarLapangan(String gambarLapangan) {
+    public void setGambarLapangan(List<String> gambarLapangan) {
         this.gambarLapangan = gambarLapangan;
     }
 

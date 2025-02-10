@@ -253,8 +253,9 @@
                             title: 'Berhasil!',
                             text: 'Pengguna berhasil disimpan!',
                             icon: 'success',
-                            showConfirmButton: false,
-                            timer: 2000
+                            confirmButtonText: 'OK',
+                            timer: 2000,
+                            timerProgressBar: true
                         });
 
                         setTimeout(function() {
@@ -279,6 +280,8 @@
                 let telepon = $(this).data("telepon");
                 let alamat = $(this).data("alamat");
                 let verified = $(this).data("verified");
+
+                console.log("Verified Status: ", verified);
 
                 $("#editUserId").val(id);
                 $("#editUserName").val(nama);
@@ -312,8 +315,9 @@
                             title: 'Berhasil!',
                             text: 'Pengguna berhasil diperbarui!',
                             icon: 'success',
-                            showConfirmButton: false,
-                            timer: 2000
+                            confirmButtonText: 'OK',
+                            timer: 2000,
+                            timerProgressBar: true
                         });
 
                         setTimeout(function() {
@@ -346,8 +350,9 @@
                                 title: 'Berhasil!',
                                 text: 'Pengguna berhasil dihapus!',
                                 icon: 'success',
-                                showConfirmButton: false,
-                                timer: 2000
+                                confirmButtonText: 'OK',
+                                timer: 2000,
+                                timerProgressBar: true
                             });
 
                             setTimeout(function() {

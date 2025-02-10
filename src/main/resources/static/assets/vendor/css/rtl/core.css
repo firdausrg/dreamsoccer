@@ -11626,9 +11626,6 @@ html:not([dir=rtl]) .card .card-separator {
   height: 800px !important;
 }
 
-.h-auto {
-  height: auto !important;
-}
 
 .h-25 {
   height: 25% !important;
@@ -19637,8 +19634,8 @@ html:not([dir=rtl]) .switches-stacked .switch {
   cursor: pointer;
 }
 .avatar img {
-  width: 100%;
-  height: 100%;
+  width: 45px;
+  height: 45px;
 }
 .avatar .avatar-initial {
   position: absolute;

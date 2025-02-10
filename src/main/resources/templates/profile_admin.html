@@ -17,8 +17,9 @@
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="assets/vendor/css/pages/page-profile.css" />
     <script src="assets/vendor/js/helpers.js"></script>
-    <script src="assets/vendor/js/template-customizer.js"></script>
     <script src="assets/js/config.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <style>
     .d-none {
@@ -43,16 +44,18 @@
                                 </div>
                                 <div class="user-profile-header d-flex flex-column flex-sm-row text-sm-start text-center mb-4">
                                     <div class="flex-shrink-0 mt-n2 mx-sm-0 mx-auto">
-                                        <img src="assets/img/avatars/14.png" alt="user image" class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img" />
+                                        <img th:if="${user.foto}" th:src="@{'/uploads/foto-profil/' + ${user.foto}}"
+                                             alt="user image" class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img" />
+                                        <img th:if="${user.foto == null}" src="assets/img/avatars/14.png" alt="user image"
+                                             class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img" />
                                     </div>
                                     <div class="flex-grow-1 mt-3 mt-sm-5">
                                         <div class="d-flex align-items-md-end align-items-sm-start align-items-center justify-content-md-between justify-content-start mx-4 flex-md-row flex-column gap-4">
                                             <div class="user-profile-info">
-                                                <h4>Pirdaus</h4>
+                                                <h4><span th:text="${user.nama}" style="text-transform: uppercase;"></span></h4>
                                                 <ul class="list-inline mb-0 d-flex align-items-center flex-wrap justify-content-sm-start justify-content-center gap-2">
-                                                    <li class="list-inline-item"><i class="ti ti-shield"></i> Admin</li>
-                                                    <li class="list-inline-item"><i class="ti ti-map-pin"></i> Pandeglang</li>
-                                                    <li class="list-inline-item"><i class="ti ti-calendar"></i> 19-01-1999</li>
+                                                    <li class="list-inline-item"><i class="ti ti-shield"></i><span th:text="${user.role}"></span></li>
+                                                    <li class="list-inline-item"><i class="ti ti-map-pin"></i><span th:text="${user.alamat}"></span></li>
                                                 </ul>
                                             </div>
                                             <a href="javascript:void(0)" class="btn btn-primary" id="editButton">
@@ -68,39 +71,47 @@
                     <div class="card mb-4" id="formCard" style="display: none;">
                         <div class="card-body">
                             <h5 class="card-title mb-4">Edit Profile</h5>
-                            <form class="p-4">
+                            <form th:action="@{/updateProfile}" method="POST" class="p-4" enctype="multipart/form-data">
                                 <div class="mb-3 row">
-                                    <label for="id" class="col-sm-3 col-form-label">ID</label>
+                                    <label for="nama" class="col-sm-3 col-form-label">Nama</label>
                                     <div class="col-sm-9">
-                                        <input type="hidden" class="form-control" id="id" value="12345" />
+                                        <input type="text" class="form-control" id="nama" th:value="${user.nama}" name="nama" />
                                     </div>
                                 </div>
-                                <div class="mb-3 row">
-                                    <label for="name" class="col-sm-3 col-form-label">Name</label>
-                                    <div class="col-sm-9">
-                                        <input type="text" class="form-control" id="name" value="Pirdaus" />
-                                    </div>
-                                </div>
+
                                 <div class="mb-3 row">
                                     <label for="email" class="col-sm-3 col-form-label">Email</label>
                                     <div class="col-sm-9">
-                                        <input type="email" class="form-control" id="email" value="pirdaus@example.com" />
+                                        <input type="email" class="form-control" id="email" th:value="${user.email}" name="email" />
                                     </div>
                                 </div>
+
                                 <div class="mb-3 row">
-                                    <label for="notlp" class="col-sm-3 col-form-label">No Telp</label>
+                                    <label for="noTelpon" class="col-sm-3 col-form-label">No Telp</label>
                                     <div class="col-sm-9">
-                                        <input type="tel" class="form-control" id="notlp" value="08123456789" />
+                                        <input type="tel" class="form-control" id="noTelpon" th:value="${user.noTelpon}" name="noTelpon" />
                                     </div>
                                 </div>
+
                                 <div class="mb-3 row">
                                     <label for="alamat" class="col-sm-3 col-form-label">Alamat</label>
                                     <div class="col-sm-9">
-                                        <input type="text" class="form-control" id="alamat" value="Pandeglang" />
+                                        <input type="text" class="form-control" id="alamat" th:value="${user.alamat}" name="alamat" />
                                     </div>
                                 </div>
-                                <div class="d-flex justify-content-between mt-4">
-                                    <button type="button" class="btn btn-secondary" id="cancelButton">Batal</button>
+
+                                <div class="mb-3 row">
+                                    <label for="foto" class="col-sm-3 col-form-label">Foto Profil</label>
+                                    <div class="col-sm-9">
+                                        <div class="d-flex align-items-center">
+                                            <img th:if="${user.foto}" th:src="@{'/uploads/foto-profil/' + ${user.foto}}" alt="Foto Profil" class="img-thumbnail" width="100px" id="currentProfilePic">
+                                        </div>
+                                        <input type="file" class="form-control mt-2" id="foto" name="foto" accept="image/*" onchange="previewImage(event)" />
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-end mt-4">
+                                    <button type="button" class="btn btn-secondary me-2" id="cancelButton">Batal</button>
                                     <button type="submit" class="btn btn-success">Simpan</button>
                                 </div>
                             </form>
@@ -112,7 +123,21 @@
         </div>
     </div>
 </div>
+<script>
+    function previewImage(event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
 
+        reader.onload = function(e) {
+            const imgElement = document.getElementById('currentProfilePic');
+            imgElement.src = e.target.result;
+        };
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
 <script src="assets/vendor/libs/jquery/jquery.js"></script>
 <script src="assets/vendor/libs/popper/popper.js"></script>
 <script src="assets/vendor/js/bootstrap.js"></script>
@@ -121,27 +146,45 @@
 <script src="assets/js/main.js"></script>
 <script src="assets/js/pages-profile.js"></script>
 
-<script>
+<script th:inline="javascript">
     window.onload = function() {
-       const editButton = document.getElementById('editButton');
-       const formCard = document.getElementById('formCard');
+        const updateSuccess = /*[[${updateSuccess}]]*/ false;
+        const uploadError = /*[[${uploadError}]]*/ null;
 
-       console.log(editButton, formCard);
+        if (updateSuccess) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Profil berhasil diperbarui!',
+                confirmButtonText: 'OK',
+                timer: 3000,
+                timerProgressBar: true
+            });
+        }
+        if (uploadError) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: uploadError,
+                confirmButtonText: 'OK',
+                timer: 3000,
+                timerProgressBar: true
+            });
+        }
+        const editButton = document.getElementById('editButton');
+        const formCard = document.getElementById('formCard');
 
-       editButton.addEventListener('click', function () {
-           console.log('Edit Button Clicked');
-           editButton.classList.add('d-none');
-           formCard.style.display = 'block';
-       });
+        editButton.addEventListener('click', function () {
+            editButton.classList.add('d-none');
+            formCard.style.display = 'block';
+        });
 
-       const cancelButton = document.getElementById('cancelButton');
-       cancelButton.addEventListener('click', function () {
-           console.log('Cancel Button Clicked');
-           formCard.style.display = 'none';
-           editButton.classList.remove('d-none');
-       });
-   };
-
+        const cancelButton = document.getElementById('cancelButton');
+        cancelButton.addEventListener('click', function () {
+            formCard.style.display = 'none';
+            editButton.classList.remove('d-none');
+        });
+    };
 </script>
 
 </body>

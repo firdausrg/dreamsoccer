@@ -21,7 +21,49 @@
   <script src="/assets/vendor/js/helpers.js"></script>
   <script src="/assets/vendor/js/template-customizer.js"></script>
   <script src="/assets/js/config.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+<style>
+    #passwordHelp {
+        margin-top: 5px;
+        font-size: 12px;
+    }
+
+    #passwordHelp ul {
+        padding-left: 0;
+        margin: 0;
+    }
+
+    #passwordHelp li {
+        list-style-type: none;
+        margin-bottom: 3px;
+    }
+
+    #passwordHelp input[type="checkbox"] {
+        width: 12px;
+        height: 12px;
+        margin-right: 5px;
+        accent-color: #007bff;
+    }
+
+    #passwordHelp li input:checked + span {
+        color: #28a745;
+    }
+
+    #passwordHelp li input:not(:checked) + span {
+        color: #dc3545;
+    }
+
+    #passwordHelp li span {
+        font-size: 12px;
+        color: #6c757d;
+    }
+
+    .hidden {
+        display: none !important;
+    }
+</style>
 
 <body>
 <div class="authentication-wrapper authentication-cover authentication-bg">
@@ -50,22 +92,59 @@
         <h3 class="mb-1 fw-bold">Registrasi 🚀</h3>
         <p class="mb-4">Silahkan isi untuk pendaftaran akun!</p>
 
-        <form id="formAuthentication" class="mb-3" action="/auth/register" method="post">
+        <form id="formAuthentication" class="mb-3" action="/auth/register" method="post" th:object="${valRegisDTO}">
           <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input type="text" class="form-control" id="username" name="username" placeholder="Masukan Username" autofocus required/>
+            <label for="nama" class="form-label">Nama Lengkap</label>
+            <input type="text" class="form-control" id="nama" name="nama" th:field="*{nama}" placeholder="Masukan Nama Lengkap" required/>
+            <div th:if="${#fields.hasErrors('nama')}" th:errors="*{nama}" class="text-danger"></div>
           </div>
+
           <div class="mb-3">
             <label for="email" class="form-label">Email</label>
-            <input type="text" class="form-control" id="email" name="email" placeholder="Masukan Email" required/>
+            <input type="email" class="form-control" id="email" name="email" th:field="*{email}" placeholder="Masukan Email" required/>
+            <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></div>
           </div>
+
+          <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="username" name="username" th:field="*{username}" placeholder="Masukan Username" required/>
+            <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger"></div>
+          </div>
+
           <div class="mb-3 form-password-toggle">
             <label class="form-label" for="password">Password</label>
             <div class="input-group input-group-merge">
-              <input type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password"required />
+              <input type="password" id="password" class="form-control" name="password" th:field="*{password}" placeholder="••••••••" required />
               <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
             </div>
+            <div id="passwordHelp" class="form-text text-muted mt-3">
+              <div class="row">
+                <div class="col-md-6">
+                  <ul>
+                    <li>
+                      <input type="checkbox" id="hasUpperCase" disabled /> <span class="ms-2">Harus ada huruf besar</span>
+                    </li>
+                    <li>
+                      <input type="checkbox" id="hasLowerCase" disabled /> <span class="ms-2">Harus ada huruf kecil</span>
+                    </li>
+                  </ul>
+                </div>
+                <div class="col-md-6">
+                  <ul>
+                    <li>
+                      <input type="checkbox" id="hasNumber" disabled /> <span class="ms-2">Harus ada angka</span>
+                    </li>
+                    <li>
+                      <input type="checkbox" id="hasSpecialChar" disabled /> <span class="ms-2">Harus ada simbol</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger"></div>
           </div>
+
+
           <button class="btn btn-primary d-grid w-100" type="submit">Registrasi</button>
         </form>
 
@@ -77,13 +156,75 @@
         </p>
 
         <div class="divider my-4">
-          <div class="divider-text"><p th:text="${message}"></p></div>
-          <div class="divider-text"> <p th:text="${error}"></p></div>
+          <div th:if="${message}" class="alert alert-success" role="alert">
+            <span th:text="${message}"></span>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      let successMessage = "[[${success}]]";
+      let errorMessage = "[[${error}]]";
+      let encryptedUserId = "[[${encryptedUserId}]]";
+
+      if (successMessage && successMessage !== "null") {
+          Swal.fire({
+              icon: 'success',
+              title: 'Berhasil!',
+              text: successMessage,
+              timer: 3000,
+              timerProgressBar: true,
+              willClose: () => {
+
+                  window.location.href = "/auth/otp?userId=" + encodeURIComponent(encryptedUserId);
+              }
+          });
+      }
+      if (errorMessage && errorMessage !== "null") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: errorMessage,
+                    confirmButtonText: 'OK'
+                });
+            }
+  });
+</script>
+
+<script>
+    document.getElementById("password").addEventListener("input", function() {
+        var password = this.value;
+        var passwordHelp = document.getElementById("passwordHelp");
+
+        if (password.length > 0) {
+            passwordHelp.classList.remove("hidden");
+        } else {
+            passwordHelp.classList.add("hidden");
+        }
+
+        var hasUpperCase = document.getElementById("hasUpperCase");
+        var hasLowerCase = document.getElementById("hasLowerCase");
+        var hasNumber = document.getElementById("hasNumber");
+        var hasSpecialChar = document.getElementById("hasSpecialChar");
+
+        hasUpperCase.checked = /[A-Z]/.test(password);
+        hasLowerCase.checked = /[a-z]/.test(password);
+        hasNumber.checked = /\d/.test(password);
+        hasSpecialChar.checked = /[!@#$%^&*(),.?":{}|<>_]/.test(password);
+    });
+
+    window.addEventListener('DOMContentLoaded', (event) => {
+        var passwordHelp = document.getElementById("passwordHelp");
+        var password = document.getElementById("password").value;
+
+        if (password.length === 0) {
+            passwordHelp.classList.add("hidden");
+        }
+    });
+</script>
 
 <script src="/assets/vendor/libs/jquery/jquery.js"></script>
 <script src="/assets/vendor/libs/popper/popper.js"></script>
@@ -98,6 +239,5 @@
 <script src="/assets/vendor/libs/formvalidation/dist/js/plugins/Bootstrap5.min.js"></script>
 <script src="/assets/vendor/libs/formvalidation/dist/js/plugins/AutoFocus.min.js"></script>
 <script src="/assets/js/main.js"></script>
-<script src="/assets/js/pages-auth.js"></script>
 </body>
 </html>

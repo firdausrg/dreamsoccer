@@ -1,5 +1,8 @@
 package com.promptengineer.dreamsoccer.controller;
 
+import com.promptengineer.dreamsoccer.model.User;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +12,8 @@ import java.util.stream.Collectors;
 
 @Controller
 public class DashboardController {
+    @Autowired
+    private HttpSession httpSession;
 
     @GetMapping("/admin_dashboard")
     public String adminDashboard(Model model) {
@@ -45,13 +50,15 @@ public class DashboardController {
         model.addAttribute("currentUrl", "/laporan");
         return "laporan";
     }
-
     @GetMapping("/profile_admin")
-    public String getProfileAdmin(Model model) {
+    public String getProfileAdmin(Model model, Authentication authentication) {
+        User loggedInUser = (User) httpSession.getAttribute("loggedInUser");
         model.addAttribute("currentUrl", "/profile_admin");
+        if (loggedInUser != null) {
+            model.addAttribute("user", loggedInUser);
+        }
         return "profile_admin";
     }
-
     @GetMapping("/iklan")
     public String getIklan(Model model) {
         model.addAttribute("currentUrl", "/iklan");
@@ -60,12 +67,14 @@ public class DashboardController {
 
     @GetMapping("/logout")
     public String logout() {
-        return "logout";
+        return "redirect:/auth/login?logout=true";
     }
+
     @GetMapping("/404")
     public String handleAccessDenied() {
         return "404";
     }
+
     @GetMapping("/back")
     public String goBack(Authentication authentication) {
         if (authentication != null) {

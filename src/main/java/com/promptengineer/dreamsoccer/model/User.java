@@ -44,9 +44,15 @@ public class User {
     @Column(name = "CreatedBy", length = 50)
     private String createdBy;
 
+    @Column(name = "UpdateBy", length = 50)
+    private String updateBy;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "Role")
     private Role role;
+
+    @Column(name = "Foto")
+    private String foto;
 
     @OneToMany(mappedBy = "user")
     @JsonIgnore
@@ -169,6 +175,21 @@ public class User {
         this.createdBy = createdBy;
     }
 
+    public String getUpdateBy() {
+        return updateBy;
+    }
+
+    public void setUpdateBy(String updateBy) {
+        this.updateBy = updateBy;
+    }
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
+    }
     public Role getRole() {
         return role;
     }

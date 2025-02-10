@@ -93,7 +93,26 @@
         <a href="javascript:void(0);" id="resend-otp" style="display: none;">Kirim Ulang OTP</a>
     </p>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+      let errorMessage = "[[${error}]]";
+      let encryptedUserId = "[[${encryptedUserId}]]"; // Ambil encryptedUserId dari model
 
+      if (errorMessage && errorMessage !== "null") {
+          Swal.fire({
+              icon: 'error',
+              title: 'Error!',
+              text: errorMessage,
+              confirmButtonText: 'OK',
+              willClose: () => {
+                  // Redirect back to OTP page with encryptedUserId after error
+                  window.location.href = "/auth/otp?userId=" + encodeURIComponent(encryptedUserId);
+              }
+          });
+      }
+  });
+
+</script>
 <script>
     setTimeout(() => {
         document.getElementById('error-message')?.classList.add('d-none');
@@ -110,7 +129,7 @@
         if (timeLeft <= 0) {
             clearInterval(countdown);
             timerElement.innerHTML = 'Waktu habis!';
-            resendButton.style.display = 'inline'; // Tampilkan tombol kirim ulang
+            resendButton.style.display = 'inline';
         } else {
             timerElement.innerHTML = timeLeft;
         }
@@ -128,7 +147,8 @@
                         title: 'OTP Terkirim!',
                         text: 'Silakan cek kembali kotak masuk Anda.',
                         timer: 2000,
-                        showConfirmButton: false
+                        showConfirmButton: false,
+                        timerProgressBar: true
                     });
                     timeLeft = 60;
                     timerElement.innerHTML = timeLeft;

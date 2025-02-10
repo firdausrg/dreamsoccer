@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html
         lang="en"
         class="light-style customizer-hide"
@@ -18,7 +17,6 @@
     <link rel="stylesheet" href="/assets/vendor/css/rtl/core.css" class="template-customizer-core-css" />
     <link rel="stylesheet" href="/assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css" />
     <link rel="stylesheet" href="/assets/css/demo.css" />
-    <link rel="stylesheet" href="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css}" />
     <link rel="stylesheet" href="/assets/vendor/libs/node-waves/node-waves.css" />
     <link rel="stylesheet" href="/assets/vendor/libs/typeahead-js/typeahead.css" />
     <link rel="stylesheet" href="/assets/vendor/libs/formvalidation/dist/css/formValidation.min.css" />
@@ -26,6 +24,8 @@
     <script src="/assets/vendor/js/helpers.js"></script>
     <script src="/assets/vendor/js/template-customizer.js"></script>
     <script src="/assets/js/config.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -84,10 +84,11 @@
                 <h3 class="mb-1 fw-bold">Welcome to DreamSoccer! 👋</h3>
                 <p class="mb-4">Silakan masuk ke akun Anda</p>
 
-                <form id="formAuthentication" class="mb-3" action="/auth/login" method="post">
-                <div class="mb-3">
+                <form id="formAuthentication" class="mb-3" action="/auth/login" method="post" th:object="${valLoginDTO}">
+                    <div class="mb-3">
                         <label for="username" class="form-label">Username</label>
                         <input type="text" class="form-control" id="username" name="username" placeholder="Masukan Username" autofocus required/>
+                        <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger"></div>
                     </div>
                     <div class="mb-3 form-password-toggle">
                         <div class="d-flex justify-content-between">
@@ -99,6 +100,7 @@
                         <div class="input-group input-group-merge">
                             <input type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" required/>
                             <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
+                            <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger"></div>
                         </div>
                     </div>
                     <button class="btn btn-primary d-grid w-100" type="submit">Login</button>
@@ -111,14 +113,54 @@
                     </a>
                 </p>
 
-                <div class="divider my-4">
-                    <div class="divider-text"><p th:text="${message}"></p></div>
-                    <div class="divider-text"> <p th:text="${error}"></p></div>
-                </div>
             </div>
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('verified')) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: 'Akun Anda telah berhasil diverifikasi.',
+                confirmButtonText: 'OK'
+            });
+        }
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let successMessage = "[[${success}]]";
+        let errorMessage = "[[${error}]]";
+        let message = "[[${message}]]";
+
+        if (successMessage && successMessage !== "null" && successMessage !== "") {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: successMessage,
+                timer: 2000,
+                timerProgressBar: true,
+                willClose: () => {
+                    window.location.href = "[[${redirectUrl}]]";
+                }
+            });
+        }
+
+        if (errorMessage && errorMessage !== "null" && errorMessage !== "") {
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: message,
+                confirmButtonText: 'OK'
+            });
+        }
+    });
+</script>
+
+
 
 <script src="/assets/vendor/libs/jquery/jquery.js"></script>
 <script src="/assets/vendor/libs/popper/popper.js"></script>
@@ -133,6 +175,5 @@
 <script src="/assets/vendor/libs/formvalidation/dist/js/plugins/Bootstrap5.min.js"></script>
 <script src="/assets/vendor/libs/formvalidation/dist/js/plugins/AutoFocus.min.js"></script>
 <script src="/assets/js/main.js"></script>
-<script src="/assets/js/pages-auth.js"></script>
 </body>
 </html>

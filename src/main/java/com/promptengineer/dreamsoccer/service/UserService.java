@@ -4,6 +4,7 @@ import com.promptengineer.dreamsoccer.model.Role;
 import com.promptengineer.dreamsoccer.model.Status;
 import com.promptengineer.dreamsoccer.model.User;
 import com.promptengineer.dreamsoccer.repository.UserRepository;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -27,10 +28,13 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private HttpSession httpSession;
+
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
-    public User registerUser(String username, String email, String password) {
+    public User registerUser(String nama,String username, String email, String password) {
         if (userRepository.findByUsername(username).isPresent()) {
             throw new IllegalArgumentException("Username Sudah Terdaftar");
         }
@@ -39,11 +43,13 @@ public class UserService {
         }
 
         User user = new User();
+        user.setNama(nama);
         user.setUsername(username);
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
         user.setVerified(Status.TIDAK_AKTIF);
         user.setRole(Role.USER);
+        user.setCreatedBy("System");
 
         userRepository.save(user);
         return user;
@@ -101,19 +107,7 @@ public class UserService {
         return Duration.between(user.getOtpCreatedAt(), LocalDateTime.now()).toMinutes() > 5;
     }
 
-    public void loginUser(String username, String password) {
-        Optional<User> userOptional = userRepository.findByUsername(username);
-        if (!userOptional.isPresent()) {
-            throw new IllegalArgumentException("Username tidak terdaftar.");
-        }
-        User user = userOptional.get();
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new IllegalArgumentException("Password salah.");
-        }
-        if (user.getVerified() != Status.AKTIF) {
-            throw new IllegalArgumentException("Akun belum diverifikasi.");
-        }
-    }
+
     public void resendOtp(Long userId) {
         try {
             User user = userRepository.findById(userId)
@@ -136,6 +130,15 @@ public class UserService {
         } catch (Exception e) {
             System.err.println("Gagal mengirim ulang OTP: " + e.getMessage());
         }
+    }
+    public void updateUser(User user) {
+        User loggedInUser = (User) httpSession.getAttribute("loggedInUser");
+
+        if (loggedInUser != null) {
+            user.setUpdateBy(loggedInUser.getNama());
+        }
+
+        userRepository.save(user);
     }
 
 }

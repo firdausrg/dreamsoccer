@@ -1,16 +1,19 @@
 package com.promptengineer.dreamsoccer.service;
+
 import com.promptengineer.dreamsoccer.model.Lapangan;
 import com.promptengineer.dreamsoccer.repository.LapanganRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -18,7 +21,7 @@ public class LapanganService {
 
     @Autowired
     private final LapanganRepository lapanganRepository;
-    private final String uploadDir = "src/main/resources/static/uploads/";
+    private final String uploadDir = "src/main/resources/static/uploads/lapangan/";
 
     public LapanganService(LapanganRepository lapanganRepository) {
         this.lapanganRepository = lapanganRepository;
@@ -28,38 +31,51 @@ public class LapanganService {
         return lapanganRepository.findAll();
     }
 
-
-    public void addLapangan(String namaLapangan, Double hargaPerjam, MultipartFile file) throws IOException {
-        String fileName = null;
-        if (file != null && !file.isEmpty()) {
-            fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-            Path filePath = Paths.get(uploadDir, fileName);
-            Files.createDirectories(filePath.getParent());
-            Files.write(filePath, file.getBytes());
-        }
-
+    public void addLapangan(String fieldName, Double rentalPrice, String deskripsi, List<MultipartFile> fieldImages) throws IOException {
         Lapangan lapangan = new Lapangan();
-        lapangan.setNamaLapangan(namaLapangan);
-        lapangan.setHargaPerjam(hargaPerjam);
-        lapangan.setGambarLapangan(fileName != null ? "/uploads/" + fileName : null);
+        lapangan.setNamaLapangan(fieldName);
+        lapangan.setHargaPerjam(rentalPrice);
+        lapangan.setDeskripsiLapangan(deskripsi);
+
+        List<String> imagePaths = new ArrayList<>();
+        for (MultipartFile file : fieldImages) {
+            String filePath = saveImage(file);
+            imagePaths.add(filePath);
+        }
+        lapangan.setGambarLapangan(imagePaths);
+
         lapanganRepository.save(lapangan);
     }
 
+    private String saveImage(MultipartFile file) throws IOException {
+        String randomFileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        Path path = Paths.get(uploadDir + randomFileName);
+        Files.write(path, file.getBytes());
+        return path.toString();
+    }
 
-    public void updateLapangan(Long id, String namaLapangan, Double hargaPerjam, MultipartFile file) throws IOException {
-        Lapangan lapangan = lapanganRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Lapangan tidak ditemukan"));
 
-        if (file != null && !file.isEmpty()) {
-            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-            Path filePath = Paths.get(uploadDir, fileName);
-            Files.createDirectories(filePath.getParent());
-            Files.write(filePath, file.getBytes());
-            lapangan.setGambarLapangan("/uploads/" + fileName);
+    public void updateLapangan(Long id, String fieldName, Double rentalPrice, String deskripsi, List<MultipartFile> fieldImages) throws IOException {
+        Lapangan lapangan = lapanganRepository.findById(id).orElseThrow(() -> new RuntimeException("Lapangan tidak ditemukan"));
+        lapangan.setNamaLapangan(fieldName);
+        lapangan.setHargaPerjam(rentalPrice);
+        lapangan.setDeskripsiLapangan(deskripsi);
+
+        if (fieldImages != null && !fieldImages.isEmpty()) {
+            if (lapangan.getGambarLapangan() != null) {
+                for (String imagePath : lapangan.getGambarLapangan()) {
+                    Files.deleteIfExists(Paths.get(imagePath));
+                }
+            }
+
+            List<String> imagePaths = new ArrayList<>();
+            for (MultipartFile file : fieldImages) {
+                String filePath = saveImage(file);
+                imagePaths.add(filePath);
+            }
+            lapangan.setGambarLapangan(imagePaths);
         }
 
-        lapangan.setNamaLapangan(namaLapangan);
-        lapangan.setHargaPerjam(hargaPerjam);
         lapanganRepository.save(lapangan);
     }
 
@@ -67,6 +83,20 @@ public class LapanganService {
         if (!lapanganRepository.existsById(id)) {
             throw new RuntimeException("Lapangan dengan ID " + id + " tidak ditemukan");
         }
+
+        Lapangan lapangan = lapanganRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Lapangan dengan ID " + id + " tidak ditemukan"));
+
+        if (lapangan.getGambarLapangan() != null) {
+            for (String imagePath : lapangan.getGambarLapangan()) {
+                try {
+                    Files.deleteIfExists(Paths.get(imagePath));
+                } catch (IOException e) {
+                    throw new RuntimeException("Gagal menghapus gambar: " + imagePath + " - " + e.getMessage());
+                }
+            }
+        }
         lapanganRepository.deleteById(id);
     }
+
 }
