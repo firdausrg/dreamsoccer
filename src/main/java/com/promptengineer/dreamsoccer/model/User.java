@@ -184,12 +184,17 @@ public class User {
     }
 
     public String getFoto() {
+
+        if (foto == null || foto.isEmpty()) {
+            return "default.png";
+        }
         return foto;
     }
 
     public void setFoto(String foto) {
         this.foto = foto;
     }
+
     public Role getRole() {
         return role;
     }

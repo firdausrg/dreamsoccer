@@ -9,7 +9,7 @@ public class DataReward {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String namaReward;
-    private String jumlahPoint;
+    private int jumlahPoint;
     private String deskripsiReward;
     private String gambarReward;
 
@@ -48,11 +48,11 @@ public class DataReward {
         this.deskripsiReward = deskripsiReward;
     }
 
-    public String getJumlahPoint() {
+    public int getJumlahPoint() {
         return jumlahPoint;
     }
 
-    public void setJumlahPoint(String jumlahPoint) {
+    public void setJumlahPoint(int jumlahPoint) {
         this.jumlahPoint = jumlahPoint;
     }
 

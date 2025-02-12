@@ -8,6 +8,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.security.core.Authentication;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
 @Controller
@@ -54,10 +57,27 @@ public class DashboardController {
     public String getProfileAdmin(Model model, Authentication authentication) {
         User loggedInUser = (User) httpSession.getAttribute("loggedInUser");
         model.addAttribute("currentUrl", "/profile_admin");
+
         if (loggedInUser != null) {
+            String userPhoto = loggedInUser.getFoto();
+            boolean fileExists = isFileExist(userPhoto);
+
+            if (userPhoto != null && !fileExists) {
+                userPhoto = "default.png";
+            }
+
             model.addAttribute("user", loggedInUser);
+            model.addAttribute("userPhoto", userPhoto);
         }
+
         return "profile_admin";
+    }
+    public boolean isFileExist(String filename) {
+        if (filename == null) {
+            return false;
+        }
+        Path path = Paths.get("uploads/foto-profil", filename);
+        return Files.exists(path);
     }
     @GetMapping("/iklan")
     public String getIklan(Model model) {

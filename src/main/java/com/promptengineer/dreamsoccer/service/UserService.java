@@ -4,6 +4,7 @@ import com.promptengineer.dreamsoccer.model.Role;
 import com.promptengineer.dreamsoccer.model.Status;
 import com.promptengineer.dreamsoccer.model.User;
 import com.promptengineer.dreamsoccer.repository.UserRepository;
+import com.promptengineer.dreamsoccer.util.HashUtil;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -58,7 +59,8 @@ public class UserService {
     public void sendOtpEmail(User user) {
         try {
             String otp = generateOtp();
-            user.setOtp(otp);
+            String hashedOtp = HashUtil.hash(otp);
+            user.setOtp(hashedOtp);
             user.setOtpCreatedAt(LocalDateTime.now());
             userRepository.save(user);
 
@@ -94,8 +96,10 @@ public class UserService {
     }
 
     public boolean verifyOtp(Long userId, String otp) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
-        if (user.getOtp().equals(otp) && !isOtpExpired(user)) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User tidak ditemukan!"));
+        String hashedOtp = HashUtil.hash(otp);
+        if (user.getOtp().equals(hashedOtp) && !isOtpExpired(user)) {
             user.setVerified(Status.AKTIF);
             userRepository.save(user);
             return true;
@@ -118,7 +122,8 @@ public class UserService {
             }
 
             String otp = generateOtp();
-            user.setOtp(otp);
+            String hashedOtp = HashUtil.hash(otp);
+            user.setOtp(hashedOtp);
             user.setOtpCreatedAt(LocalDateTime.now());
             userRepository.save(user);
 
@@ -139,6 +144,9 @@ public class UserService {
         }
 
         userRepository.save(user);
+    }
+    public boolean isUserExists(Long userId) {
+        return userRepository.existsById(userId);
     }
 
 }

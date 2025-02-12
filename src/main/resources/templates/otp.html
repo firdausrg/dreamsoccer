@@ -77,10 +77,10 @@
     <h4 class="title">🔐 Verifikasi OTP</h4>
     <p class="subtitle">Kami telah mengirimkan kode OTP ke email Anda. Masukkan kode untuk melanjutkan.</p>
 
-    <form action="/auth/verify-otp" method="post">
-        <input type="hidden" name="userId" th:value="${userId}" />
+    <form id="otpForm">
+        <input type="hidden" id="userId" name="userId" th:value="${userId}" />
         <div class="mb-3">
-            <input type="text" name="otp" class="form-control form-control-lg text-center" id="otp" placeholder="••••••" required>
+            <input type="text" name="otp" class="form-control form-control-lg text-center" id="otp" placeholder="••••••" >
         </div>
         <button type="submit" class="btn btn-primary w-100">Verifikasi Kode</button>
     </form>
@@ -95,34 +95,73 @@
 </div>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-      let errorMessage = "[[${error}]]";
-      let encryptedUserId = "[[${encryptedUserId}]]"; // Ambil encryptedUserId dari model
+        let errorMessage = "[[${error}]]";
+        let encryptedUserId = "[[${encryptedUserId}]]";
 
-      if (errorMessage && errorMessage !== "null") {
-          Swal.fire({
-              icon: 'error',
-              title: 'Error!',
-              text: errorMessage,
-              confirmButtonText: 'OK',
-              willClose: () => {
-                  // Redirect back to OTP page with encryptedUserId after error
-                  window.location.href = "/auth/otp?userId=" + encodeURIComponent(encryptedUserId);
-              }
-          });
-      }
-  });
+        if (errorMessage && errorMessage !== "null") {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: errorMessage,
+                confirmButtonText: 'OK',
+                willClose: () => {
+                    window.location.href = "/auth/otp?userId=" + encodeURIComponent(encryptedUserId);
+                }
+            });
+        }
+    });
 
-</script>
-<script>
-    setTimeout(() => {
-        document.getElementById('error-message')?.classList.add('d-none');
-        document.getElementById('success-message')?.classList.add('d-none');
-    }, 5000);
+    document.getElementById('otpForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const userId = document.getElementById('userId').value;
+        const otp = document.getElementById('otp').value;
+
+        const formData = {
+            userId: userId,
+            otp: otp
+        };
+
+        fetch('/auth/verify-otp', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'OTP Verified!',
+                    text: data.message,
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.href = "/auth/login";
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: data.message
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Kesalahan!',
+                text: 'Terjadi kesalahan saat memverifikasi OTP.'
+            });
+        });
+    });
 
     let timeLeft = 60;
     const timerElement = document.getElementById('timer');
     const resendButton = document.getElementById('resend-otp');
-
     resendButton.style.display = 'none';
 
     const countdown = setInterval(() => {

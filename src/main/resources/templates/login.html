@@ -117,19 +117,7 @@
         </div>
     </div>
 </div>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('verified')) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: 'Akun Anda telah berhasil diverifikasi.',
-                confirmButtonText: 'OK'
-            });
-        }
-    });
-</script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         let successMessage = "[[${success}]]";

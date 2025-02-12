@@ -92,7 +92,7 @@
         <h3 class="mb-1 fw-bold">Registrasi 🚀</h3>
         <p class="mb-4">Silahkan isi untuk pendaftaran akun!</p>
 
-        <form id="formAuthentication" class="mb-3" action="/auth/register" method="post" th:object="${valRegisDTO}">
+        <form id="registerForm" class="mb-3" th:object="${valRegisDTO}">
           <div class="mb-3">
             <label for="nama" class="form-label">Nama Lengkap</label>
             <input type="text" class="form-control" id="nama" name="nama" th:field="*{nama}" placeholder="Masukan Nama Lengkap" required/>
@@ -165,33 +165,68 @@
   </div>
 </div>
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
-      let successMessage = "[[${success}]]";
-      let errorMessage = "[[${error}]]";
-      let encryptedUserId = "[[${encryptedUserId}]]";
+  document.getElementById('registerForm').addEventListener('submit', function(event) {
+      event.preventDefault();
 
-      if (successMessage && successMessage !== "null") {
-          Swal.fire({
-              icon: 'success',
-              title: 'Berhasil!',
-              text: successMessage,
-              timer: 3000,
-              timerProgressBar: true,
-              willClose: () => {
+      const loadingAlert = Swal.fire({
+          title: 'Sedang memproses...',
+          text: 'Silakan tunggu...',
+          allowOutsideClick: false,
+          confirmButtonText: 'Menunggu',
+          icon: 'info',
+          showConfirmButton: true,
+          onBeforeOpen: () => {
+            Swal.showLoading();
+            const confirmButton = Swal.getConfirmButton();
+            confirmButton.disabled = true; // Disable the button
+          }
+        });
 
-                  window.location.href = "/auth/otp?userId=" + encodeURIComponent(encryptedUserId);
-              }
+      const formData = {
+        nama: document.getElementById('nama').value,
+        username: document.getElementById('username').value,
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value
+      };
+
+      fetch('/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      })
+      .then(response => {
+      loadingAlert.close();
+        if (!response.ok) {
+          return response.json().then(err => {
+            throw new Error(err.error || 'Terjadi kesalahan saat mendaftar');
           });
-      }
-      if (errorMessage && errorMessage !== "null") {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: errorMessage,
-                    confirmButtonText: 'OK'
-                });
-            }
-  });
+        }
+        return response.json();
+      })
+      .then(data => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Berhasil!',
+          text: data.success,
+          timer: 3000,
+          timerProgressBar: true,
+          willClose: () => {
+            window.location.href = "/auth/otp?userId=" + encodeURIComponent(data.encryptedUserId);
+          }
+        });
+      })
+      .catch(error => {
+        loadingAlert.close();
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: error.message,
+          confirmButtonText: 'OK'
+        });
+      });
+    });
 </script>
 
 <script>
