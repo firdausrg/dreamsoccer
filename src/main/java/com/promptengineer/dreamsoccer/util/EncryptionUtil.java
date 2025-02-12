@@ -1,22 +1,37 @@
 package com.promptengineer.dreamsoccer.util;
 
-/*
-Created By IntelliJ IDEA 2024.3 (Community Edition)
-Build #IC-243.21565.193, built on November 13, 2024
-@Author pirda Pirdaus Ripa Atullah Gopur
-Created on 08/02/2025 22:05
-@Last Modified 08/02/2025 22:05
-Version 1.0
-*/
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 
 public class EncryptionUtil {
+    private static final String ALGORITHM = "AES";
+    private static final String SECRET_KEY = "mysecretkey12345";
+
+    private static SecretKey getSecretKey() {
+        return new SecretKeySpec(SECRET_KEY.getBytes(), ALGORITHM);
+    }
+
     public static String encrypt(String userId) {
-        return Base64.getEncoder().encodeToString(userId.getBytes());
+        try {
+            Cipher cipher = Cipher.getInstance(ALGORITHM);
+            cipher.init(Cipher.ENCRYPT_MODE, getSecretKey());
+            byte[] encryptedBytes = cipher.doFinal(userId.getBytes());
+            return Base64.getEncoder().encodeToString(encryptedBytes);
+        } catch (Exception e) {
+            throw new RuntimeException("Error while encrypting: " + e.toString());
+        }
     }
 
     public static String decrypt(String encryptedUserId) {
-        return new String(Base64.getDecoder().decode(encryptedUserId));
+        try {
+            Cipher cipher = Cipher.getInstance(ALGORITHM);
+            cipher.init(Cipher.DECRYPT_MODE, getSecretKey());
+            byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedUserId));
+            return new String(decryptedBytes);
+        } catch (Exception e) {
+            throw new RuntimeException("Error while decrypting: " + e.toString());
+        }
     }
 }
-

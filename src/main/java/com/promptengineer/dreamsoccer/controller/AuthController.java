@@ -4,11 +4,13 @@ import com.promptengineer.dreamsoccer.dto.validasi.ValLoginDTO;
 import com.promptengineer.dreamsoccer.dto.validasi.ValOtpDTO;
 import com.promptengineer.dreamsoccer.dto.validasi.ValRegisDTO;
 import com.promptengineer.dreamsoccer.model.User;
+import com.promptengineer.dreamsoccer.repository.UserRepository;
 import com.promptengineer.dreamsoccer.service.UserService;
 import com.promptengineer.dreamsoccer.util.EncryptionUtil;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,7 +25,8 @@ import org.slf4j.LoggerFactory;
 @Controller
 @RequestMapping("/auth")
 public class AuthController {
-
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private UserService userService;
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
@@ -37,31 +40,30 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String register(@Valid ValRegisDTO valRegisDTO,
-                           BindingResult result, RedirectAttributes redirectAttributes, Model model) {
+    public ResponseEntity<?> register(@Valid @RequestBody ValRegisDTO valRegisDTO,
+                                      BindingResult result) {
         if (result.hasErrors()) {
-            return "register";
+            return ResponseEntity.badRequest().body(Map.of("error", "Data tidak valid"));
         }
+
         String password = valRegisDTO.getPassword();
         if (!isValidPassword(password)) {
-            redirectAttributes.addFlashAttribute("error", "Password harus mengandung huruf besar, huruf kecil, angka, dan simbol.");
-            return "redirect:/auth/register";
+            return ResponseEntity.badRequest().body(Map.of("error", "Password tidak valid"));
         }
+
         try {
-            User user = userService.registerUser(valRegisDTO.getNama(), valRegisDTO.getUsername(), valRegisDTO.getEmail(), valRegisDTO.getPassword());
+            User user = userService.registerUser(valRegisDTO.getNama(), valRegisDTO.getUsername(),
+                    valRegisDTO.getEmail(), password);
             userService.sendOtpEmail(user);
-            String encryptedUserId = Base64.getEncoder().encodeToString(user.getId().toString().getBytes());
+            String encryptedUserId = EncryptionUtil.encrypt(String.valueOf(user.getId()));
 
-            redirectAttributes.addFlashAttribute("success", "Pendaftaran berhasil! Mengarahkan ke halaman OTP...");
-            redirectAttributes.addFlashAttribute("encryptedUserId", encryptedUserId);
-
-            return "redirect:/auth/register";
+            return ResponseEntity.ok(Map.of("success", "Pendaftaran berhasil!", "encryptedUserId", encryptedUserId));
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "register";
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Terjadi kesalahan saat mendaftar"));
         }
     }
-
 
     private boolean isValidPassword(String password) {
         return password.length() >= 6 &&
@@ -73,30 +75,45 @@ public class AuthController {
 
     @GetMapping("/otp")
     public String showOtpPage(@RequestParam String userId, Model model) {
+        System.out.println("Encrypted UserId: " + userId);
         String decryptedUserId = EncryptionUtil.decrypt(userId);
+        System.out.println("Decrypted UserId: " + decryptedUserId);
         model.addAttribute("userId", decryptedUserId);
         return "otp";
     }
 
+
     @PostMapping("/verify-otp")
-    public String verifyOtp(@RequestParam Long userId, @Valid ValOtpDTO valOtpDTO,
-                            BindingResult result, RedirectAttributes redirectAttributes, HttpSession session) {
+    public ResponseEntity<Object> verifyOtp(@RequestBody ValOtpDTO valOtpDTO,
+                                            BindingResult result, RedirectAttributes redirectAttributes, HttpSession session) {
+        Long userId = valOtpDTO.getUserId();
+        if (!userService.isUserExists(userId)) {
+            return ResponseEntity.badRequest().body(
+                    Map.of("status", "error", "message", "User ID tidak valid.")
+            );
+        }
         if (result.hasErrors()) {
             session.setAttribute("userId", userId);
-            return "otp";
-        }
-        boolean success = userService.verifyOtp(userId, valOtpDTO.getOtp());
-        if (success) {
-            redirectAttributes.addAttribute("verified", "true");
-            return "redirect:/auth/login";
+            return ResponseEntity.badRequest().body(
+                    Map.of("status", "error", "message", "Invalid OTP data")
+            );
         }
 
-        String encryptedUserId = Base64.getEncoder().encodeToString(userId.toString().getBytes());
+        boolean success = userService.verifyOtp(userId, valOtpDTO.getOtp());
+        if (success) {
+            return ResponseEntity.ok(Map.of("status", "success", "message", "OTP verified successfully"));
+        }
+
+        String encryptedUserId = EncryptionUtil.encrypt(String.valueOf(userId));
+
         redirectAttributes.addFlashAttribute("error", "OTP tidak valid atau telah kedaluwarsa.");
         redirectAttributes.addFlashAttribute("encryptedUserId", encryptedUserId);
 
-        return "redirect:/auth/otp?userId=" + encryptedUserId;
+        return ResponseEntity.badRequest().body(
+                Map.of("status", "error", "message", "OTP tidak valid atau telah kedaluwarsa.", "redirectUrl", "/auth/otp?userId=" + encryptedUserId)
+        );
     }
+
 
     @GetMapping("/login")
     public String loginPage(Model model,
@@ -121,6 +138,7 @@ public class AuthController {
 
         return "login";
     }
+
 
     @PostMapping("/resend-otp")
     public ResponseEntity<Map<String, Object>> resendOtp(@RequestParam Long userId) {

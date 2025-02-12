@@ -39,6 +39,7 @@ public class UserController {
             user.setUsername(user.getNama());
             user.setPassword(passwordEncoder.encode(user.getNama()));
             user.setRole(Role.USER);
+            user.setFoto("default.png");
             userRepository.save(user);
             return ResponseEntity.ok("User berhasil ditambahkan!");
         } catch (Exception e) {

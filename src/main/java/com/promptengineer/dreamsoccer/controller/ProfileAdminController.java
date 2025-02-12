@@ -52,24 +52,25 @@ public class ProfileAdminController {
             if (foto != null && !foto.isEmpty()) {
                 try {
                     String oldFileName = userToUpdate.getFoto();
-
                     String fileName = System.currentTimeMillis() + "_" + foto.getOriginalFilename();
                     Path filePath = Paths.get(uploadDir, fileName);
 
                     Files.createDirectories(filePath.getParent());
                     Files.write(filePath, foto.getBytes());
 
-                    if (oldFileName != null && !oldFileName.isEmpty()) {
+                    if (oldFileName != null && !"default.png".equals(oldFileName)) {
                         Path oldFilePath = Paths.get(uploadDir, oldFileName);
                         Files.deleteIfExists(oldFilePath);
                     }
 
                     userToUpdate.setFoto(fileName);
-
-                    System.out.println("Foto berhasil diunggah: " + filePath.toString());
                 } catch (IOException e) {
                     e.printStackTrace();
                     redirectAttributes.addFlashAttribute("uploadError", "Gagal mengunggah foto.");
+                }
+            } else {
+                if (userToUpdate.getFoto() == null || "default.png".equals(userToUpdate.getFoto())) {
+                    userToUpdate.setFoto("default.png");
                 }
             }
 
