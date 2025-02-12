@@ -55,7 +55,7 @@ public class EventController {
         }
     }
 
-    @PostMapping("/update/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<String> updateEvent(
             @PathVariable Long id,
             @RequestParam("judulEvent") String judulEvent,
