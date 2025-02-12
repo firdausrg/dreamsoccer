@@ -68,32 +68,7 @@
                       <th style="text-align: center;">Aksi</th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr>
-                      <td>1</td>
-                      <td><img src="assets/img/avatars/1.png" class="event-image" alt="Event A"></td>
-                      <td>Event A</td>
-                      <td>2025-01-30</td>
-                      <td><span class="badge bg-success">Aktif</span></td>
-                      <td>
-                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#viewEventModal" onclick="viewEvent(1)"><i class="fas fa-eye"></i></button>
-                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editEventModal" onclick="editEvent(1)"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteEventModal" onclick="deleteEvent(1)"><i class="fas fa-trash-alt"></i></button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>2</td>
-                      <td><img src="assets/img/avatars/2.png" class="event-image" alt="Event B"></td>
-                      <td>Event B</td>
-                      <td>2025-01-26</td>
-                      <td><span class="badge bg-danger">Selesai</span></td>
-                      <td>
-                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#viewEventModal" onclick="viewEvent(2)"><i class="fas fa-eye"></i></button>
-                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editEventModal" onclick="editEvent(2)"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteEventModal" onclick="deleteEvent(2)"><i class="fas fa-trash-alt"></i></button>
-                      </td>
-                    </tr>
-                    </tbody>
+                    <tbody id="eventTable"></tbody>
                   </table>
                 </div>
               </div>
@@ -107,41 +82,41 @@
                 <h5 class="modal-title" id="addEventModalLabel">Tambah Event Baru</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <div class="modal-body">
-                <form>
+              <form id="addEventForm" enctype="multipart/form-data" method="post">
+                <div class="modal-body">
                   <div class="mb-3">
                     <label for="eventTitle" class="form-label">Judul Event</label>
-                    <input type="text" class="form-control" id="eventTitle" placeholder="Masukkan Judul Event">
-                  </div>
-                  <div class="mb-3">
-                    <label for="eventImage" class="form-label">Gambar / Brosur</label>
-                    <input type="file" class="form-control" id="eventImage">
+                    <input type="text" class="form-control" id="eventTitle" name="judulEvent" placeholder="Masukkan Judul Event">
                   </div>
                   <div class="mb-3">
                     <label for="eventDescription" class="form-label">Deskripsi</label>
-                    <textarea class="form-control" id="eventDescription" rows="3" placeholder="Masukkan Deskripsi Event"></textarea>
+                    <textarea class="form-control" id="eventDescription" name="deskripsiEvent" rows="3" placeholder="Masukkan Deskripsi Event"></textarea>
                   </div>
                   <div class="mb-3">
                     <label for="eventDate" class="form-label">Tanggal Event</label>
-                    <input type="date" class="form-control" id="eventDate">
+                    <input type="date" class="form-control" id="eventDate" name="tanggalSelesai">
                   </div>
                   <div class="mb-3">
                     <label for="eventContact" class="form-label">Kontak Panitia</label>
-                    <input type="text" class="form-control" id="eventContact" placeholder="Masukkan Kontak Panitia">
+                    <input type="text" class="form-control" id="eventContact" name="kontakPanitia" placeholder="Masukkan Kontak Panitia">
                   </div>
                   <div class="mb-3">
                     <label for="eventStatus" class="form-label">Status Event</label>
-                    <select class="form-control" id="eventStatus">
-                      <option value="active">Aktif</option>
-                      <option value="inactive">Non-Aktif</option>
+                    <select class="form-control" id="eventStatus" name="status">
+                      <option value="Aktif">Aktif</option>
+                      <option value="Tidak Aktif">Non-Aktif</option>
                     </select>
                   </div>
-                </form>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" class="btn btn-primary">Simpan</button>
-              </div>
+                  <div class="mb-3">
+                    <label for="eventImage" class="form-label">Gambar / Brosur</label>
+                    <input type="file" class="form-control" id="eventImage" name="gambarEvent">
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                  <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
@@ -193,37 +168,43 @@
                 <h5 class="modal-title" id="editEventModalLabel">Edit Event</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <div class="modal-body">
-                <form>
+              <form id="editEventForm">
+                <div class="modal-body">
+                  <input type="hidden" id="editEventId" name="id">
                   <div class="mb-3">
                     <label for="editEventTitle" class="form-label">Judul Event</label>
-                    <input type="text" class="form-control" id="editEventTitle" placeholder="Masukkan Judul Event">
+                    <input type="text" class="form-control" id="editEventTitle" name="judulEvent" placeholder="Masukkan Judul Event">
                   </div>
                   <div class="mb-3">
                     <label for="editEventDescription" class="form-label">Deskripsi</label>
-                    <textarea class="form-control" id="editEventDescription" rows="3" placeholder="Masukkan Deskripsi Event"></textarea>
+                    <textarea class="form-control" id="editEventDescription" name="deskripsiEvent" rows="3" placeholder="Masukkan Deskripsi Event"></textarea>
                   </div>
                   <div class="mb-3">
                     <label for="editEventDate" class="form-label">Tanggal Event</label>
-                    <input type="date" class="form-control" id="editEventDate">
+                    <input type="date" class="form-control" id="editEventDate" name="tanggalSelesai">
                   </div>
                   <div class="mb-3">
                     <label for="editEventContact" class="form-label">Kontak Panitia</label>
-                    <input type="text" class="form-control" id="editEventContact" placeholder="Masukkan Kontak Panitia">
+                    <input type="text" class="form-control" id="editEventContact" name="kontakPanitia" placeholder="Masukkan Kontak Panitia">
                   </div>
                   <div class="mb-3">
                     <label for="editEventStatus" class="form-label">Status Event</label>
-                    <select class="form-control" id="editEventStatus">
-                      <option value="active">Aktif</option>
-                      <option value="inactive">Non-Aktif</option>
+                    <select class="form-control" id="editEventStatus" name="status">
+                      <option value="Aktif">Aktif</option>
+                      <option value="Tidak Aktif">Non-Aktif</option>
                     </select>
                   </div>
-                </form>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" class="btn btn-primary">Simpan</button>
-              </div>
+                  <div class="mb-3">
+                    <label class="form-label">Gambar / Brosur</label>
+                    <input type="file" class="form-control" id="editEventImage" name="gambarEvent">
+                    <img id="editEventImagePreview" src="" class="img-thumbnail mt-2" style="max-width: 100px; display: none;">
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                  <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
@@ -240,7 +221,7 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-danger" onclick="deleteEvent()">Hapus</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteButton">Hapus</button>
               </div>
             </div>
           </div>
@@ -259,35 +240,158 @@
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 
 <script>
+  function loadEvents() {
+    $.get("/event/list", function(events) {
+      let tableContent = "";
+      events.forEach((event, index) => {
+        const statusClass = event.status === "Aktif" ? "bg-success" : "bg-danger";
+        let formattedDate = new Date(event.tanggalSelesai).toISOString().split('T')[0];
+        tableContent += `
+           <tr>
+              <td>${index + 1}</td>
+              <td><img src="${event.gambarEvent}" class="event-image" alt="Event A"></td>
+              <td>${event.judulEvent}</td>
+              <td>${formattedDate}</td>
+              <td><span class="badge ${statusClass}">${event.status}</span></td>
+              <td class="text-center">
+                <div class="d-flex justify-content-center gap-2">
+                  <button class="btn btn-primary btn-sm" 
+                          data-bs-toggle="modal" 
+                          data-bs-target="#viewEventModal" 
+                          onclick="viewEvent(${event.id})">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button class="btn btn-warning btn-sm" 
+                          data-bs-toggle="modal" 
+                          data-bs-target="#editEventModal" 
+                          onclick="editEvent(${event.id})">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn btn-danger btn-sm btn-delete" 
+                          data-bs-toggle="modal" 
+                          data-bs-target="#deleteEventModal"
+                          data-id="${event.id}">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>`;
+      });
+      $('#eventTable').html(tableContent);
+    });
+  }
+
   $(document).ready(function() {
-           $('#tabel-custom').DataTable({
-               "paging": true,
-               "pageLength": 5,
-               "lengthMenu": [5, 10, 15, 20],
-               "ordering": true,
-               "info": true
-           });
-           $('#tabel-custom_length').css('margin-bottom', '15px');
-           $('#tabel-custom_filter').css('margin-bottom', '15px');
-           $('#tabel-custom_info').css('margin-top', '10px');
-       });
+    loadEvents();
+
+    $('#addEventForm').submit(function(e) {
+      e.preventDefault();
+
+      let formData = new FormData(this);
+
+      $.ajax({
+        url: '/event/add',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+          alert("Event berhasil ditambahkan!");
+          console.log(response);
+          loadEvents();
+          $('#addEventModal').modal('hide');
+        }
+      });
+    });   
+
+    $('#editEventForm').submit(function(e) {
+      e.preventDefault();
+      
+      let formData = new FormData(this);
+      let eventId = $('#editEventId').val();
+
+      $.ajax({
+        url: "/event/update/" + eventId,
+        type: "PUT",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+          alert("Event berhasil diperbarui!");
+          $('#editEventModal').modal('hide');
+          loadEvents();
+        },
+        error: function() {
+          alert("Gagal mengupdate event.");
+        }
+      });
+    });
+    
+    let eventIdToDelete = null;
+    $(document).on("click", ".btn-delete", function() {
+        eventIdToDelete = $(this).data("id");
+    });
+    
+    $('#confirmDeleteButton').click(function() {
+        if (eventIdToDelete) {
+          $.ajax({
+            type: "DELETE",
+            url: "/event/delete/" + eventIdToDelete,
+            success: function(response) {
+              alert("Event berhasil dihapus");
+              $('#deleteEventModal').modal('hide');
+              $('.modal-backdrop').remove();       
+              loadEvents();
+            }        
+          });
+        }
+    });
+
+    $('#tabel-custom').DataTable({
+        "paging": true,
+        "pageLength": 5,
+        "lengthMenu": [5, 10, 15, 20],
+        "ordering": true,
+        "info": true
+    });
+    $('#tabel-custom_length').css('margin-bottom', '15px');
+    $('#tabel-custom_filter').css('margin-bottom', '15px');
+    $('#tabel-custom_info').css('margin-top', '10px');
+  });
 
  function viewEvent(id) {
-   // Replace with dynamic event data
-   $('#viewEventTitle').text("Event A");
-   $('#viewEventDescription').text("Ini adalah deskripsi tentang event A. Sebuah acara yang sangat menarik dan bermanfaat bagi peserta.");
-   $('#viewEventDate').text("2025-01-30");
-   $('#viewEventContact').text("08123456789");
-   $('#viewEventStatus').text("Aktif");
-   $('#viewEventModal img').attr("src", "assets/img/event1.jpg");
+   $.get("/event/" + id, function(event) {
+    $('#viewEventTitle').text(event.judulEvent);
+    $('#viewEventDescription').text(event.deskripsiEvent);
+    let formattedDate = new Date(event.tanggalSelesai).toISOString().split('T')[0];
+    $('#viewEventDate').text(formattedDate);
+    $('#viewEventContact').text(event.kontakPanitia);
+    $('#viewEventStatus').text(event.status);
+    $('#viewEventModal img').attr("src", event.gambarEvent);
+  }).fail(function() {
+    alert("Gagal mengambil data event.");
+  });
  }
 
  function editEvent(id) {
-   console.log(id);
- }
-
- function deleteEvent(id) {
-   console.log(id);
+  $.get("/event/" + id, function(event) {
+    $('#editEventId').val(event.id);
+    $('#editEventTitle').val(event.judulEvent);
+    $('#editEventDescription').val(event.deskripsiEvent);
+    let formattedDate = new Date(event.tanggalSelesai).toISOString().split('T')[0];
+    $('#editEventDate').val(formattedDate);
+    $('#editEventContact').val(event.kontakPanitia);
+    $('#editEventStatus').val(event.status);
+    
+    // Update gambar jika ada
+    if (event.gambarEvent) {
+      $('#editEventImagePreview').attr("src", event.gambarEvent).show();
+    } else {
+      $('#editEventImagePreview').hide();
+    }
+  }).fail(function() {
+    alert("Gagal mengambil data event.");
+  });
  }
 </script>
 </body>
