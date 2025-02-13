@@ -41,44 +41,7 @@
       <div class="content-wrapper">
         <div th:replace="~{pisahuser/navbar2.html}"></div>
         <div class="container-xxl flex-grow-1 container-p-y">
-          <div class="row mb-5">
-            <div class="col-md-6 col-lg-4 mb-3">
-              <div class="card h-100">
-                <img class="card-img-top" src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/soccer-futsal-tournament-flyer-poster-design-template-5f738e76f11e1c8c40513248ed6b7079_screen.jpg?ts=1698496989" alt="Card image cap" />
-                <div class="card-body">
-                  <h5 class="card-title">Event Perlombaan</h5>
-                  <p class="card-text">
-                    bla bla bla
-                  </p>
-                  <a href="/detail_event" class="btn btn-primary">Lihat Selengkapnya</a>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6 col-lg-4 mb-3">
-              <div class="card h-100">
-                <img class="card-img-top" src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/soccer-futsal-tournament-flyer-poster-design-template-5f738e76f11e1c8c40513248ed6b7079_screen.jpg?ts=1698496989" alt="Card image cap" />
-                <div class="card-body">
-                  <h5 class="card-title">Event Perlombaan</h5>
-                  <p class="card-text">
-                    bla bla bla
-                  </p>
-                  <a href="/detail_event" class="btn btn-primary">Lihat Selengkapnya</a>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6 col-lg-4 mb-3">
-              <div class="card h-100">
-                <img class="card-img-top" src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/soccer-futsal-tournament-flyer-poster-design-template-5f738e76f11e1c8c40513248ed6b7079_screen.jpg?ts=1698496989" alt="Card image cap" />
-                <div class="card-body">
-                  <h5 class="card-title">Event Perlombaan</h5>
-                  <p class="card-text">
-                    bla bla bla
-                  </p>
-                  <a href="/detail_event" class="btn btn-primary">Lihat Selengkapnya</a>
-                </div>
-              </div>
-            </div>
-          </div>
+          <div id="eventTable" class="row mb-5"></div>
         </div>
         <div th:replace="~{pisahuser/footer.html}"></div>
       </div>
@@ -94,5 +57,33 @@
 <script src="assets/vendor/libs/hammer/hammer.js"></script>
 <script src="assets/vendor/js/menu.js"></script>
 <script src="assets/js/main.js"></script>
+<script>
+  function loadEvents() {
+    $.get("/event/list", function (events) {
+      let tableContent = "";
+      events.forEach((event, index) => {
+        tableContent += `
+          <div class="col-md-6 col-lg-4 mb-3">
+            <div class="card h-100">
+              <img class="card-img-top" src="${event.gambarEvent}" alt="Card image cap" />
+              <div class="card-body">
+                <h5 class="card-title">${event.judulEvent}</h5>
+                <p class="card-text">
+                  ${event.deskripsiEvent}
+                </p>
+                <a href="/detail_event?id=${event.id}" class="btn btn-primary">Lihat Selengkapnya</a>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      $("#eventTable").html(tableContent);
+    });
+  }
+
+  $(document).ready(function () {
+    loadEvents();
+  });
+</script>
 </body>
 </html>

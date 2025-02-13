@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.security.core.Authentication;
 
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -76,7 +77,7 @@ public class DashboardController {
         if (filename == null) {
             return false;
         }
-        Path path = Paths.get("uploads/foto-profil", filename);
+        Path path = Paths.get("src/main/resources/static/uploads/foto-profil/", filename);
         return Files.exists(path);
     }
     @GetMapping("/iklan")
