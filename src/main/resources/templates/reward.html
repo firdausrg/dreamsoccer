@@ -16,9 +16,9 @@
     <link rel="stylesheet" href="assets/css/demo.css" />
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
-
     <script src="assets/vendor/js/helpers.js"></script>
     <script src="assets/js/config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <style>
     .dataTables_wrapper .dataTables_paginate .paginate_button.current,
@@ -175,172 +175,200 @@
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script>
         $(document).ready(function() {
-        // Menyimpan ID reward yang akan dihapus saat tombol hapus diklik
-    let rewardIdToDelete = null;
-    // Mengambil ID reward yang akan dihapus dan menyimpannya
-    $(document).on("click", ".delete-btn", function() {
-        rewardIdToDelete = $(this).data("bs-id");
-    });
+     let rewardIdToDelete = null;
+     $(document).on("click", ".delete-btn", function() {
+         rewardIdToDelete = $(this).data("bs-id");
+     });
+     $("#confirmDeleteBtn").click(function() {
+         if (rewardIdToDelete) {
+             $.ajax({
+                 url: `/api/reward/delete/${rewardIdToDelete}`,
+                 type: "DELETE",
+                 success: function(response) {
+                     Swal.fire({
+                         icon: 'success',
+                         title: 'Berhasil!',
+                         text: 'Reward berhasil dihapus!',
+                         showConfirmButton: false,
+                         timer: 2000
+                     });
 
-    // Fungsi untuk menghapus reward
-    $("#confirmDeleteBtn").click(function() {
-        if (rewardIdToDelete) {
-            // Mengirim permintaan DELETE ke API
-            $.ajax({
-                url: `/api/reward/delete/${rewardIdToDelete}`,
-                type: "DELETE",
-                success: function(response) {
-                    alert("Reward berhasil dihapus!");
-                    $("#deleteRewardModal").modal("hide");  // Menutup modal
-                    fetchRewards();  // Memperbarui daftar reward setelah penghapusan
-                },
-                error: function(xhr) {
-                    alert("Gagal menghapus reward: " + xhr.responseText);
-                }
-            });
-        }
-    });
+                     $("#deleteRewardModal").modal("hide");
+                     fetchRewards();
+                 },
+                 error: function(xhr) {
+                     Swal.fire({
+                         icon: 'error',
+                         title: 'Gagal!',
+                         text: 'Gagal menghapus reward: ' + xhr.responseText,
+                         showConfirmButton: false,
+                         timer: 2000
+                     });
+                 }
+             });
+         }
+     });
 
-    let rewardIdToEdit = null;
-    // Menangani klik pada tombol edit dan mengisi form dengan data yang ada
-    $(document).on("click", ".edit-btn", function() {
-        rewardIdToEdit = $(this).data("id");
-        let namaReward = $(this).data("nama");
-        let jumlahPoint = $(this).data("jumlah");
-        let deskripsiReward = $(this).data("deskripsi");
-        let gambarReward = $(this).data("gambar");
+     let rewardIdToEdit = null;
+     $(document).on("click", ".edit-btn", function() {
+         rewardIdToEdit = $(this).data("id");
+         let namaReward = $(this).data("nama");
+         let jumlahPoint = $(this).data("jumlah");
+         let deskripsiReward = $(this).data("deskripsi");
+         let gambarReward = $(this).data("gambar");
+         $("#editRewardId").val(rewardIdToEdit);
+         $("#editNamaReward").val(namaReward);
+         $("#editJumlahPoint").val(jumlahPoint);
+         $("#editDeskripsiReward").val(deskripsiReward);
 
-        // Mengisi form modal dengan data yang ada
-        $("#editRewardId").val(rewardIdToEdit);
-        $("#editNamaReward").val(namaReward);
-        $("#editJumlahPoint").val(jumlahPoint);
-        $("#editDeskripsiReward").val(deskripsiReward);
+         if (gambarReward) {
+             $("#editGambarPreview").attr("src", gambarReward);
+         } else {
+             $("#editGambarPreview").attr("src", "/path/to/default/image.png");
+         }
+     });
 
-        // Menampilkan gambar yang ada jika ada
-        if (gambarReward) {
-            $("#editGambarPreview").attr("src", gambarReward);
-        } else {
-            $("#editGambarPreview").attr("src", "/path/to/default/image.png");
-        }
-    });
+     $("#editRewardForm").submit(function(event) {
+         event.preventDefault();
+         let formData = new FormData();
+         formData.append("namaReward", $("#editNamaReward").val());
+         formData.append("jumlahPoint", $("#editJumlahPoint").val());
+         formData.append("deskripsiReward", $("#editDeskripsiReward").val());
+         formData.append("file", $("#editFile")[0].files[0]);
 
-    // Menangani pengiriman formulir update
-    $("#editRewardForm").submit(function(event) {
-        event.preventDefault();
-        let formData = new FormData();
-        formData.append("namaReward", $("#editNamaReward").val());
-        formData.append("jumlahPoint", $("#editJumlahPoint").val());
-        formData.append("deskripsiReward", $("#editDeskripsiReward").val());
-        formData.append("file", $("#editFile")[0].files[0]);  // Menambahkan gambar baru jika ada
+         $.ajax({
+             url: `/api/reward/update/${rewardIdToEdit}`,
+             type: "PUT",
+             data: formData,
+             processData: false,
+             contentType: false,
+             success: function(response) {
+                 Swal.fire({
+                     icon: 'success',
+                     title: 'Berhasil!',
+                     text: 'Reward berhasil diperbarui!',
+                     showConfirmButton: false,
+                     timer: 2000
+                 });
 
-        // Mengirim request AJAX untuk memperbarui data reward
-        $.ajax({
-            url: `/api/reward/update/${rewardIdToEdit}`,
-            type: "PUT",
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                alert("Reward berhasil diperbarui!");
-                $("#editRewardModal").modal("hide");
-                fetchRewards();  // Memperbarui daftar reward setelah update
-            },
-            error: function(xhr) {
-                alert("Gagal memperbarui reward: " + xhr.responseText);
-            }
-        });
-    });
+                 $("#editRewardModal").modal("hide");
+                 fetchRewards();
+             },
+             error: function(xhr) {
+                 Swal.fire({
+                     icon: 'error',
+                     title: 'Gagal!',
+                     text: 'Gagal memperbarui reward: ' + xhr.responseText,
+                     showConfirmButton: false,
+                     timer: 2000
+                 });
+             }
+         });
+     });
 
+     $("#saveRewardBtn").click(function(event) {
+         event.preventDefault();
+         var formData = new FormData($("#addRewardForm")[0]);
 
-    // Fungsi untuk menyimpan reward
-    $("#saveRewardBtn").click(function(event) {
-        event.preventDefault(); // Mencegah reload halaman
-        var formData = new FormData($("#addRewardForm")[0]);
-        $.ajax({
-            url: "/api/reward/add",
-            type: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                alert("Reward berhasil ditambahkan!");
-                $("#addRewardModal").modal("hide"); // Tutup modal
-                fetchRewards(); // Memanggil kembali fungsi fetchRewards untuk memperbarui daftar reward
-            },
-            error: function(xhr) {
-                alert("Gagal menambahkan reward: " + xhr.responseText);
-            }
-        });
-    });
+         $.ajax({
+             url: "/api/reward/add",
+             type: "POST",
+             data: formData,
+             processData: false,
+             contentType: false,
+             success: function(response) {
+                 Swal.fire({
+                     icon: 'success',
+                     title: 'Berhasil!',
+                     text: 'Reward berhasil ditambahkan!',
+                     showConfirmButton: false,
+                     timer: 2000
+                 });
 
-    // Fungsi untuk mengambil dan menampilkan data reward
-    function fetchRewards() {
-        $.ajax({
-            url: "/api/reward/list", // API endpoint dari controller
-            type: "GET",
-            dataType: "json",
-            success: function (data) {
-                let rewardTable = $("#reward-list");
-                rewardTable.empty(); // Kosongkan tabel sebelum mengisi data baru
-                if (data.length === 0) {
-                    rewardTable.append("<tr><td colspan='5'>Tidak ada data reward</td></tr>");
-                } else {
-                    $.each(data, function (index, reward) {
-                        let row = `<tr>
-                            <td>${index + 1}</td>
-                            <td>${reward.namaReward}</td>
-                            <td>${reward.jumlahPoint}</td>
-                            <td>${reward.deskripsiReward}</td>
-                            <td>
-                           <div class="btn-group gap-1">
-                            <button class="btn btn-primary btn-sm edit-btn"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#editRewardModal"
-                                    data-id="${reward.id}"
-                                    data-nama="${reward.namaReward}"
-                                    data-jumlah="${reward.jumlahPoint}"
-                                    data-deskripsi="${reward.deskripsiReward}"
-                                    data-gambar="${reward.gambarReward}">
-                                    <i class="fas fa-edit"></i>
-                            </button>
+                 $("#addRewardModal").modal("hide");
+                 fetchRewards();
+             },
+             error: function(xhr) {
+                 Swal.fire({
+                     icon: 'error',
+                     title: 'Gagal!',
+                     text: 'Gagal menambahkan reward: ' + xhr.responseText,
+                     showConfirmButton: false,
+                     timer: 2000
+                 });
+             }
+         });
+     });
 
-                                <button class="btn btn-danger btn-sm delete-btn"
-                                                data-bs-id="${reward.id}"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#deleteRewardModal">
-                                            <i class="fas fa-trash-alt"></i>
-                                </button>
-                               </div>
+     function fetchRewards() {
+         $.ajax({
+             url: "/api/reward/list",
+             type: "GET",
+             dataType: "json",
+             success: function (data) {
+                 let rewardTable = $("#reward-list");
+                 rewardTable.empty();
+                 if (data.length === 0) {
+                     rewardTable.append("<tr><td colspan='5'>Tidak ada data reward</td></tr>");
+                 } else {
+                     $.each(data, function (index, reward) {
+                         let row = `<tr>
+                             <td>${index + 1}</td>
+                             <td>${reward.namaReward}</td>
+                             <td>${reward.jumlahPoint}</td>
+                             <td>${reward.deskripsiReward}</td>
+                             <td>
+                                 <div class="btn-group gap-1">
+                                     <button class="btn btn-primary btn-sm edit-btn"
+                                         data-bs-toggle="modal"
+                                         data-bs-target="#editRewardModal"
+                                         data-id="${reward.id}"
+                                         data-nama="${reward.namaReward}"
+                                         data-jumlah="${reward.jumlahPoint}"
+                                         data-deskripsi="${reward.deskripsiReward}"
+                                         data-gambar="${reward.gambarReward}">
+                                         <i class="fas fa-edit"></i>
+                                     </button>
 
-                            </td>
-                        </tr>`;
-                        rewardTable.append(row);
-                    });
-                }
-            },
-            error: function () {
-                alert("Gagal mengambil data reward");
-            }
-        });
-    }
+                                     <button class="btn btn-danger btn-sm delete-btn"
+                                         data-bs-id="${reward.id}"
+                                         data-bs-toggle="modal"
+                                         data-bs-target="#deleteRewardModal">
+                                         <i class="fas fa-trash-alt"></i>
+                                     </button>
+                                 </div>
+                             </td>
+                         </tr>`;
+                         rewardTable.append(row);
+                     });
+                 }
+             },
+             error: function () {
+                 Swal.fire({
+                     icon: 'error',
+                     title: 'Gagal!',
+                     text: 'Gagal mengambil data reward',
+                     showConfirmButton: false,
+                     timer: 2000
+                 });
+             }
+         });
+     }
 
-    // Panggil fungsi fetchRewards saat halaman dimuat
-    fetchRewards();
-});
+     fetchRewards();
+ });
 
+         var table = $('#tabel-custom').DataTable({
+             "paging": true,
+             "pageLength": 5,
+             "lengthMenu": [5, 10, 15, 20],
+             "ordering": true,
+             "info": true
+         });
 
-
-        var table = $('#tabel-custom').DataTable({
-            "paging": true,
-            "pageLength": 5,
-            "lengthMenu": [5, 10, 15, 20],
-            "ordering": true,
-            "info": true
-        });
-
-        $('#tabel-custom_length').css('margin-bottom', '15px');
-        $('#tabel-custom_filter').css('margin-bottom', '15px');
-        $('#tabel-custom_info').css('margin-top', '10px');
+         $('#tabel-custom_length').css('margin-bottom', '15px');
+         $('#tabel-custom_filter').css('margin-bottom', '15px');
+         $('#tabel-custom_info').css('margin-top', '10px');
 
     </script>
 </div>

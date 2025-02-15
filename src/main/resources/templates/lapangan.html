@@ -54,6 +54,7 @@
                                             <th style="text-align: center;">No</th>
                                             <th style="text-align: center;">Nama Lapangan</th>
                                             <th style="text-align: center;">Harga Sewa</th>
+                                            <th style="text-align: center;">Deskripsi</th>
                                             <th style="text-align: center;">Aksi</th>
                                         </tr>
                                         </thead>
@@ -81,9 +82,9 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="deskripsi" class="form-label">Deskripsi</label>
-                                        <textarea class="form-control" id="deskripsi" name="deskripsi" required>
-                                        </textarea>
+                                        <textarea class="form-control" id="deskripsi" name="deskripsi" rows="3" required placeholder="Masukkan Deskripsi"></textarea>
                                     </div>
+
                                     <div class="mb-3">
                                         <label for="rentalPrice" class="form-label">Harga Sewa</label>
                                         <input type="text" class="form-control" id="rentalPrice" name="rentalPrice" placeholder="Masukkan Harga Sewa" required>
@@ -119,8 +120,7 @@
 
                                     <div class="mb-3">
                                         <label for="editdeskripsi" class="form-label">Deskripsi</label>
-                                        <textarea class="form-control" id="editdeskripsi" name="editdeskripsi" placeholder="Masukkan Deskripsi Lapangan" required>
-                                        </textarea>
+                                        <textarea class="form-control" id="editdeskripsi" name="editdeskripsi" rows="3" required placeholder="Masukkan Deskripsi Lapangan"></textarea>
                                     </div>
 
                                     <div class="mb-3">
@@ -303,42 +303,50 @@
             });
 
             function loadLapangan() {
-                $.ajax({
-                    url: "/api/lapangan/list",
-                    type: "GET",
-                    success: function (data) {
-                        let tableBody = "";
-                        data.forEach((lapangan, index) => {
-                            let formattedPrice = `Rp ${lapangan.hargaPerjam.toLocaleString('id-ID')}`;
-                            tableBody += `
-                                <tr>
-                                    <td>${index + 1}</td>
-                                    <td>${lapangan.namaLapangan}</td>
-                                    <td>${formattedPrice}</td>
-                                    <td>
-                                        <button class="btn btn-primary btn-sm edit-btn"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#editFieldModal"
-                                                data-id="${lapangan.id}"
-                                                data-nama="${lapangan.namaLapangan}"
-                                                data-harga="${lapangan.hargaPerjam}"
-                                                data-deskripsi="${lapangan.deskripsiLapangan}">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
+    $.ajax({
+        url: "/api/lapangan/list",
+        type: "GET",
+        success: function (data) {
+            let tableBody = "";
+            if (data.length === 0) {
+                tableBody = `<tr><td colspan="4" class="text-center">Tidak ada data lapangan</td></tr>`;
+            } else {
+                data.forEach((lapangan, index) => {
+                    let formattedPrice = `Rp ${lapangan.hargaPerjam.toLocaleString('id-ID')}`;
+                    tableBody += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${lapangan.namaLapangan}</td>
+                            <td>${formattedPrice}</td>
+                            <td>${lapangan.deskripsiLapangan}</td>
 
-                                        <button class="btn btn-danger btn-sm delete-btn"
-                                                data-bs-id="${lapangan.id}"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#deleteConfirmationModal">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </td>
-                                </tr>`;
-                        });
-                        $("#lapangan-list").html(tableBody);
-                    }
+                            <td>
+                                <button class="btn btn-primary btn-sm edit-btn"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#editFieldModal"
+                                        data-id="${lapangan.id}"
+                                        data-nama="${lapangan.namaLapangan}"
+                                        data-harga="${lapangan.hargaPerjam}"
+                                        data-deskripsi="${lapangan.deskripsiLapangan}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+
+                                <button class="btn btn-danger btn-sm delete-btn"
+                                        data-bs-id="${lapangan.id}"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteConfirmationModal">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+
+                            </td>
+                        </tr>`;
                 });
             }
+
+            $("#lapangan-list").html(tableBody);
+        }
+    });
+}
 
             $('#form-add-lapangan').submit(function (event) {
                 event.preventDefault();

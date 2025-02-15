@@ -22,6 +22,13 @@ public class LapanganController {
         return lapanganService.getAllLapangan();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Lapangan> getLapanganById(@PathVariable Long id) {
+        Lapangan lapangan = lapanganService.getLapanganById(id);
+        return ResponseEntity.ok(lapangan);
+    }
+
+
     @PostMapping("/add")
     public ResponseEntity<String> addLapangan(@RequestParam("fieldName") String fieldName,
                                               @RequestParam("rentalPrice") Double rentalPrice,

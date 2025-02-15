@@ -46,23 +46,18 @@ public class DataRewardService {
     }
 
     public DataReward updateReward(Long rewardId, String namaReward, int jumlahPoint, String deskripsiReward, MultipartFile file) throws IOException {
-        // Mencari reward berdasarkan ID
         DataReward dataReward = dataRewardRepository.findById(rewardId)
                 .orElseThrow(() -> new RuntimeException("Reward tidak ditemukan"));
-        // Jika ada gambar baru, hapus gambar lama
+
         if (file != null && !file.isEmpty()) {
-            // Menghapus gambar lama jika ada
             if (dataReward.getGambarReward() != null) {
                 Path oldImagePath = Paths.get(uploadDir, dataReward.getGambarReward().substring("/uploads/reward/".length()));
                 Files.deleteIfExists(oldImagePath);
             }
-            // Mengupload gambar baru
             String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
             Path filePath = Paths.get(uploadDir, fileName);
             Files.createDirectories(filePath.getParent());
             Files.write(filePath, file.getBytes());
-
-            // Set gambar reward baru
             dataReward.setGambarReward("/uploads/reward/" + fileName);
         }
 

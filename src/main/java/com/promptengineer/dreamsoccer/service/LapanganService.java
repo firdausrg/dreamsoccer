@@ -21,16 +21,28 @@ public class LapanganService {
 
     @Autowired
     private final LapanganRepository lapanganRepository;
+
     private final String uploadDir = "src/main/resources/static/uploads/lapangan/";
 
     public LapanganService(LapanganRepository lapanganRepository) {
         this.lapanganRepository = lapanganRepository;
     }
 
+    /**
+     * Mengambil semua data lapangan dari database
+     */
     public List<Lapangan> getAllLapangan() {
         return lapanganRepository.findAll();
     }
 
+    public Lapangan getLapanganById(Long id) {
+        return lapanganRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Lapangan tidak ditemukan"));
+    }
+
+    /**
+     * Menambahkan lapangan baru dengan gambar
+     */
     public void addLapangan(String fieldName, Double rentalPrice, String deskripsi, List<MultipartFile> fieldImages) throws IOException {
         Lapangan lapangan = new Lapangan();
         lapangan.setNamaLapangan(fieldName);
@@ -47,24 +59,34 @@ public class LapanganService {
         lapanganRepository.save(lapangan);
     }
 
+    /**
+     * Menyimpan gambar ke folder uploads/lapangan/ dan mengembalikan path relatifnya
+     */
     private String saveImage(MultipartFile file) throws IOException {
         String randomFileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
         Path path = Paths.get(uploadDir + randomFileName);
         Files.write(path, file.getBytes());
-        return path.toString();
+
+        // Simpan path relatif agar bisa diakses di frontend
+        return "/uploads/lapangan/" + randomFileName;
     }
 
-
+    /**
+     * Mengupdate data lapangan termasuk gambar baru
+     */
     public void updateLapangan(Long id, String fieldName, Double rentalPrice, String deskripsi, List<MultipartFile> fieldImages) throws IOException {
-        Lapangan lapangan = lapanganRepository.findById(id).orElseThrow(() -> new RuntimeException("Lapangan tidak ditemukan"));
+        Lapangan lapangan = lapanganRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Lapangan tidak ditemukan"));
+
         lapangan.setNamaLapangan(fieldName);
         lapangan.setHargaPerjam(rentalPrice);
         lapangan.setDeskripsiLapangan(deskripsi);
 
+        // Hapus gambar lama jika ada gambar baru
         if (fieldImages != null && !fieldImages.isEmpty()) {
             if (lapangan.getGambarLapangan() != null) {
                 for (String imagePath : lapangan.getGambarLapangan()) {
-                    Files.deleteIfExists(Paths.get(imagePath));
+                    deleteImage(imagePath);
                 }
             }
 
@@ -79,24 +101,32 @@ public class LapanganService {
         lapanganRepository.save(lapangan);
     }
 
+    /**
+     * Menghapus lapangan beserta gambar yang terkait
+     */
     public void deleteLapangan(Long id) {
-        if (!lapanganRepository.existsById(id)) {
-            throw new RuntimeException("Lapangan dengan ID " + id + " tidak ditemukan");
-        }
-
         Lapangan lapangan = lapanganRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Lapangan dengan ID " + id + " tidak ditemukan"));
 
+        // Hapus semua gambar terkait
         if (lapangan.getGambarLapangan() != null) {
             for (String imagePath : lapangan.getGambarLapangan()) {
-                try {
-                    Files.deleteIfExists(Paths.get(imagePath));
-                } catch (IOException e) {
-                    throw new RuntimeException("Gagal menghapus gambar: " + imagePath + " - " + e.getMessage());
-                }
+                deleteImage(imagePath);
             }
         }
+
         lapanganRepository.deleteById(id);
     }
 
+    /**
+     * Menghapus gambar berdasarkan path relatifnya
+     */
+    private void deleteImage(String imagePath) {
+        try {
+            String fullPath = uploadDir + imagePath.replace("/uploads/lapangan/", "");
+            Files.deleteIfExists(Paths.get(fullPath));
+        } catch (IOException e) {
+            throw new RuntimeException("Gagal menghapus gambar: " + imagePath + " - " + e.getMessage());
+        }
+    }
 }
