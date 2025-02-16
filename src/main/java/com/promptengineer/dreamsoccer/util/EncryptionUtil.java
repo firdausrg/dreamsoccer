@@ -20,7 +20,7 @@ public class EncryptionUtil {
             byte[] encryptedBytes = cipher.doFinal(userId.getBytes());
             return Base64.getEncoder().encodeToString(encryptedBytes);
         } catch (Exception e) {
-            throw new RuntimeException("Error while encrypting: " + e.toString());
+            throw new RuntimeException("Error saat encrypting: " + e.toString());
         }
     }
 
@@ -31,7 +31,7 @@ public class EncryptionUtil {
             byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedUserId));
             return new String(decryptedBytes);
         } catch (Exception e) {
-            throw new RuntimeException("Error while decrypting: " + e.toString());
+            throw new RuntimeException("Error saat decrypting: " + e.toString());
         }
     }
 }

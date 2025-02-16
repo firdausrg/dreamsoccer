@@ -1,33 +1,22 @@
 <!DOCTYPE html>
-<html
-        lang="en"
-        class="light-style layout-menu-fixed"
-        dir="ltr"
-        data-theme="theme-default"
-        data-assets-path="assets/"
-        data-template="horizontal-menu-template" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="assets/" data-template="horizontal-menu-template" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="utf-8" />
-    <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
     <title>Contact | DreamSoccer</title>
-    <meta name="description" content="" />
-    <link rel="icon" type="image/x-icon" href="assets/img/favicon/favicon.ico" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-            href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
-            rel="stylesheet" />
-    <link rel="stylesheet" href="assets/vendor/fonts/fontawesome.css" />
-    <link rel="stylesheet" href="assets/vendor/fonts/tabler-icons.css" />
-    <link rel="stylesheet" href="assets/vendor/fonts/flag-icons.css" />
-    <link rel="stylesheet" href="assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css" />
-    <link rel="stylesheet" href="assets/css/demo.css" />
+    <meta name="description" content=""/>
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon/favicon.ico"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="assets/vendor/fonts/fontawesome.css"/>
+    <link rel="stylesheet" href="assets/vendor/fonts/tabler-icons.css"/>
+    <link rel="stylesheet" href="assets/vendor/fonts/flag-icons.css"/>
+    <link rel="stylesheet" href="assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css"/>
+    <link rel="stylesheet" href="assets/css/demo.css"/>
     <script src="assets/vendor/js/helpers.js"></script>
     <script src="assets/vendor/js/template-customizer.js"></script>
     <script src="assets/js/config.js"></script>
-
     <style>
         .contact-info {
             background-color: #f9f9f9;
@@ -36,26 +25,21 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             margin-bottom: 30px;
         }
-
         .contact-info h4 {
             font-weight: 600;
             margin-bottom: 15px;
         }
-
         .contact-form input, .contact-form textarea {
             margin-bottom: 15px;
             border-radius: 5px;
         }
-
         .contact-form button {
             width: 100%;
             border-radius: 5px;
         }
-
         .social-media a {
             margin-right: 15px;
         }
-
         .map iframe {
             border: 0;
             border-radius: 8px;
@@ -64,42 +48,46 @@
         }
     </style>
 </head>
-
 <body>
 <div class="layout-wrapper layout-navbar-full layout-horizontal layout-without-menu">
     <div class="layout-container">
-        <div th:replace="~{pisahuser/navbar.html}"></div>
+        <div th:replace="~{pisahuser/navbar.html}">
+        </div>
         <div class="layout-page">
             <div class="content-wrapper">
-                <div th:replace="~{pisahuser/navbar2.html}"></div>
+                <div th:replace="~{pisahuser/navbar2.html}">
+                </div>
                 <div class="container-xxl flex-grow-1 container-p-y">
                     <div class="row justify-content-center">
                         <div class="col-12 col-md-8 col-lg-6">
                             <h2 class="text-center mb-4">Kontak Kami</h2>
-                            <p class="text-center mb-4">Jika Anda memiliki pertanyaan atau butuh bantuan, silakan hubungi kami melalui saluran berikut:</p>
-
+                            <p class="text-center mb-4">
+                                Jika Anda memiliki pertanyaan atau butuh bantuan, silakan hubungi kami melalui saluran berikut:
+                            </p>
                             <div class="contact-info">
                                 <h4>Informasi Kontak</h4>
-                                <p><strong>Email:</strong> support@dremoccer.com</p>
-                                <p><strong>Nomor Telepon:</strong> 0812-3456-7890</p>
-                                <p><strong>Alamat:</strong> Jalan Lapangan No. 123, Jakarta</p>
+                                <p>
+                                    <strong>Email:</strong> support@dremoccer.com
+                                </p>
+                                <p>
+                                    <strong>Nomor Telepon:</strong> 0812-3456-7890
+                                </p>
+                                <p>
+                                    <strong>Alamat:</strong> Jalan Lapangan No. 123, Jakarta
+                                </p>
                             </div>
-
                             <div class="contact-form">
                                 <h4>Formulir Kontak</h4>
                                 <form>
                                     <div class="mb-3">
                                         <label for="name" class="form-label">Nama Lengkap:</label>
-                                        <input type="text" class="form-control" id="name" name="name" required>
-                                    </div>
+                                        <input type="text" class="form-control" id="name" name="name" required></div>
                                     <div class="mb-3">
                                         <label for="email" class="form-label">Email:</label>
-                                        <input type="email" class="form-control" id="email" name="email" required>
-                                    </div>
+                                        <input type="email" class="form-control" id="email" name="email" required></div>
                                     <div class="mb-3">
                                         <label for="subject" class="form-label">Subjek:</label>
-                                        <input type="text" class="form-control" id="subject" name="subject">
-                                    </div>
+                                        <input type="text" class="form-control" id="subject" name="subject"></div>
                                     <div class="mb-3">
                                         <label for="message" class="form-label">Pesan:</label>
                                         <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
@@ -107,12 +95,11 @@
                                     <button type="submit" class="btn btn-primary">Kirim Pesan</button>
                                 </form>
                             </div>
-
                             <div class="map mt-4">
                                 <h4>Lokasi Kami</h4>
-                                <iframe src="https://www.google.com/maps/embed?pb=..." loading="lazy"></iframe>
+                                <iframe src="https://www.google.com/maps/embed?pb=..." loading="lazy">
+                                </iframe>
                             </div>
-
                             <div class="social-media mt-4 text-center">
                                 <h4>Ikuti Kami</h4>
                                 <a href="https://www.instagram.com/dremoccer" class="btn btn-link">Instagram</a>
@@ -121,14 +108,13 @@
                         </div>
                     </div>
                 </div>
-                <div th:replace="~{pisahuser/footer.html}"></div>
+                <div th:replace="~{pisahuser/footer.html}">
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-<script src="assets/vendor/libs/jquery/jquery.js"></script>
-<script src="assets/vendor/libs/popper/popper.js"></script>
+<script src="assets/vendor/js/bootstrap.js"></script>
 <script src="assets/vendor/js/menu.js"></script>
 <script src="assets/js/main.js"></script>
 </body>

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -44,7 +45,7 @@ public class EventService {
         return eventRepository.findAll();
     }
 
-    public void addEvent(String judulEvent, MultipartFile gambarEvent, String deskripsiEvent, Date tanggalSelesai,
+    public void addEvent(String judulEvent, MultipartFile gambarEvent, String deskripsiEvent, LocalDate tanggalSelesai,
                          String kontakPanitia, String status) throws IOException {
         Event event = new Event();
         event.setJudulEvent(judulEvent);
@@ -69,7 +70,7 @@ public class EventService {
         return "/uploads/event/" + randomFileName;
     }
 
-    public void updateEvent(Long id, String judulEvent, MultipartFile gambarEvent, String deskripsiEvent, Date tanggalSelesai,
+    public void updateEvent(Long id, String judulEvent, MultipartFile gambarEvent, String deskripsiEvent, LocalDate tanggalSelesai,
                             String kontakPanitia, String status) throws IOException {
         Event event = eventRepository.findById(id).orElseThrow(() -> new RuntimeException("Event tidak ditemukan"));
         event.setJudulEvent(judulEvent);

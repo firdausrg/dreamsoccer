@@ -54,7 +54,7 @@
                                             <th style="text-align: center;">No</th>
                                             <th style="text-align: center;">Nama Lapangan</th>
                                             <th style="text-align: center;">Harga Sewa</th>
-                                            <th style="text-align: center;">Deskripsi</th>
+                                            <th style="text-align: center;">Poin Per Booking</th>
                                             <th style="text-align: center;">Aksi</th>
                                         </tr>
                                         </thead>
@@ -82,12 +82,15 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="deskripsi" class="form-label">Deskripsi</label>
-                                        <textarea class="form-control" id="deskripsi" name="deskripsi" rows="3" required placeholder="Masukkan Deskripsi"></textarea>
+                                        <textarea class="form-control" id="deskripsi" name="deskripsi" placeholder="Masukkan deskripsi di sini..." required></textarea>
                                     </div>
-
                                     <div class="mb-3">
                                         <label for="rentalPrice" class="form-label">Harga Sewa</label>
                                         <input type="text" class="form-control" id="rentalPrice" name="rentalPrice" placeholder="Masukkan Harga Sewa" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="poinPerBooking" class="form-label">Poin Per Booking</label>
+                                        <input type="number" class="form-control" id="poinPerBooking" name="poinPerBooking" placeholder="Masukkan jumlah poin per booking" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="fieldImages" class="form-label">Gambar Lapangan</label>
@@ -120,12 +123,18 @@
 
                                     <div class="mb-3">
                                         <label for="editdeskripsi" class="form-label">Deskripsi</label>
-                                        <textarea class="form-control" id="editdeskripsi" name="editdeskripsi" rows="3" required placeholder="Masukkan Deskripsi Lapangan"></textarea>
+                                        <textarea class="form-control" id="editdeskripsi" name="editdeskripsi" placeholder="Masukkan Deskripsi Lapangan" required>
+                                        </textarea>
                                     </div>
 
                                     <div class="mb-3">
                                         <label for="editRentalPrice" class="form-label">Harga Sewa</label>
                                         <input type="text" class="form-control" id="editRentalPrice" name="editRentalPrice" placeholder="Masukkan Harga Sewa" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="editPoinPerBooking" class="form-label">Poin Per Booking</label>
+                                        <input type="number" class="form-control" id="editPoinPerBooking" name="editPoinPerBooking" placeholder="Masukkan jumlah poin per booking" required>
                                     </div>
 
                                     <div class="mb-3">
@@ -239,10 +248,12 @@
                 let namaLapangan = $(this).data("nama");
                 let hargaPerjam = $(this).data("harga");
                 let deskripsiLapangan = $(this).data("deskripsi");
+                let poinPerBooking = $(this).data("poin");
 
                 $("#editFieldName").val(namaLapangan);
                 $("#editRentalPrice").val(formatCurrency(hargaPerjam));
                 $("#editdeskripsi").val(deskripsiLapangan);
+                $("#editPoinPerBooking").val(poinPerBooking);
 
                 $("#editFieldModal").modal("show");
             });
@@ -254,6 +265,7 @@
                 formData.append("fieldName", $("#editFieldName").val());
                 formData.append("rentalPrice", $("#editRentalPrice").val().replace(/[^0-9]/g, ''));
                 formData.append("deskripsi", $("#editdeskripsi").val());
+                formData.append("poinPerBooking", $("#editPoinPerBooking").val());
 
                 let fileInput = $("#editFieldImages")[0].files;
                 for (let i = 0; i < fileInput.length; i++) {
@@ -262,7 +274,7 @@
 
                 $.ajax({
                     url: `/api/lapangan/update/${lapanganIdToUpdate}`,
-                    type: "POST",
+                    type: "PUT",
                     data: formData,
                     processData: false,
                     contentType: false,
@@ -303,55 +315,50 @@
             });
 
             function loadLapangan() {
-    $.ajax({
-        url: "/api/lapangan/list",
-        type: "GET",
-        success: function (data) {
-            let tableBody = "";
-            if (data.length === 0) {
-                tableBody = `<tr><td colspan="4" class="text-center">Tidak ada data lapangan</td></tr>`;
-            } else {
-                data.forEach((lapangan, index) => {
-                    let formattedPrice = `Rp ${lapangan.hargaPerjam.toLocaleString('id-ID')}`;
-                    tableBody += `
-                        <tr>
-                            <td>${index + 1}</td>
-                            <td>${lapangan.namaLapangan}</td>
-                            <td>${formattedPrice}</td>
-                            <td>${lapangan.deskripsiLapangan}</td>
+                $.ajax({
+                    url: "/api/lapangan/list",
+                    type: "GET",
+                    success: function (data) {
+                        let tableBody = "";
+                        data.forEach((lapangan, index) => {
+                            let formattedPrice = `Rp ${lapangan.hargaPerjam.toLocaleString('id-ID')}`;
+                            tableBody += `
+                                <tr>
+                                    <td>${index + 1}</td>
+                                    <td>${lapangan.namaLapangan}</td>
+                                    <td>${formattedPrice}</td>
+                                    <td>${lapangan.poinPerBooking}</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm edit-btn"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#editFieldModal"
+                                                data-id="${lapangan.id}"
+                                                data-nama="${lapangan.namaLapangan}"
+                                                data-harga="${lapangan.hargaPerjam}"
+                                                data-deskripsi="${lapangan.deskripsiLapangan}"
+                                                data-poin="${lapangan.poinPerBooking}">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
 
-                            <td>
-                                <button class="btn btn-primary btn-sm edit-btn"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#editFieldModal"
-                                        data-id="${lapangan.id}"
-                                        data-nama="${lapangan.namaLapangan}"
-                                        data-harga="${lapangan.hargaPerjam}"
-                                        data-deskripsi="${lapangan.deskripsiLapangan}">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-
-                                <button class="btn btn-danger btn-sm delete-btn"
-                                        data-bs-id="${lapangan.id}"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#deleteConfirmationModal">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-
-                            </td>
-                        </tr>`;
+                                        <button class="btn btn-danger btn-sm delete-btn"
+                                                data-bs-id="${lapangan.id}"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteConfirmationModal">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>`;
+                        });
+                        $("#lapangan-list").html(tableBody);
+                    }
                 });
             }
-
-            $("#lapangan-list").html(tableBody);
-        }
-    });
-}
 
             $('#form-add-lapangan').submit(function (event) {
                 event.preventDefault();
                 let formData = new FormData(this);
                 formData.set('rentalPrice', $('#rentalPrice').val().replace(/[^0-9]/g, ''));
+                formData.set('poinPerBooking', $('#poinPerBooking').val())
                 $.ajax({
                     url: '/api/lapangan/add',
                     type: 'POST',

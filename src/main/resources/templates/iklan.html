@@ -18,6 +18,8 @@
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
   <script src="assets/vendor/js/helpers.js"></script>
   <script src="assets/js/config.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <style>
   .dataTables_wrapper .dataTables_paginate .paginate_button.current,
@@ -26,18 +28,18 @@
       background-color: #5e54e6 !important;
       border-color: #5e54e6 !important;
       font-weight: bold !important;
-  }
-  .event-image {
-    width: 100px;
-    height: auto;
-  }
-  .modal-content {
-    text-align: left;
-  }
-  .modal-body img {
-    max-width: 100%;
-    height: auto;
-  }
+    }
+    .event-image {
+      width: 100px;
+      height: auto;
+    }
+    .modal-content {
+      text-align: left;
+    }
+    .modal-body img {
+      max-width: 100%;
+      height: auto;
+    }
 </style>
 
 <body>
@@ -63,7 +65,7 @@
                       <th style="text-align: center;">No</th>
                       <th style="text-align: center;">Gambar</th>
                       <th style="text-align: center;">Judul Event</th>
-                      <th style="text-align: center;">Tanggal Event</th>
+                      <th style="text-align: center;">Tanggal Selesai</th>
                       <th style="text-align: center;">Status</th>
                       <th style="text-align: center;">Aksi</th>
                     </tr>
@@ -93,7 +95,7 @@
                     <textarea class="form-control" id="eventDescription" name="deskripsiEvent" rows="3" placeholder="Masukkan Deskripsi Event"></textarea>
                   </div>
                   <div class="mb-3">
-                    <label for="eventDate" class="form-label">Tanggal Event</label>
+                    <label for="eventDate" class="form-label">Tanggal Selesai</label>
                     <input type="date" class="form-control" id="eventDate" name="tanggalSelesai">
                   </div>
                   <div class="mb-3">
@@ -131,23 +133,23 @@
               <div class="modal-body">
                 <div>
                   <h4>Judul Event:</h4>
-                  <p id="viewEventTitle">Event A</p>
+                  <p id="viewEventTitle"></p>
                 </div>
                 <div>
                   <h4>Deskripsi:</h4>
-                  <p id="viewEventDescription">Ini adalah deskripsi tentang event A. Sebuah acara yang sangat menarik dan bermanfaat bagi peserta.</p>
+                  <p id="viewEventDescription"></p>
                 </div>
                 <div>
-                  <h4>Tanggal Event:</h4>
-                  <p id="viewEventDate">2025-01-30</p>
+                  <h4>Tanggal Selesai:</h4>
+                  <p id="viewEventDate"></p>
                 </div>
                 <div>
                   <h4>Kontak Panitia:</h4>
-                  <p id="viewEventContact">08123456789</p>
+                  <p id="viewEventContact"></p>
                 </div>
                 <div>
                   <h4>Status:</h4>
-                  <p id="viewEventStatus">Aktif</p>
+                  <p id="viewEventStatus"></p>
                 </div>
                 <div>
                   <h4>Gambar:</h4>
@@ -180,7 +182,7 @@
                     <textarea class="form-control" id="editEventDescription" name="deskripsiEvent" rows="3" placeholder="Masukkan Deskripsi Event"></textarea>
                   </div>
                   <div class="mb-3">
-                    <label for="editEventDate" class="form-label">Tanggal Event</label>
+                    <label for="editEventDate" class="form-label">Tanggal Selesai</label>
                     <input type="date" class="form-control" id="editEventDate" name="tanggalSelesai">
                   </div>
                   <div class="mb-3">
@@ -255,20 +257,20 @@
               <td><span class="badge ${statusClass}">${event.status}</span></td>
               <td class="text-center">
                 <div class="d-flex justify-content-center gap-2">
-                  <button class="btn btn-primary btn-sm" 
-                          data-bs-toggle="modal" 
-                          data-bs-target="#viewEventModal" 
+                  <button class="btn btn-primary btn-sm"
+                          data-bs-toggle="modal"
+                          data-bs-target="#viewEventModal"
                           onclick="viewEvent(${event.id})">
                     <i class="fas fa-eye"></i>
                   </button>
-                  <button class="btn btn-warning btn-sm" 
-                          data-bs-toggle="modal" 
-                          data-bs-target="#editEventModal" 
+                  <button class="btn btn-warning btn-sm"
+                          data-bs-toggle="modal"
+                          data-bs-target="#editEventModal"
                           onclick="editEvent(${event.id})">
                     <i class="fas fa-edit"></i>
                   </button>
-                  <button class="btn btn-danger btn-sm btn-delete" 
-                          data-bs-toggle="modal" 
+                  <button class="btn btn-danger btn-sm btn-delete"
+                          data-bs-toggle="modal"
                           data-bs-target="#deleteEventModal"
                           data-id="${event.id}">
                     <i class="fas fa-trash-alt"></i>
@@ -282,68 +284,115 @@
   }
 
   $(document).ready(function() {
-    loadEvents();
+      loadEvents();
 
-    $('#addEventForm').submit(function(e) {
+      $('#addEventForm').submit(function(e) {
       e.preventDefault();
 
       let formData = new FormData(this);
 
       $.ajax({
-        url: '/event/add',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(response) {
-          alert("Event berhasil ditambahkan!");
-          console.log(response);
-          loadEvents();
-          $('#addEventModal').modal('hide');
-        }
+          url: '/event/add',
+          type: 'POST',
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function(response) {
+              $('#addEventModal').modal('hide');
+              setTimeout(function() {
+                  Swal.fire({
+                      title: 'Berhasil!',
+                      text: 'Event berhasil ditambahkan!',
+                      icon: 'success',
+                      timer: 2000,
+                      showConfirmButton: false
+                  });
+
+                  setTimeout(function() {
+                      location.reload();
+                  }, 2000);
+              }, 500);
+          }
       });
-    });   
+  });
+
 
     $('#editEventForm').submit(function(e) {
-      e.preventDefault();
-      
-      let formData = new FormData(this);
-      let eventId = $('#editEventId').val();
+        e.preventDefault();
 
-      $.ajax({
-        url: "/event/update/" + eventId,
-        type: "PUT",
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(response) {
-          alert("Event berhasil diperbarui!");
-          $('#editEventModal').modal('hide');
-          loadEvents();
-        },
-        error: function() {
-          alert("Gagal mengupdate event.");
-        }
-      });
+        let formData = new FormData(this);
+        let eventId = $('#editEventId').val();
+
+        $.ajax({
+            url: "/event/update/" + eventId,
+            type: "PUT",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                $('#editEventModal').modal('hide');
+                setTimeout(function() {
+                    Swal.fire({
+                        title: 'Berhasil!',
+                        text: 'Event berhasil diperbarui!',
+                        icon: 'success',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+
+                    setTimeout(function() {
+                        location.reload();
+                    }, 2000);
+                }, 500);
+            },
+            error: function() {
+                Swal.fire({
+                    title: 'Gagal!',
+                    text: 'Gagal mengupdate event.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
     });
-    
+
+
     let eventIdToDelete = null;
     $(document).on("click", ".btn-delete", function() {
         eventIdToDelete = $(this).data("id");
     });
-    
+
     $('#confirmDeleteButton').click(function() {
         if (eventIdToDelete) {
           $.ajax({
             type: "DELETE",
             url: "/event/delete/" + eventIdToDelete,
             success: function(response) {
-              alert("Event berhasil dihapus");
-              $('#deleteEventModal').modal('hide');
-              $('.modal-backdrop').remove();       
-              loadEvents();
-            }        
-          });
+                $('#deleteEventModal').modal('hide');
+                $('.modal-backdrop').remove();
+                setTimeout(function() {
+                    Swal.fire({
+                        title: 'Berhasil!',
+                        text: 'Event berhasil dihapus!',
+                        icon: 'success',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+
+                    setTimeout(function() {
+                        location.reload();
+                    }, 2000);
+                }, 500);
+            },
+            error: function() {
+                Swal.fire({
+                    title: 'Gagal!',
+                    text: 'Gagal menghapus event.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
         }
     });
 
@@ -362,7 +411,7 @@
  function viewEvent(id) {
    $.get("/event/" + id, function(event) {
     $('#viewEventTitle').text(event.judulEvent);
-    $('#viewEventDescription').text(event.deskripsiEvent);
+    $('#viewEventDescription').html(event.deskripsiEvent.replace(/\n/g, '<br>'));
     let formattedDate = new Date(event.tanggalSelesai).toISOString().split('T')[0];
     $('#viewEventDate').text(formattedDate);
     $('#viewEventContact').text(event.kontakPanitia);
@@ -382,8 +431,7 @@
     $('#editEventDate').val(formattedDate);
     $('#editEventContact').val(event.kontakPanitia);
     $('#editEventStatus').val(event.status);
-    
-    // Update gambar jika ada
+
     if (event.gambarEvent) {
       $('#editEventImagePreview').attr("src", event.gambarEvent).show();
     } else {

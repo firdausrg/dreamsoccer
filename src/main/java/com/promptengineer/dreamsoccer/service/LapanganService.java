@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -43,11 +44,12 @@ public class LapanganService {
     /**
      * Menambahkan lapangan baru dengan gambar
      */
-    public void addLapangan(String fieldName, Double rentalPrice, String deskripsi, List<MultipartFile> fieldImages) throws IOException {
+    public void addLapangan(String fieldName, Double rentalPrice, String deskripsi, int poinPerBooking, List<MultipartFile> fieldImages) throws IOException {
         Lapangan lapangan = new Lapangan();
         lapangan.setNamaLapangan(fieldName);
         lapangan.setHargaPerjam(rentalPrice);
         lapangan.setDeskripsiLapangan(deskripsi);
+        lapangan.setPoinPerBooking(poinPerBooking);
 
         List<String> imagePaths = new ArrayList<>();
         for (MultipartFile file : fieldImages) {
@@ -67,22 +69,21 @@ public class LapanganService {
         Path path = Paths.get(uploadDir + randomFileName);
         Files.write(path, file.getBytes());
 
-        // Simpan path relatif agar bisa diakses di frontend
         return "/uploads/lapangan/" + randomFileName;
     }
 
     /**
      * Mengupdate data lapangan termasuk gambar baru
      */
-    public void updateLapangan(Long id, String fieldName, Double rentalPrice, String deskripsi, List<MultipartFile> fieldImages) throws IOException {
+    public void updateLapangan(Long id, String fieldName, Double rentalPrice, String deskripsi,int poinPerBooking, List<MultipartFile> fieldImages) throws IOException {
         Lapangan lapangan = lapanganRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Lapangan tidak ditemukan"));
 
         lapangan.setNamaLapangan(fieldName);
         lapangan.setHargaPerjam(rentalPrice);
         lapangan.setDeskripsiLapangan(deskripsi);
+        lapangan.setPoinPerBooking(poinPerBooking);
 
-        // Hapus gambar lama jika ada gambar baru
         if (fieldImages != null && !fieldImages.isEmpty()) {
             if (lapangan.getGambarLapangan() != null) {
                 for (String imagePath : lapangan.getGambarLapangan()) {
@@ -108,7 +109,6 @@ public class LapanganService {
         Lapangan lapangan = lapanganRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Lapangan dengan ID " + id + " tidak ditemukan"));
 
-        // Hapus semua gambar terkait
         if (lapangan.getGambarLapangan() != null) {
             for (String imagePath : lapangan.getGambarLapangan()) {
                 deleteImage(imagePath);
@@ -128,5 +128,8 @@ public class LapanganService {
         } catch (IOException e) {
             throw new RuntimeException("Gagal menghapus gambar: " + imagePath + " - " + e.getMessage());
         }
+    }
+    public Optional<Lapangan> findById(Long id) {
+        return lapanganRepository.findById(id);
     }
 }

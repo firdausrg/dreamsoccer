@@ -21,12 +21,12 @@
 </head>
 <style>
     .dataTables_wrapper .dataTables_paginate .paginate_button.current,
-.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
     color: white !important;
     background-color: #5e54e6 !important;
     border-color: #5e54e6 !important;
     font-weight: bold !important;
-}
+    }
 </style>
 <body>
 <div class="layout-wrapper layout-content-navbar">
@@ -211,16 +211,14 @@
             newWindow.document.close();
             newWindow.print();
         }
-function resetFilter(type) {
-    // Reset date input fields
-    $(`#${type}StartDate`).val('');
-    $(`#${type}EndDate`).val('');
+        function resetFilter(type) {
+            $(`#${type}StartDate`).val('');
+            $(`#${type}EndDate`).val('');
 
-    const table = type === 'booking' ? bookingTable : rewardTable;
-    $.fn.dataTable.ext.search = []; // Clear all filters
-    table.draw(); // Redraw table without filter
-}
-
+            const table = type === 'booking' ? bookingTable : rewardTable;
+            $.fn.dataTable.ext.search = []; // Clear all filters
+            table.draw(); // Redraw table without filter
+        }
     </script>
 </div>
 </body>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="assets/" data-template="vertical-menu-template" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+    <title>Data Penukaran Reward | DreamSoccer</title>
+    <meta name="description" content=""/>
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon/favicon.ico"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="assets/vendor/fonts/fontawesome.css"/>
+    <link rel="stylesheet" href="assets/vendor/fonts/tabler-icons.css"/>
+    <link rel="stylesheet" href="assets/vendor/css/rtl/core.css" class="template-customizer-core-css"/>
+    <link rel="stylesheet" href="assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css"/>
+    <link rel="stylesheet" href="assets/css/demo.css"/>
+    <link rel="stylesheet" href="style.css"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css"/>
+    <script src="assets/vendor/js/helpers.js"></script>
+    <script src="assets/js/config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<style>
+    .status-button {
+    cursor: pointer;
+    padding: 5px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    margin: 0 5px;
+    }
+    .status-button.success {
+        background-color: #28a745;
+        color: white;
+    }
+    .status-button.danger {
+        background-color: #dc3545;
+        color: white;
+    }
+    .status-button[disabled] {
+        background-color: #6c757d;
+        cursor: not-allowed;
+    }
+    .status-button i {
+        font-size: 16px;
+    }
+</style>
+<body>
+<div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+        <div th:replace="~{pisah/sidebar.html}">
+        </div>
+        <div class="layout-page">
+            <div th:replace="~{pisah/navbar.html}">
+            </div>
+            <div class="content-wrapper">
+                <div class="container-xxl flex-grow-1 container-p-y">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between">
+                                    <h4 class="card-title">Menu Daftar Penukaran Reward</h4>
+                                </div>
+                                <div class="card-body">
+                                    <table id="tabel-custom" class="table table-striped table-bordered text-center">
+                                        <thead class="table-dark">
+                                        <tr>
+                                            <th style="text-align: center;">No</th>
+                                            <th style="text-align: center;">Nama</th>
+                                            <th style="text-align: center;">Nama Reward</th>
+                                            <th style="text-align: center;">Tanggal Penukaran</th>
+                                            <th style="text-align: center;">Poin yang Digunakan</th>
+                                            <th style="text-align: center;">Status</th>
+                                            <th style="text-align: center;">Aksi</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="historyTabledata"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div th:replace="~{pisah/footer.html}">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/vendor/js/bootstrap.js"></script>
+    <script src="assets/vendor/js/menu.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script>
+        $.get("/api/reward/history-penukaran", function(historyData) {
+            console.log(historyData); // Menampilkan data yang diterima dari API
+            let tableContent = "";
+            historyData.sort((a, b) => new Date(b.tanggalPenukaran) - new Date(a.tanggalPenukaran));
+            historyData.forEach((history, index) => {
+                let statusText = (history.status && history.status.toUpperCase()) || 'N/A';
+                let statusClass = statusText === "BERHASIL" ? "success" : statusText === "GAGAL" ? "danger" : "warning";
+                let statusIcon = statusText === "BERHASIL" ? "check" : statusText === "GAGAL" ? "times" : "hourglass-half";
+
+                tableContent += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${history.nama || 'N/A'}</td>
+                        <td>${history.namaRewardPenukaran || 'N/A'}</td>
+                        <td>${history.tanggalPenukaran || 'N/A'}</td>
+                        <td>${history.jumlahPointPenukaran || '0'}</td>
+                        <td class="text-center">
+                            <span class="badge bg-${statusClass}">${statusText}</span>
+                        </td>
+                       <td>
+                            <div class="d-flex justify-content-center">
+                                <!-- Tombol Gagal -->
+                                <button class="status-button danger"
+                                        ${statusText === 'BERHASIL' || statusText === 'GAGAL' ? 'disabled' : ''}
+                                        onclick="showConfirmDialog('${history.id}', 'Gagal')">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                                <!-- Tombol Berhasil -->
+                                <button class="status-button success"
+                                        ${statusText === 'BERHASIL' || statusText === 'GAGAL' ? 'disabled' : ''}
+                                        onclick="showConfirmDialog('${history.id}', 'Berhasil')">
+                                    <i class="fa fa-check"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>`;
+            });
+
+            $("#historyTabledata").html(tableContent);
+        }).fail(function() {
+            $("#historyTabledata").html(`
+                <tr>
+                    <td colspan="5" class="text-center text-danger">Gagal memuat data history penukaran. Coba lagi.</td>
+                </tr>`);
+        });
+
+        var table = $('#tabel-custom').DataTable({
+            "paging": true,
+            "pageLength": 5,
+            "lengthMenu": [5, 10, 15, 20],
+            "ordering": true,
+            "info": true
+        });
+
+        function showConfirmDialog(id, newStatus) {
+            Swal.fire({
+                title: `Apakah Anda yakin ingin mengubah status ke ${newStatus}?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, ubah',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    updateStatus(id, newStatus);
+                    console.log(`Mengubah status reward ID: ${id} ke status: ${newStatus}`);
+                }
+            });
+        }
+
+        function updateStatus(id, newStatus) {
+            $.ajax({
+                url: '/api/reward/update-status/' + id,
+                method: 'POST',
+                data: { status: newStatus },
+                success: function(response) {
+                    Swal.fire({
+                        title: 'Status berhasil diperbarui',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        location.reload(); // Refresh table data after update
+                    });
+                },
+                error: function() {
+                    Swal.fire({
+                        title: 'Gagal memperbarui status',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        }
+    </script>
+
+</div>
+</body>
+</html>

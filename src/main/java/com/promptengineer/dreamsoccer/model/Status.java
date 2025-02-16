@@ -5,8 +5,11 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum Status {
     SELESAI("Selesai"),
+    BERHASIL("Berhasil"),
+    GAGAL("Gagal"),
     BELUM_SELESAI("Belum Selesai"),
     MENUNGGU("Menunggu"),
+    BATAL("Batal"),
     AKTIF("Aktif"),
     TIDAK_AKTIF("Tidak Aktif"),
     BELUM_LUNAS("Belum Lunas"),

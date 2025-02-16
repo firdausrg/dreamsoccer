@@ -54,6 +54,9 @@ public class User {
     @Column(name = "Foto")
     private String foto;
 
+    @Column(name = "Point", nullable = false, columnDefinition = "int default 0")
+    private int point = 0;
+
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<Booking> bookings;
@@ -62,6 +65,7 @@ public class User {
     private List<HistoryBooking> historyBookingList;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<HistoryPenukaranReward> historyPenukaranRewards;
 
     public List<Booking> getBookings() {
@@ -193,6 +197,14 @@ public class User {
 
     public void setFoto(String foto) {
         this.foto = foto;
+    }
+
+    public int getPoint() {
+        return point;
+    }
+
+    public void setPoint(int point) {
+        this.point = point;
     }
 
     public Role getRole() {

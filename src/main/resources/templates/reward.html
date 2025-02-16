@@ -74,7 +74,6 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <!-- Tambahkan ID pada Form -->
                                 <form id="addRewardForm" enctype="multipart/form-data">
                                     <div class="mb-3">
                                         <label for="rewardName" class="form-label">Nama Reward</label>
@@ -92,8 +91,6 @@
                                         <label for="RewardImage" class="form-label">Gambar Reward (Opsional)</label>
                                         <input type="file" class="form-control" id="RewardImage" name="file" accept="image/*">
                                     </div>
-
-
                                 </form>
 
                                 <div class="modal-footer">
@@ -105,7 +102,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- Modal Edit -->
+
                 <div class="modal fade" id="editRewardModal" tabindex="-1" aria-labelledby="editRewardModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -182,30 +179,30 @@
      $("#confirmDeleteBtn").click(function() {
          if (rewardIdToDelete) {
              $.ajax({
-                 url: `/api/reward/delete/${rewardIdToDelete}`,
-                 type: "DELETE",
-                 success: function(response) {
-                     Swal.fire({
-                         icon: 'success',
-                         title: 'Berhasil!',
-                         text: 'Reward berhasil dihapus!',
-                         showConfirmButton: false,
-                         timer: 2000
-                     });
-
-                     $("#deleteRewardModal").modal("hide");
-                     fetchRewards();
-                 },
-                 error: function(xhr) {
-                     Swal.fire({
-                         icon: 'error',
-                         title: 'Gagal!',
-                         text: 'Gagal menghapus reward: ' + xhr.responseText,
-                         showConfirmButton: false,
-                         timer: 2000
-                     });
-                 }
-             });
+                url: `/api/reward/delete/${rewardIdToDelete}`,
+                type: "DELETE",
+                success: function(response) {
+                    $("#deleteRewardModal").modal("hide");
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Reward berhasil dihapus!',
+                        showConfirmButton: false,
+                        timer: 2000
+                    }).then(() => {
+                        location.reload();
+                    });
+                },
+                error: function(xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: 'Gagal menghapus reward: ' + xhr.responseText,
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                }
+            });
          }
      });
 
@@ -237,33 +234,33 @@
          formData.append("file", $("#editFile")[0].files[0]);
 
          $.ajax({
-             url: `/api/reward/update/${rewardIdToEdit}`,
-             type: "PUT",
-             data: formData,
-             processData: false,
-             contentType: false,
-             success: function(response) {
-                 Swal.fire({
-                     icon: 'success',
-                     title: 'Berhasil!',
-                     text: 'Reward berhasil diperbarui!',
-                     showConfirmButton: false,
-                     timer: 2000
-                 });
-
-                 $("#editRewardModal").modal("hide");
-                 fetchRewards();
-             },
-             error: function(xhr) {
-                 Swal.fire({
-                     icon: 'error',
-                     title: 'Gagal!',
-                     text: 'Gagal memperbarui reward: ' + xhr.responseText,
-                     showConfirmButton: false,
-                     timer: 2000
-                 });
-             }
-         });
+            url: `/api/reward/update/${rewardIdToEdit}`,
+            type: "PUT",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                $("#editRewardModal").modal("hide");
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: 'Reward berhasil diperbarui!',
+                    showConfirmButton: false,
+                    timer: 2000
+                }).then(() => {
+                    location.reload();
+                });
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: 'Gagal memperbarui reward: ' + xhr.responseText,
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }
+        });
      });
 
      $("#saveRewardBtn").click(function(event) {
@@ -271,33 +268,33 @@
          var formData = new FormData($("#addRewardForm")[0]);
 
          $.ajax({
-             url: "/api/reward/add",
-             type: "POST",
-             data: formData,
-             processData: false,
-             contentType: false,
-             success: function(response) {
-                 Swal.fire({
-                     icon: 'success',
-                     title: 'Berhasil!',
-                     text: 'Reward berhasil ditambahkan!',
-                     showConfirmButton: false,
-                     timer: 2000
-                 });
-
-                 $("#addRewardModal").modal("hide");
-                 fetchRewards();
-             },
-             error: function(xhr) {
-                 Swal.fire({
-                     icon: 'error',
-                     title: 'Gagal!',
-                     text: 'Gagal menambahkan reward: ' + xhr.responseText,
-                     showConfirmButton: false,
-                     timer: 2000
-                 });
-             }
-         });
+            url: "/api/reward/add",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                $("#addRewardModal").modal("hide");
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: 'Reward berhasil ditambahkan!',
+                    showConfirmButton: false,
+                    timer: 2000
+                }).then(() => {
+                    location.reload();
+                });
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: 'Gagal menambahkan reward: ' + xhr.responseText,
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }
+        });
      });
 
      function fetchRewards() {

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,6 +31,9 @@ public class UserService {
     @Autowired
     private HttpSession httpSession;
 
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+    }
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
@@ -82,7 +84,6 @@ public class UserService {
                 + "Tim Dukungan Kami";
     }
 
-
     private String generateOtp() {
         return String.valueOf((int)(Math.random() * 9000) + 1000);
     }
@@ -111,7 +112,6 @@ public class UserService {
         return Duration.between(user.getOtpCreatedAt(), LocalDateTime.now()).toMinutes() > 5;
     }
 
-
     public void resendOtp(Long userId) {
         try {
             User user = userRepository.findById(userId)
@@ -136,6 +136,7 @@ public class UserService {
             System.err.println("Gagal mengirim ulang OTP: " + e.getMessage());
         }
     }
+
     public void updateUser(User user) {
         User loggedInUser = (User) httpSession.getAttribute("loggedInUser");
 
@@ -145,8 +146,23 @@ public class UserService {
 
         userRepository.save(user);
     }
+
     public boolean isUserExists(Long userId) {
         return userRepository.existsById(userId);
     }
+
+    public Long getUserIdByUsername(String username) {
+        Optional<User> userOptional = userRepository.findByUsername(username);
+
+        if (userOptional.isPresent()) {
+            return userOptional.get().getId();
+        } else {
+            throw new RuntimeException("User tidak ditemukan dengan username: " + username);
+        }
+    }
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
 
 }

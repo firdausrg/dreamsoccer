@@ -1,11 +1,5 @@
 <!DOCTYPE html>
-<html
-        lang="en"
-        class="light-style layout-menu-fixed"
-        dir="ltr"
-        data-theme="theme-default"
-        data-assets-path="assets/"
-        data-template="horizontal-menu-template" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="assets/" data-template="horizontal-menu-template" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
@@ -30,7 +24,7 @@
     }
     th, td {
       padding: 12px;
-      text-align: left;
+      text-align: center;
       border: 1px solid #ddd;
     }
     th {
@@ -89,43 +83,7 @@
                 <th>Status</th>
               </tr>
               </thead>
-              <tbody>
-              <tr>
-                <td>1</td>
-                <td>Voucher Gratis Bermain</td>
-                <td>2025-01-15</td>
-                <td>150</td>
-                <td>Berhasil</td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>Kaos Eksklusif</td>
-                <td>2025-01-20</td>
-                <td>200</td>
-                <td>Berhasil</td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td>Voucher Diskon</td>
-                <td>2025-01-22</td>
-                <td>100</td>
-                <td>Dalam Proses</td>
-              </tr>
-              <tr>
-                <td>4</td>
-                <td>Voucher Makanan</td>
-                <td>2025-01-25</td>
-                <td>250</td>
-                <td>Berhasil</td>
-              </tr>
-              <tr>
-                <td>5</td>
-                <td>Kaos Sport</td>
-                <td>2025-01-27</td>
-                <td>300</td>
-                <td>Gagal</td>
-              </tr>
-              </tbody>
+              <tbody id="historyTabledata"></tbody>
             </table>
           </div>
         </div>
@@ -134,7 +92,40 @@
     </div>
   </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
+  $.get("/api/reward/history-penukaran", function(historyData) {
+    console.log(historyData); // Menampilkan data yang diterima dari API
+    let tableContent = "";
+    historyData.sort((a, b) => new Date(b.tanggalPenukaran) - new Date(a.tanggalPenukaran));
+    historyData.forEach((history, index) => {
+      let statusText = (history.status && history.status.toUpperCase()) || 'N/A';
+      let statusClass = statusText === "BERHASIL"
+          ? "bg-success text-white fw-bold px-2 py-1 d-inline-block rounded"
+          : "bg-danger text-white fw-bold px-2 py-1 d-inline-block rounded";
+
+      tableContent += `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${history.namaRewardPenukaran || 'N/A'}</td>
+          <td>${history.tanggalPenukaran || 'N/A'}</td>
+          <td>${history.jumlahPointPenukaran || '0'}</td>
+          <td class="text-center">
+              <span class="${statusClass}">${statusText}</span>
+          </td>
+        </tr>`;
+    });
+
+    $("#historyTabledata").html(tableContent);
+  }).fail(function() {
+    $("#historyTabledata").html(`
+      <tr>
+        <td colspan="5" class="text-center text-danger">Gagal memuat data history penukaran. Coba lagi.</td>
+      </tr>`);
+  });
+
   function searchTable() {
     let input = document.getElementById('searchInput');
     let filter = input.value.toLowerCase();
@@ -163,8 +154,7 @@
   }
 </script>
 
-<script src="assets/vendor/libs/jquery/jquery.js"></script>
-<script src="assets/vendor/libs/popper/popper.js"></script>
+<script src="assets/vendor/js/bootstrap.js"></script>
 <script src="assets/vendor/js/menu.js"></script>
 <script src="assets/js/main.js"></script>
 </body>

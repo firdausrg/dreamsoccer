@@ -1,6 +1,7 @@
 package com.promptengineer.dreamsoccer.model;
-import jakarta.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
@@ -14,9 +15,11 @@ public class DataReward {
     private String gambarReward;
 
     @OneToMany(mappedBy = "dataReward")
+    @JsonIgnore
     private List<HistoryPenukaranReward> historyPenukaranRewardList;
 
     public List<HistoryPenukaranReward> getHistoryPenukaranRewardList() {
+
         return historyPenukaranRewardList;
     }
 

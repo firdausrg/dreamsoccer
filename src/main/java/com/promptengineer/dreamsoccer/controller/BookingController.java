@@ -1,8 +1,10 @@
 package com.promptengineer.dreamsoccer.controller;
 
 import com.promptengineer.dreamsoccer.model.Booking;
+import com.promptengineer.dreamsoccer.model.Lapangan;
 import com.promptengineer.dreamsoccer.model.User;
 import com.promptengineer.dreamsoccer.service.BookingService;
+import com.promptengineer.dreamsoccer.service.LapanganService;
 import com.promptengineer.dreamsoccer.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +12,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
@@ -23,13 +27,20 @@ public class BookingController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private LapanganService lapanganService;
+
     @PostMapping
     public ResponseEntity<?> createBooking(@RequestBody Booking booking) {
         String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-        User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User Tidak Ada!"));
+        User admin = userService.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User Tidak Ada!"));
 
-        booking.setCreatedBy(user.getNama());
-        booking.setUpdatedBy(user.getNama());
+        User userBooking = userService.findById(booking.getUser().getId())
+                .orElseThrow(() -> new RuntimeException("User yang dibooking tidak ditemukan!"));
+
+        booking.setCreatedBy(admin.getNama());
+        booking.setUpdatedBy(admin.getNama());
 
         boolean isOverlapping = bookingService.isBookingOverlapExists(
                 booking.getTanggalBooking(),
@@ -42,10 +53,25 @@ public class BookingController {
             return ResponseEntity.badRequest().body(Map.of("gagal", "Jam sudah terisi, silakan pilih jam lain."));
         }
 
-        Booking savedBooking = bookingService.saveBooking(booking);
-        return ResponseEntity.ok(savedBooking);
-    }
+        LocalTime jamMulai = booking.getJamMulai();
+        LocalTime jamSelesai = booking.getJamSelesai();
+        long totalJam = Duration.between(jamMulai, jamSelesai).toHours();
 
+        Lapangan lapangan = lapanganService.findById(booking.getLapangan().getId())
+                .orElseThrow(() -> new RuntimeException("Lapangan Tidak Ditemukan!"));
+
+        int totalPoin = (int) (totalJam * lapangan.getPoinPerBooking());
+
+        userBooking.setPoint(userBooking.getPoint() + totalPoin);
+        userService.save(userBooking);
+
+        Booking savedBooking = bookingService.saveBooking(booking);
+
+        return ResponseEntity.ok(Map.of(
+                "success", "Booking berhasil!",
+                "totalPoinDiterima", totalPoin
+        ));
+    }
 
     @GetMapping
     public ResponseEntity<List<Booking>> getAllBookings() {
@@ -89,7 +115,6 @@ public class BookingController {
             return ResponseEntity.notFound().build();
         }
     }
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBooking(@PathVariable Long id) {

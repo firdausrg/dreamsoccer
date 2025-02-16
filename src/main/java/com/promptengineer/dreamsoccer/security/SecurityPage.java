@@ -15,13 +15,17 @@ public class SecurityPage {
     };
 
     public static final String[] ADMIN_URLS = {
-            "/admin_dashboard", "/lapangan","/api/lapangan","/user/list", "/booking","/api/booking", "/reward",
-            "/laporan", "/profile_admin","/updateProfile", "/iklan"
+            "/admin_dashboard", "/lapangan", "/api/lapangan", "/user/list", "/booking", "/api/booking", "/reward",
+            "/laporan", "/profile_admin", "/updateProfile", "/iklan"
     };
 
     public static final String[] USER_URLS = {
-            "/user_dashboard", "/event", "/data-lapangan", "/booking_lapangan",
+            "/user/list", "/api/booking", "/api/lapangan", "/user_dashboard", "/event", "/data-lapangan", "/booking_lapangan",
             "/history_booking", "/daftar_reward", "/history_penukaran_reward",
             "/profile_user", "/contact", "/event/detail-event", "/data_lapangan/detail-lapangan"
+    };
+
+    public static final String[] ADMIN_AND_USER_URLS = {
+            "/user/list", "/api/booking", "/api/lapangan"
     };
 }

@@ -21,9 +21,12 @@ public class Lapangan {
     @CollectionTable(name = "lapangan_images", joinColumns = @JoinColumn(name = "lapangan_id"))
     @Column(name = "GambarLapangan")
     private List<String> gambarLapangan;
-
-    @Column(name = "DeskripsiLapangan")
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String deskripsiLapangan;
+
+    @Column(name = "PoinPerBooking", nullable = false)
+    private int poinPerBooking;
 
     @OneToMany(mappedBy = "lapangan")
     @JsonIgnore
@@ -75,5 +78,12 @@ public class Lapangan {
 
     public void setBookings(List<Booking> bookings) {
         this.bookings = bookings;
+    }
+    public int getPoinPerBooking() {
+        return poinPerBooking;
+    }
+
+    public void setPoinPerBooking(int poinPerBooking) {
+        this.poinPerBooking = poinPerBooking;
     }
 }

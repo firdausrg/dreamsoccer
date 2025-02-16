@@ -1,23 +1,22 @@
 <!DOCTYPE html>
-<html lang="en" class="light-style customizer-hide" dir="ltr" data-theme="theme-default" data-assets-path="/assets/"
-      data-template="vertical-menu-template" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" class="light-style customizer-hide" dir="ltr" data-theme="theme-default" data-assets-path="/assets/" data-template="vertical-menu-template" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
   <title>Registrasi - DreamSoccer | Prompt Enginerr</title>
-  <meta name="description" content="" />
-  <link rel="icon" type="image/x-icon" href="/assets/img/favicon/favicon.ico" />
-  <link rel="stylesheet" href="/assets/vendor/fonts/fontawesome.css" />
-  <link rel="stylesheet" href="/assets/vendor/fonts/tabler-icons.css" />
-  <link rel="stylesheet" href="/assets/vendor/fonts/flag-icons.css" />
-  <link rel="stylesheet" href="/assets/vendor/css/rtl/core.css" class="template-customizer-core-css" />
-  <link rel="stylesheet" href="/assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css" />
-  <link rel="stylesheet" href="/assets/css/demo.css" />
-  <link rel="stylesheet" href="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
-  <link rel="stylesheet" href="/assets/vendor/libs/node-waves/node-waves.css" />
-  <link rel="stylesheet" href="/assets/vendor/libs/typeahead-js/typeahead.css" />
-  <link rel="stylesheet" href="/assets/vendor/libs/formvalidation/dist/css/formValidation.min.css" />
-  <link rel="stylesheet" href="/assets/vendor/css/pages/page-auth.css" />
+  <meta name="description" content=""/>
+  <link rel="icon" type="image/x-icon" href="/assets/img/favicon/favicon.ico"/>
+  <link rel="stylesheet" href="/assets/vendor/fonts/fontawesome.css"/>
+  <link rel="stylesheet" href="/assets/vendor/fonts/tabler-icons.css"/>
+  <link rel="stylesheet" href="/assets/vendor/fonts/flag-icons.css"/>
+  <link rel="stylesheet" href="/assets/vendor/css/rtl/core.css" class="template-customizer-core-css"/>
+  <link rel="stylesheet" href="/assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css"/>
+  <link rel="stylesheet" href="/assets/css/demo.css"/>
+  <link rel="stylesheet" href="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"/>
+  <link rel="stylesheet" href="/assets/vendor/libs/node-waves/node-waves.css"/>
+  <link rel="stylesheet" href="/assets/vendor/libs/typeahead-js/typeahead.css"/>
+  <link rel="stylesheet" href="/assets/vendor/libs/formvalidation/dist/css/formValidation.min.css"/>
+  <link rel="stylesheet" href="/assets/vendor/css/pages/page-auth.css"/>
   <script src="/assets/vendor/js/helpers.js"></script>
   <script src="/assets/vendor/js/template-customizer.js"></script>
   <script src="/assets/js/config.js"></script>
@@ -143,8 +142,6 @@
             </div>
             <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger"></div>
           </div>
-
-
           <button class="btn btn-primary d-grid w-100" type="submit">Registrasi</button>
         </form>
 
@@ -178,7 +175,7 @@
           onBeforeOpen: () => {
             Swal.showLoading();
             const confirmButton = Swal.getConfirmButton();
-            confirmButton.disabled = true; // Disable the button
+            confirmButton.disabled = true;
           }
         });
 

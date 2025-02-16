@@ -1,20 +1,20 @@
 <!DOCTYPE html>
-<html lang="en" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="assets/"
-      data-template="horizontal-menu-template" xmlns:th="http://www.w3.org/1999/xhtml">
-
+<html lang="en" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="assets/" data-template="horizontal-menu-template" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
     <title>Profile | DreamSoccer</title>
-    <link rel="icon" type="image/x-icon" href="assets/img/favicon/favicon.ico" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="assets/vendor/css/rtl/theme-default.css" />
-    <link rel="stylesheet" href="assets/css/demo.css" />
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon/favicon.ico"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="assets/vendor/css/rtl/theme-default.css"/>
+    <link rel="stylesheet" href="assets/css/demo.css"/>
     <script src="assets/vendor/js/helpers.js"></script>
     <script src="assets/vendor/js/template-customizer.js"></script>
     <script src="assets/js/config.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         .profile-container {
             display: flex;
@@ -88,7 +88,7 @@
             cursor: pointer;
             font-weight: bold;
         }
-@media (max-width: 768px) {
+    @media (max-width: 768px) {
     .profile-container {
         flex-direction: column;
         align-items: center;
@@ -140,7 +140,6 @@
         width: 100%;
     }
 }
-
     </style>
 </head>
 
@@ -154,9 +153,9 @@
                 <div class="container-xxl flex-grow-1 container-p-y">
                     <div class="profile-container">
                         <div class="card card-photo">
-                            <img src="assets/img/avatars/1.png" alt="Foto Profil">
-                            <h3>John Doe</h3>
-                            <p>User</p>
+                            <img th:src="@{'/uploads/foto-profil/' + ${userPhoto}}" alt="Foto Profil">
+                            <h3><span th:text="${user.nama}" style="text-transform: uppercase;"></span></h3>
+                            <p><span th:text="${user.role}" style="text-transform: uppercase;"></span></p>
                             <p>Member DreamSoccer</p>
                         </div>
 
@@ -167,33 +166,40 @@
                             </div>
 
                             <div class="tab-content active" id="profile">
+                                <form th:action="@{/updateProfileUser}" method="POST" class="p-4" enctype="multipart/form-data">
                                 <h4>
                                     Detail Profil
                                     <button class="btn btn-primary" id="edit-profile-btn">Edit</button>
                                 </h4>
-                                <form id="profile-form">
                                     <div id="profile-view-mode">
-                                        <p><strong>Nama:</strong> John Doe</p>
-                                        <p><strong>Alamat:</strong> Jalan Lapangan No. 123, Jakarta</p>
-                                        <p><strong>No Tlp:</strong> 0812-3456-7890</p>
-                                        <p><strong>Email:</strong> johndoe@example.com</p>
+                                        <p><strong>Nama:</strong> <span th:text="${user.nama}"></span></p>
+                                        <p><strong>Alamat:</strong> <span th:text="${user.alamat}"></span></p>
+                                        <p><strong>No Tlp:</strong> <span th:text="${user.noTelpon}"></span></p>
+                                        <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
                                     </div>
                                     <div id="profile-edit-mode" style="display: none;">
                                         <div style="margin-bottom: 10px;">
                                             <label>Nama</label>
-                                            <input type="text" class="form-control" value="John Doe">
+                                            <input type="text" class="form-control" id="nama" th:value="${user.nama}" name="nama" />
                                         </div>
                                         <div style="margin-bottom: 10px;">
                                             <label>Email</label>
-                                            <input type="email" class="form-control" value="johndoe@example.com">
+                                            <input type="email" class="form-control" id="email" th:value="${user.email}" name="email" />
                                         </div>
                                         <div style="margin-bottom: 10px;">
                                             <label>No Tlp</label>
-                                            <input type="text" class="form-control" value="0812-3456-7890">
+                                            <input type="tel" class="form-control" id="noTelpon" th:value="${user.noTelpon}" name="noTelpon" />
                                         </div>
                                         <div style="margin-bottom: 10px;">
                                             <label>Alamat</label>
-                                            <input type="text" class="form-control" value="Jalan Lapangan No. 123, Jakarta">
+                                            <input type="text" class="form-control" id="alamat" th:value="${user.alamat}" name="alamat" />
+                                        </div>
+                                        <div style="margin-bottom: 10px;">
+                                            <label>Foto Profil</label>
+                                            <div class="d-flex align-items-center">
+                                                <img th:if="${user.foto}" th:src="@{'/uploads/foto-profil/' + ${user.foto}}" alt="Foto Profil" class="img-thumbnail" width="100px" id="currentProfilePic">
+                                            </div>
+                                            <input type="file" class="form-control mt-2" id="foto" name="foto" accept="image/*" onchange="previewImage(event)" />
                                         </div>
                                     </div>
                                 </form>
@@ -201,21 +207,22 @@
 
                             <div class="tab-content" id="ubah-password">
                                 <h4>Ubah Password</h4>
-                                <form>
-                                    <div>
+                                <form id="change-password-form">
+                                    <div class="mb-3">
                                         <label>Password Lama</label>
-                                        <input type="password" placeholder="Masukkan password lama" class="form-control">
+                                        <input type="password" name="currentPassword" id="current-password" placeholder="Masukkan password lama" class="form-control">
                                     </div>
-                                    <div style="margin-top: 10px;">
+                                    <div class="mb-3">
                                         <label>Password Baru</label>
-                                        <input type="password" placeholder="Masukkan password baru" class="form-control">
+                                        <input type="password" name="newPassword" id="new-password" placeholder="Masukkan password baru" class="form-control">
                                     </div>
-                                    <div style="margin-top: 10px;">
+                                    <div class="mb-3">
                                         <label>Konfirmasi Password Baru</label>
-                                        <input type="password" placeholder="Konfirmasi password baru" class="form-control">
+                                        <input type="password" name="confirmNewPassword" id="confirm-new-password" placeholder="Konfirmasi password baru" class="form-control">
                                     </div>
-                                    <button type="submit" class="btn btn-primary" style="margin-top: 15px;">Simpan</button>
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
                                 </form>
+                                <div id="password-feedback" class="mt-3 text-danger"></div>
                             </div>
                         </div>
                     </div>
@@ -226,8 +233,7 @@
     </div>
 </div>
 
-<script src="assets/vendor/libs/jquery/jquery.js"></script>
-<script src="assets/vendor/libs/popper/popper.js"></script>
+<script src="assets/vendor/js/bootstrap.js"></script>
 <script src="assets/vendor/js/menu.js"></script>
 <script src="assets/js/main.js"></script>
 <script>
@@ -241,22 +247,124 @@
         });
     });
 
-    const editBtn = document.getElementById('edit-profile-btn');
-    const profileViewMode = document.getElementById('profile-view-mode');
-    const profileEditMode = document.getElementById('profile-edit-mode');
+    const editBtn = document.getElementById("edit-profile-btn");
+        const profileForm = document.getElementById("profile-form");
+        const profileViewMode = document.getElementById("profile-view-mode");
+        const profileEditMode = document.getElementById("profile-edit-mode");
+        let isEditing = false;
 
-    editBtn.addEventListener('click', () => {
-        if (editBtn.textContent === 'Edit') {
-            profileViewMode.style.display = 'none';
-            profileEditMode.style.display = 'block';
-            editBtn.textContent = 'Simpan';
-        } else {
-            profileViewMode.style.display = 'block';
-            profileEditMode.style.display = 'none';
-            editBtn.textContent = 'Edit';
+        editBtn.addEventListener("click", function (event) {
+            if (!isEditing) {
+                event.preventDefault();
+                profileViewMode.style.display = "none";
+                profileEditMode.style.display = "block";
+                editBtn.textContent = "Simpan";
+                isEditing = true;
+            } else {
+                profileForm.submit();
+            }
+        });
+</script>
+<script th:inline="javascript">
+    window.onload = function() {
+        const updateSuccess = /*[[${updateSuccess}]]*/ false;
+        const uploadError = /*[[${uploadError}]]*/ null;
+
+        if (updateSuccess) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Profil berhasil diperbarui!',
+                confirmButtonText: 'OK',
+                timer: 3000,
+                timerProgressBar: true
+            }).then(() => {
+                location.reload();
+            });
         }
+        if (uploadError) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: uploadError,
+                confirmButtonText: 'OK',
+                timer: 3000,
+                timerProgressBar: true
+            });
+        }
+    };
+</script>
+<script>
+    function previewImage(event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            const imgElement = document.getElementById('currentProfilePic');
+            imgElement.src = e.target.result;
+        };
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+<script>
+    document.getElementById('change-password-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        let currentPassword = document.getElementById('current-password').value;
+        let newPassword = document.getElementById('new-password').value;
+        let confirmNewPassword = document.getElementById('confirm-new-password').value;
+        let feedback = document.getElementById('password-feedback');
+
+        if (!currentPassword || !newPassword || !confirmNewPassword) {
+            feedback.style.color = "red";
+            feedback.textContent = "Semua kolom harus diisi!";
+            return;
+        }
+
+        fetch('/updatePassword', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify({
+                currentPassword: currentPassword,
+                newPassword: newPassword,
+                confirmNewPassword: confirmNewPassword
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                feedback.style.color = "green";
+                feedback.textContent = data.message;
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: data.message,
+                    confirmButtonText: 'OK',
+                    timer: 3000,
+                    timerProgressBar: true
+                }).then(() => {
+                    location.reload();
+                });
+                document.getElementById('change-password-form').reset();
+            } else if (data.error) {
+                feedback.style.color = "red";
+                feedback.textContent = data.error;
+            }
+        })
+        .catch(error => {
+            feedback.style.color = "red";
+            feedback.textContent = "Terjadi kesalahan, coba lagi!";
+        });
     });
 </script>
+
+
 </body>
 
 </html>

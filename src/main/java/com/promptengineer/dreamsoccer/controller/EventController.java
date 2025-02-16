@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class EventController {
             @RequestParam("judulEvent") String judulEvent,
             @RequestParam("gambarEvent") MultipartFile gambarEvent,
             @RequestParam("deskripsiEvent") String deskripsiEvent,
-            @RequestParam("tanggalSelesai") @DateTimeFormat(pattern = "yyyy-MM-dd") Date tanggalSelesai,
+            @RequestParam("tanggalSelesai") @DateTimeFormat(iso=DateTimeFormat.ISO.DATE) LocalDate tanggalSelesai,
             @RequestParam("kontakPanitia") String kontakPanitia,
             @RequestParam("status") String status) {
         try {
@@ -61,7 +62,7 @@ public class EventController {
             @RequestParam("judulEvent") String judulEvent,
             @RequestParam("gambarEvent") MultipartFile gambarEvent,
             @RequestParam("deskripsiEvent") String deskripsiEvent,
-            @RequestParam("tanggalSelesai") @DateTimeFormat(pattern = "yyyy-MM-dd") Date tanggalSelesai,
+            @RequestParam("tanggalSelesai") @DateTimeFormat(iso=DateTimeFormat.ISO.DATE) LocalDate tanggalSelesai,
             @RequestParam("kontakPanitia") String kontakPanitia,
             @RequestParam("status") String status) {
         try {

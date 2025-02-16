@@ -2,6 +2,7 @@ package com.promptengineer.dreamsoccer.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -11,13 +12,13 @@ public class Event {
     private Long id;
     private String judulEvent;
     private String gambarEvent;
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String deskripsiEvent;
     private String kontakPanitia;
-    private Date tanggalSelesai;
+    private LocalDate tanggalSelesai;
     @Enumerated(EnumType.STRING)
     private Status status;
-
-
 
     public Long getId() {
         return id;
@@ -59,11 +60,11 @@ public class Event {
         this.kontakPanitia = kontakPanitia;
     }
 
-    public Date getTanggalSelesai() {
+    public LocalDate getTanggalSelesai() {
         return tanggalSelesai;
     }
 
-    public void setTanggalSelesai(Date tanggalSelesai) {
+    public void setTanggalSelesai(LocalDate tanggalSelesai) {
         this.tanggalSelesai = tanggalSelesai;
     }
 

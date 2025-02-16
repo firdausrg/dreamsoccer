@@ -1,43 +1,60 @@
 <!DOCTYPE html>
 <html lang="en" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="assets/" data-template="horizontal-menu-template" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
   <title>Daftar Reward | DreamSoccer</title>
-  <meta name="description" content="" />
-  <link rel="icon" type="image/x-icon" href="assets/img/favicon/favicon.ico" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/vendor/fonts/fontawesome.css" />
-  <link rel="stylesheet" href="assets/vendor/fonts/tabler-icons.css" />
-  <link rel="stylesheet" href="assets/vendor/fonts/flag-icons.css" />
-  <link rel="stylesheet" href="assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css" />
-  <link rel="stylesheet" href="assets/css/demo.css" />
+  <meta name="description" content=""/>
+  <link rel="icon" type="image/x-icon" href="assets/img/favicon/favicon.ico"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/vendor/fonts/fontawesome.css"/>
+  <link rel="stylesheet" href="assets/vendor/fonts/tabler-icons.css"/>
+  <link rel="stylesheet" href="assets/vendor/fonts/flag-icons.css"/>
+  <link rel="stylesheet" href="assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css"/>
+  <link rel="stylesheet" href="assets/css/demo.css"/>
   <script src="assets/vendor/js/helpers.js"></script>
   <script src="assets/vendor/js/template-customizer.js"></script>
   <script src="assets/js/config.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-
+<style>
+  .card-img-top {
+    width: 100%;
+    object-fit: cover;
+    display: block;
+    aspect-ratio: 1/1;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+</style>
 <body>
 <div class="layout-wrapper layout-navbar-full layout-horizontal layout-without-menu">
   <div class="layout-container">
-    <div th:replace="~{pisahuser/navbar.html}"></div>
+    <div th:replace="~{pisahuser/navbar.html}">
+    </div>
     <div class="layout-page">
       <div class="content-wrapper">
-        <div th:replace="~{pisahuser/navbar2.html}"></div>
+        <div th:replace="~{pisahuser/navbar2.html}">
+        </div>
         <div class="container-xxl flex-grow-1 container-p-y">
           <div class="row d-flex align-items-center">
             <div class="col">
               <h4 class="fw-bold">Daftar Reward</h4>
-              <p class="text-muted">Pilih reward yang Anda inginkan sesuai dengan poin yang Anda miliki.</p>
+              <p class="text-muted">
+                Pilih reward yang Anda inginkan sesuai dengan poin yang Anda miliki.
+              </p>
             </div>
             <!-- Card Poin Pengguna di Pojok Kanan -->
             <div class="col-auto" style="position: relative;">
               <div class="card" style="width: 250px;">
                 <div class="card-body">
                   <h5 class="card-title">Jumlah Poin Anda</h5>
-                  <p class="card-text" id="userPointsDisplay">100</p>
+                  <p class="card-text" id="userPointsDisplay">
+                    <span th:text="${user.point}"></span>
+                  </p>
                 </div>
               </div>
             </div>
@@ -47,89 +64,125 @@
               <h5>Daftar Reward</h5>
             </div>
             <div class="card-body">
-              <div class="row">
-                <div class="col-md-4 col-sm-6 mb-4">
-                  <div class="card">
-                    <img src="assets/img/reward1.jpg" class="card-img-top" alt="Reward Image">
-                    <div class="card-body">
-                      <h5 class="card-title">Voucher Gratis Bermain</h5>
-                      <p class="card-text">Gunakan voucher ini untuk bermain gratis selama 1 jam di lapangan favorit Anda.</p>
-                      <p><strong>Poin: 150</strong></p>
-                      <button class="btn btn-primary" onclick="tukarReward(150)">Tukar</button>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4 col-sm-6 mb-4">
-                  <div class="card">
-                    <img src="assets/img/reward2.jpg" class="card-img-top" alt="Reward Image">
-                    <div class="card-body">
-                      <h5 class="card-title">Kaos Eksklusif</h5>
-                      <p class="card-text">Dapatkan kaos eksklusif DremSoccer dengan desain terbaru.</p>
-                      <p><strong>Poin: 200</strong></p>
-                      <button class="btn btn-primary" onclick="tukarReward(200)">Tukar</button>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4 col-sm-6 mb-4">
-                  <div class="card">
-                    <img src="assets/img/reward3.jpg" class="card-img-top" alt="Reward Image">
-                    <div class="card-body">
-                      <h5 class="card-title">Voucher Diskon</h5>
-                      <p class="card-text">Dapatkan voucher diskon untuk pembelian item tertentu di toko partner kami.</p>
-                      <p><strong>Poin: 100</strong></p>
-                      <button class="btn btn-primary" onclick="tukarReward(100)">Tukar</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <div class="row" id="reward-container"></div>
             </div>
           </div>
-
         </div>
-        <div th:replace="~{pisahuser/footer.html}"></div>
+        <div th:replace="~{pisahuser/footer.html}">
+        </div>
       </div>
     </div>
   </div>
 </div>
-
-<div class="modal" tabindex="-1" id="modalPoin">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Poin Tidak Cukup</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <p>Anda tidak memiliki cukup poin untuk menukar reward ini.</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script src="assets/vendor/libs/jquery/jquery.js"></script>
-<script src="assets/vendor/libs/popper/popper.js"></script>
+<script src="assets/vendor/js/bootstrap.js"></script>
 <script src="assets/vendor/js/menu.js"></script>
 <script src="assets/js/main.js"></script>
-
 <script>
-  let userPoints = 100;
+  document.addEventListener("DOMContentLoaded", function () {
+    fetchRewards();
+    updateUserPointsDisplay();
+  });
 
-  document.getElementById('userPointsDisplay').textContent = userPoints;
+  async function fetchRewards() {
+    try {
+      const response = await fetch('/api/reward/list');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      renderRewards(data);
+    } catch (error) {
+      console.error("Gagal mengambil data reward:", error);
+      alert("Gagal mengambil data reward. Silakan coba lagi nanti.");
+    }
+  }
 
-  function tukarReward(poinReward) {
-    if (userPoints >= poinReward) {
-      alert("Reward berhasil ditukar!");
-      userPoints -= poinReward;
-      document.getElementById('userPointsDisplay').textContent = userPoints;
-    } else {
-      const modal = new bootstrap.Modal(document.getElementById('modalPoin'));
-      modal.show();
+  function renderRewards(data) {
+    const rewardContainer = document.getElementById("reward-container");
+    rewardContainer.innerHTML = "";
+
+    data.forEach(reward => {
+      const rewardCard = `
+        <div class="col-md-4 col-sm-6 mb-4">
+          <div class="card">
+            <img src="${reward.gambarReward ? reward.gambarReward : 'assets/img/default.jpg'}" class="card-img-top" alt="${reward.namaReward}">
+            <div class="card-body">
+              <h5 class="card-title">${reward.namaReward}</h5>
+              <p class="card-text">${reward.deskripsiReward}</p>
+              <p><strong>Poin: ${reward.jumlahPoint}</strong></p>
+              <button class="btn btn-primary" onclick="tukarReward(${reward.id}, ${reward.jumlahPoint})">Tukar</button>
+            </div>
+          </div>
+        </div>
+      `;
+      rewardContainer.innerHTML += rewardCard;
+    });
+  }
+
+  async function tukarReward(rewardId, jumlahPoint) {
+    const confirmation = await Swal.fire({
+      title: 'Apakah Anda yakin?',
+      text: `Anda akan menukar reward ini dengan ${jumlahPoint} poin.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Ya, Tukar!',
+      cancelButtonText: 'Batal'
+    });
+
+    if (!confirmation.isConfirmed) return;
+
+    try {
+      const response = await fetch(`/api/reward/tukar?rewardId=${rewardId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Gagal menukar reward');
+      }
+
+      const result = await response.json();
+      Swal.fire({
+        title: 'Berhasil!',
+        text: result.message,
+        icon: 'success',
+        timer: 2000,
+        showConfirmButton: false,
+      }).then(() => {
+        updateUserPointsDisplay();
+      });
+
+      fetchRewards();
+    } catch (error) {
+      console.error("Gagal menukar reward:", error);
+      Swal.fire({
+        title: 'Gagal!',
+        text: 'Gagal menukar reward. Silakan coba lagi nanti.',
+        icon: 'error',
+        timer: 2000,
+        showConfirmButton: false
+      });
+    }
+  }
+
+  async function updateUserPointsDisplay() {
+    try {
+      const response = await fetch('/api/reward/user/points');
+      if (!response.ok) {
+        throw new Error('Gagal mengambil poin pengguna');
+      }
+
+      const result = await response.json();
+      const userPointsDisplay = document.getElementById("userPointsDisplay");
+      userPointsDisplay.textContent = result.updatedPoints;
+    } catch (error) {
+      console.error("Gagal memperbarui poin:", error);
     }
   }
 </script>
+
 
 </body>
 </html>

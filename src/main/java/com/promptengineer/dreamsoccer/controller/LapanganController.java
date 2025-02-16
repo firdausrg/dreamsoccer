@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/lapangan")
-public class LapanganController {
+public class    LapanganController {
 
     @Autowired
     private LapanganService lapanganService;
@@ -28,28 +28,29 @@ public class LapanganController {
         return ResponseEntity.ok(lapangan);
     }
 
-
     @PostMapping("/add")
     public ResponseEntity<String> addLapangan(@RequestParam("fieldName") String fieldName,
                                               @RequestParam("rentalPrice") Double rentalPrice,
+                                              @RequestParam("poinPerBooking") int poinPerBooking,
                                               @RequestParam("deskripsi") String deskripsi,
                                               @RequestParam("fieldImages") List<MultipartFile> fieldImages) {
         try {
-            lapanganService.addLapangan(fieldName, rentalPrice, deskripsi, fieldImages);
+            lapanganService.addLapangan(fieldName, rentalPrice, deskripsi, poinPerBooking, fieldImages);
             return ResponseEntity.ok("Lapangan berhasil ditambahkan!");
         } catch (IOException e) {
             return ResponseEntity.internalServerError().body("Gagal menyimpan lapangan: " + e.getMessage());
         }
     }
 
-    @PostMapping("/update/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<String> updateLapangan(@PathVariable Long id,
                                                  @RequestParam("fieldName") String fieldName,
                                                  @RequestParam("rentalPrice") Double rentalPrice,
+                                                 @RequestParam("poinPerBooking") int poinPerBooking,
                                                  @RequestParam("deskripsi") String deskripsi,
                                                  @RequestParam(value = "fieldImages", required = false) List<MultipartFile> fieldImages) {
         try {
-            lapanganService.updateLapangan(id, fieldName, rentalPrice, deskripsi, fieldImages);
+            lapanganService.updateLapangan(id, fieldName, rentalPrice, deskripsi, poinPerBooking, fieldImages);
             return ResponseEntity.ok("Lapangan berhasil diperbarui!");
         } catch (IOException e) {
             return ResponseEntity.internalServerError().body("Gagal memperbarui lapangan: " + e.getMessage());

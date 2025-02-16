@@ -21,7 +21,7 @@ public class HistoryBooking {
     private PenukaranStatus status;
 
     enum PenukaranStatus {
-        SELESAI, BELUM_SELESAI, BATAL, GAGAL
+        SELESAI, BELUM_SELESAI,MENUNGGU, BATAL, GAGAL
     }
 
     public Long getId() {

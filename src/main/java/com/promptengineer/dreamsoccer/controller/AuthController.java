@@ -18,15 +18,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Base64;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 @Controller
 @RequestMapping("/auth")
 public class AuthController {
-    @Autowired
-    private UserRepository userRepository;
+
     @Autowired
     private UserService userService;
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
@@ -52,7 +50,9 @@ public class AuthController {
         }
 
         try {
-            User user = userService.registerUser(valRegisDTO.getNama(), valRegisDTO.getUsername(),
+            User user = userService.registerUser(
+                    valRegisDTO.getNama(),
+                    valRegisDTO.getUsername(),
                     valRegisDTO.getEmail(), password);
             userService.sendOtpEmail(user);
             String encryptedUserId = EncryptionUtil.encrypt(String.valueOf(user.getId()));
@@ -75,9 +75,9 @@ public class AuthController {
 
     @GetMapping("/otp")
     public String showOtpPage(@RequestParam String userId, Model model) {
-        System.out.println("Encrypted UserId: " + userId);
+//        System.out.println("Encrypted UserId: " + userId);
         String decryptedUserId = EncryptionUtil.decrypt(userId);
-        System.out.println("Decrypted UserId: " + decryptedUserId);
+//        System.out.println("Decrypted UserId: " + decryptedUserId);
         model.addAttribute("userId", decryptedUserId);
         return "otp";
     }

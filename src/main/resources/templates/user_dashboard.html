@@ -1,33 +1,19 @@
 <!DOCTYPE html>
-
-<html
-        lang="en"
-        class="light-style layout-menu-fixed"
-        dir="ltr"
-        data-theme="theme-default"
-        data-assets-path="assets/"
-        data-template="horizontal-menu-template" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="assets/" data-template="horizontal-menu-template" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="utf-8" />
-    <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
     <title>Dashboard | DreamSoccer</title>
-
-    <meta name="description" content="" />
-    <link rel="icon" type="image/x-icon" href="assets/img/favicon/favicon.ico" />
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-            href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
-            rel="stylesheet" />
-    <link rel="stylesheet" href="assets/vendor/fonts/fontawesome.css" />
-    <link rel="stylesheet" href="assets/vendor/fonts/tabler-icons.css" />
-    <link rel="stylesheet" href="assets/vendor/fonts/flag-icons.css" />
-    <link rel="stylesheet" href="assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css" />
-    <link rel="stylesheet" href="assets/css/demo.css" />
+    <meta name="description" content=""/>
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon/favicon.ico"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="assets/vendor/fonts/fontawesome.css"/>
+    <link rel="stylesheet" href="assets/vendor/fonts/tabler-icons.css"/>
+    <link rel="stylesheet" href="assets/vendor/fonts/flag-icons.css"/>
+    <link rel="stylesheet" href="assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css"/>
+    <link rel="stylesheet" href="assets/css/demo.css"/>
     <script src="assets/vendor/js/helpers.js"></script>
     <script src="assets/vendor/js/template-customizer.js"></script>
     <script src="assets/js/config.js"></script>
@@ -98,10 +84,12 @@
 <body>
 <div class="layout-wrapper layout-navbar-full layout-horizontal layout-without-menu">
     <div class="layout-container">
-        <div th:replace="~{pisahuser/navbar.html}"></div>
+        <div th:replace="~{pisahuser/navbar.html}">
+        </div>
         <div class="layout-page">
             <div class="content-wrapper">
-                <div th:replace="~{pisahuser/navbar2.html}"></div>
+                <div th:replace="~{pisahuser/navbar2.html}">
+                </div>
                 <div class="container-xxl flex-grow-1 container-p-y">
                     <div class="row">
                         <div class="col-xl-4 col-lg-5 col-12">
@@ -109,21 +97,17 @@
                                 <div class="d-flex align-items-end row">
                                     <div class="col-7">
                                         <div class="card-body text-nowrap">
-                                            <h5 class="card-title mb-0">Welcome John! 🎉</h5>
+                                            <h5 class="card-title mb-0">Welcome <span th:text="${user.nama}"></span>! 🎉</h5>
                                             <p class="mb-2">Selamat datang di DreamSoccer</p>
                                         </div>
                                     </div>
                                     <div class="col-5 text-center text-sm-left">
                                         <div class="card-body pb-0 px-0 px-md-4">
-                                            <img
-                                                    src="assets/img/illustrations/card-advance-sale.png"
-                                                    height="140"
-                                                    alt="view sales" />
+                                            <img src="assets/img/illustrations/card-advance-sale.png" height="140" alt="view sales"/>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
                             <div class="card">
                                 <div class="card-body text-center">
                                     <div class="d-flex flex-column align-items-center">
@@ -132,16 +116,13 @@
                                         </div>
                                         <div class="card-info">
                                             <h4 class="mb-2">Total Poin Anda</h4>
-                                            <h5 class="text-primary mb-3">230k</h5>
-                                            <button onclick="location.href='/daftar_reward'" class="btn btn-primary">
-                                                Tukar Poin
-                                            </button>
+                                            <h5 class="text-primary mb-3"><span th:text="${user.point}"></span></h5>
+                                            <button onclick="location.href='/daftar_reward'" class="btn btn-primary">Tukar Poin</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
                         <div class="col-xl-8 col-lg-7 col-12">
                             <div class="card h-100 shadow-lg" id="cardTest">
                                 <div class="card-body p-0" id="cardBodyTest">
@@ -169,7 +150,8 @@
                         </div>
                     </div>
                 </div>
-                <div th:replace="~{pisahuser/footer.html}"></div>
+                <div th:replace="~{pisahuser/footer.html}">
+                </div>
             </div>
         </div>
     </div>

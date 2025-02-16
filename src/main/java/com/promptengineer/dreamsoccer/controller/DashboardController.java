@@ -1,6 +1,7 @@
 package com.promptengineer.dreamsoccer.controller;
 
 import com.promptengineer.dreamsoccer.model.User;
+import com.promptengineer.dreamsoccer.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,16 +9,19 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.security.core.Authentication;
 
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Principal;
 import java.util.stream.Collectors;
 
 @Controller
 public class DashboardController {
     @Autowired
     private HttpSession httpSession;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/admin_dashboard")
     public String adminDashboard(Model model) {
@@ -49,11 +53,18 @@ public class DashboardController {
         return "reward";
     }
 
+    @GetMapping("/daftar_penukaran_reward")
+    public String adminDaftarPenukaran(Model model) {
+        model.addAttribute("currentUrl", "/daftar_penukaran_reward");
+        return "daftar_penukaran_reward";
+    }
+
     @GetMapping("/laporan")
     public String adminLaporan(Model model) {
         model.addAttribute("currentUrl", "/laporan");
         return "laporan";
     }
+
     @GetMapping("/profile_admin")
     public String getProfileAdmin(Model model, Authentication authentication) {
         User loggedInUser = (User) httpSession.getAttribute("loggedInUser");
@@ -116,6 +127,10 @@ public class DashboardController {
 
     @GetMapping("/user_dashboard")
     public String userDashboard(Model model) {
+        User loggedInUser = (User) httpSession.getAttribute("loggedInUser");
+        if (loggedInUser != null) {
+            model.addAttribute("user", loggedInUser);
+        }
         model.addAttribute("currentUrl", "/user_dashboard");
         return "user_dashboard";
     }
@@ -145,8 +160,11 @@ public class DashboardController {
     }
 
     @GetMapping("/booking_lapangan")
-    public String bookingLapangan(Model model) {
+    public String bookingLapangan(Model model, Principal principal) {
         model.addAttribute("currentUrl", "/booking_lapangan");
+        String username = principal.getName();
+        Long userId = userService.getUserIdByUsername(username);
+        model.addAttribute("loggedInUserId", userId);
         return "booking_lapangan";
     }
 
@@ -157,7 +175,12 @@ public class DashboardController {
     }
 
     @GetMapping("/daftar_reward")
-    public String daftarReward(Model model) {
+    public String daftarReward(Model model, HttpSession session) {
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        if (loggedInUser == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", loggedInUser);
         model.addAttribute("currentUrl", "/daftar_reward");
         return "daftar_reward";
     }
@@ -169,8 +192,22 @@ public class DashboardController {
     }
 
     @GetMapping("/profile_user")
-    public String profileUser(Model model) {
+    public String profileUser(Model model, Authentication authentication) {
+        User loggedInUser = (User) httpSession.getAttribute("loggedInUser");
         model.addAttribute("currentUrl", "/profile_user");
+
+        if (loggedInUser != null) {
+            String userPhoto = loggedInUser.getFoto();
+            boolean fileExists = isFileExist(userPhoto);
+
+            if (userPhoto != null && !fileExists) {
+                userPhoto = "default.png";
+            }
+
+            model.addAttribute("user", loggedInUser);
+            model.addAttribute("userPhoto", userPhoto);
+        }
+
         return "profile_user";
     }
 

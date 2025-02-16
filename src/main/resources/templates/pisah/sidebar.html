@@ -63,6 +63,13 @@
             <span class="menu-header-text">Laporan</span>
         </li>
 
+        <li th:classappend="${currentUrl == '/daftar_penukaran_reward' ? 'active' : ''}" class="menu-item">
+            <a href="/daftar_penukaran_reward" th:href="@{/daftar_penukaran_reward}" class="menu-link">
+                <i class="menu-icon fa fa-gift"></i>
+                <div>Daftar Penukaran Reward</div>
+            </a>
+        </li>
+
         <li th:classappend="${currentUrl == '/laporan' ? 'active' : ''}" class="menu-item">
             <a href="/laporan" th:href="@{/laporan}" class="menu-link">
                 <i class="menu-icon fa fa-file-alt"></i>

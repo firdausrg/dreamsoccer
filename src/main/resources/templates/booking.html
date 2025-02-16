@@ -26,16 +26,16 @@
 </head>
 <style>
     #cancel-edit {
-    display: none !important;
-}
+        display: none !important;
+    }
     #submit-event {
-    display: block;
-    margin: 0 auto;
-}
-#submit-event.edit {
-    margin: 0;
-    float: right;
-}
+        display: block;
+        margin: 0 auto;
+    }
+    #submit-event.edit {
+        margin: 0;
+        float: right;
+    }
 </style>
 <body>
 <div class="layout-wrapper layout-content-navbar">
@@ -74,21 +74,27 @@
 
                                                 <div class="form-group">
                                                     <label for="jam-mulai">Jam Mulai</label>
-                                                    <input type="time" id="jam-mulai" class="form-control" required min="08:00" max="18:00">
+                                                    <select id="jam-mulai" class="form-control" required>
+                                                    </select>
                                                 </div>
 
                                                 <div class="form-group">
                                                     <label for="jam-selesai">Jam Selesai</label>
-                                                    <input type="time" id="jam-selesai" class="form-control" required min="08:00" max="18:00">
+                                                    <select id="jam-selesai" class="form-control" required>
+                                                    </select>
                                                 </div>
 
                                                 <div class="form-group">
                                                     <label for="id-lapangan">Pilih Lapangan</label>
-                                                    <select id="id-lapangan" class="form-control" required onchange="document.getElementById('nama-lapangan-booking').value = this.options[this.selectedIndex].text; document.getElementById('harga-perjam-booking').value = this.options[this.selectedIndex].getAttribute('data-price');">
+                                                    <select id="id-lapangan" class="form-control" required onchange="
+                                                          document.getElementById('nama-lapangan-booking').value = this.options[this.selectedIndex].text;
+                                                          document.getElementById('harga-perjam-booking').value = this.options[this.selectedIndex].getAttribute('data-price');
+                                                          document.getElementById('total-point').value = this.options[this.selectedIndex].getAttribute('data-point');">
                                                         <option value="">Pilih Lapangan</option>
                                                     </select>
-                                                    <input type="hidden" id="nama-lapangan-booking" name="nama-lapangan-booking">
-                                                    <input type="hidden" id="harga-perjam-booking" name="harga-perjam-booking">
+                                                    <input type="text" id="nama-lapangan-booking" name="nama-lapangan-booking">
+                                                    <input type="text" id="harga-perjam-booking" name="harga-perjam-booking">
+                                                    <input type="text" id="total-point" name="total-point">
                                                 </div>
 
                                                 <div class="form-group">
@@ -167,6 +173,20 @@
     <script src="assets/js/main.js"></script>
     <script>
         $(document).ready(function() {
+            function populateTimeSelect(selectId) {
+                var select = document.getElementById(selectId);
+                for (var i = 7; i <= 23; i++) {
+                    var time = (i < 10 ? '0' + i : i) + ':00';
+                    var option = document.createElement('option');
+                    option.value = time;
+                    option.text = time;
+                    select.appendChild(option);
+                }
+            }
+
+            populateTimeSelect('jam-mulai');
+            populateTimeSelect('jam-selesai');
+
             $.ajax({
                 url: '/user/list',
                 type: 'GET',
@@ -193,7 +213,7 @@
                 }
             });
 
-           $.ajax({
+            $.ajax({
                 url: '/api/lapangan/list',
                 type: 'GET',
                 dataType: 'json',
@@ -204,8 +224,11 @@
                     lapanganDropdown.append('<option value="">Pilih Lapangan</option>');
                     if (lapanganList && lapanganList.length > 0) {
                         lapanganList.forEach(function(lapangan) {
-                            lapanganDropdown.append('<option value="' + lapangan.id + '" data-price="' + lapangan.hargaPerjam + '">' + lapangan.namaLapangan + ' (' + lapangan.hargaPerjam.toLocaleString() + '/jam)</option>');
-                        });
+                                            lapanganDropdown.append('<option value="' + lapangan.id +
+                                            '" data-price="' + lapangan.hargaPerjam +
+                                            '" data-point="' + lapangan.poinPerBooking + '">' +
+                                            lapangan.namaLapangan + ' (' + lapangan.hargaPerjam.toLocaleString() + '/jam)' +
+                                            '</option>');                        });
                     } else {
                         console.warn('Tidak ada data lapangan yang diterima');
                     }
@@ -226,6 +249,7 @@
             function getRandomColor() {
                 return colors[Math.floor(Math.random() * colors.length)];
             }
+
             $.ajax({
                 url: '/api/booking',
                 type: 'GET',
@@ -233,7 +257,6 @@
                 success: function(bookings) {
                     console.log('Bookings:', bookings);
                     var events = bookings.map(function(booking) {
-
                         if (!booking.user || !booking.lapangan) {
                             console.warn('Data booking tidak memiliki bidang yang diperlukan:', booking);
                             return null;
@@ -341,12 +364,11 @@
                             </div>
                         `;
 
-                        $('#event-info').html(eventInfo);
+                            $('#event-info').html(eventInfo);
 
                             $('#eventModal').modal('show');
 
-                           $('#edit-event').click(function() {
-
+                            $('#edit-event').click(function() {
                                 if (!event || !event.id) {
                                     Swal.fire({
                                         title: 'ID Booking Tidak Ditemukan!',
@@ -378,7 +400,6 @@
 
                                 $('#cancel-edit').attr('style', 'display: block !important;');
 
-
                                 var button = $('#submit-event');
                                 var icon = $('#submit-icon');
                                 button.html('<i id="submit-icon" class="bx bx-edit me-2"></i> Edit');
@@ -386,9 +407,21 @@
                                     button.addClass('edit');
                                 }
 
-
                                 $('#event-form').off('submit').on('submit', function(e) {
                                     e.preventDefault();
+
+                                    var jamMulai = $('#jam-mulai').val();
+                                    var jamSelesai = $('#jam-selesai').val();
+                                    var hargaPerJam = $('#id-lapangan option:selected').data('price');
+                                    var poinPerJam = $('#id-lapangan option:selected').data('point');
+
+                                    var startTime = new Date(`1970-01-01T${jamMulai}`);
+                                    var endTime = new Date(`1970-01-01T${jamSelesai}`);
+                                    var totalHours = (endTime - startTime) / (1000 * 60 * 60);
+                                    var totalPoin = totalHours * poinPerJam;
+
+                                    console.log("Total Durasi (Jam):", totalHours);
+                                    console.log("Total Poin:", totalPoin);
 
                                     var updatedBookingData = {
                                         id: event.id,
@@ -403,6 +436,7 @@
                                         downPayment: $('#dp').val().replace(/[^0-9]/g, ''),
                                         sisaPembayaran: $('#sisa-pembayaran').val().replace(/[^0-9]/g, ''),
                                         totalHarga: $('#total-harga').val().replace(/[^0-9]/g, ''),
+                                        totalPoin: totalPoin,
                                         status: $('#status').val(),
                                         deskripsi: $('#deskripsi').val()
                                     };
@@ -425,6 +459,7 @@
                                             event.price = updatedBookingData.totalHarga;
                                             event.dp = updatedBookingData.downPayment;
                                             event.remainingBalance = updatedBookingData.sisaPembayaran;
+                                            event.totalPoin = updatedBookingData.totalPoin;
                                             event.status = updatedBookingData.status;
                                             event.description = updatedBookingData.deskripsi;
 
@@ -488,8 +523,8 @@
                                                     timer: 2000,
                                                     showConfirmButton: false
                                                 }).then(() => {
-                                                  location.reload();
-                                                  });
+                                                    location.reload();
+                                                });
                                             },
                                             error: function(xhr, status, error) {
                                                 console.error('Gagal menghapus event:', error);
@@ -504,7 +539,7 @@
                                 });
                             });
                         },
-                       eventRender: function(event, element) {
+                        eventRender: function(event, element) {
                             if (event.status === 'Belum Lunas') {
                                 element.css({
                                     'background-color': '#ffe4e1',
@@ -537,7 +572,7 @@
                                 );
                             }
                         },
-                            dayRender: function(date, cell) {
+                        dayRender: function(date, cell) {
                             var formattedDate = date.format('YYYY-MM-DD');
                             if (dateWithEvents[formattedDate]) {
                                 cell.css('background-color', dateWithEvents[formattedDate]);
@@ -555,19 +590,26 @@
                         confirmButtonText: 'Tutup'
                     });
                 }
-
             });
 
             function calculateDuration(start, end) {
                 var startMoment = moment(start, 'HH:mm');
                 var endMoment = moment(end, 'HH:mm');
-                return endMoment.diff(startMoment, 'hours');
+                return endMoment.diff(startMoment, 'hours', true);
             }
 
             $('#event-form').submit(function(e) {
                 e.preventDefault();
                 var jamMulai = $('#jam-mulai').val();
                 var jamSelesai = $('#jam-selesai').val();
+                var hargaPerJam = $('#id-lapangan').find('option:selected').data('price');
+                var poinPerJam = $('#id-lapangan').find('option:selected').data('point');
+                var startTime = new Date(`1970-01-01T${jamMulai}`);
+                var endTime = new Date(`1970-01-01T${jamSelesai}`);
+                var totalHours = (endTime - startTime) / (1000 * 60 * 60);
+                var totalPoin = totalHours * poinPerJam;
+                console.log("Total Durasi (Jam):", totalHours);
+                console.log("Total Poin:", totalPoin);
                 console.log("Jam Mulai: " + jamMulai);
                 console.log("Jam Selesai: " + jamSelesai);
                 var bookingData = {
@@ -586,6 +628,7 @@
                     downPayment: $('#dp').val().replace(/[^0-9]/g, ''),
                     sisaPembayaran: $('#sisa-pembayaran').val().replace(/[^0-9]/g, ''),
                     totalHarga: $('#total-harga').val().replace(/[^0-9]/g, ''),
+                    totalPoin: totalPoin,
                     status: $('#status').val(),
                     deskripsi: $('#deskripsi').val()
                 };
@@ -608,18 +651,18 @@
                             lapanganNama: bookingData.namaLapanganBooking,
                             status: bookingData.status
                         }, true);
-                       $('#calendar').fullCalendar('updateEvent', event);
-                       $('#eventModal').modal('hide');
-                       $('#event-form')[0].reset();
-                            Swal.fire({
-                                 title: 'Berhasil!',
-                                 text: 'Booking berhasil ditambahkan!.',
-                                 icon: 'success',
-                                 timer: 2000,
-                                                showConfirmButton: false
-                                 }).then(() => {
-                                  location.reload();
-                                  });
+                        $('#calendar').fullCalendar('updateEvent', event);
+                        $('#eventModal').modal('hide');
+                        $('#event-form')[0].reset();
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Booking berhasil ditambahkan!.',
+                            icon: 'success',
+                            timer: 20000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            location.reload();
+                        });
                     },
                     error: function(xhr, status, error) {
                         console.error('Error saving booking:', error);
@@ -629,7 +672,6 @@
                             icon: 'error',
                             confirmButtonText: 'Tutup'
                         });
-
                     }
                 });
             });
@@ -702,7 +744,6 @@
             });
         });
     </script>
-
 </div>
 </body>
 </html>
