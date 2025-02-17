@@ -120,6 +120,7 @@ public class BookingService {
                     booking.setTotalHarga(updatedBooking.getTotalHarga());
                     booking.setStatus(updatedBooking.getStatus());
                     booking.setDeskripsi(updatedBooking.getDeskripsi());
+                    booking.setBuktiDp(updatedBooking.getBuktiDp());
 
                     return bookingRepository.save(booking);
                 }).orElseThrow(() -> new EntityNotFoundException("Booking dengan ID " + id + " tidak ditemukan!"));

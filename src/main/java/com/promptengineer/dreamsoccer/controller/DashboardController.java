@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -126,14 +127,18 @@ public class DashboardController {
     }
 
     @GetMapping("/user_dashboard")
-    public String userDashboard(Model model) {
-        User loggedInUser = (User) httpSession.getAttribute("loggedInUser");
-        if (loggedInUser != null) {
+    public String userDashboard(Model model, HttpSession session, Principal principal) {
+        String username = principal.getName();
+        Optional<User> optionalUser = userService.findByUsername(username);
+        if (optionalUser.isPresent()) {
+            User loggedInUser = optionalUser.get();
+            session.setAttribute("loggedInUser", loggedInUser);
             model.addAttribute("user", loggedInUser);
         }
         model.addAttribute("currentUrl", "/user_dashboard");
         return "user_dashboard";
     }
+
 
     @GetMapping("/event")
     public String event(Model model) {
@@ -160,13 +165,22 @@ public class DashboardController {
     }
 
     @GetMapping("/booking_lapangan")
-    public String bookingLapangan(Model model, Principal principal) {
-        model.addAttribute("currentUrl", "/booking_lapangan");
+    public String bookingLapangan(Model model, Principal principal, HttpSession session) {
         String username = principal.getName();
-        Long userId = userService.getUserIdByUsername(username);
-        model.addAttribute("loggedInUserId", userId);
+        Optional<User> optionalUser = userService.findByUsername(username);
+
+        if (optionalUser.isEmpty()) {
+            return "redirect:/login";
+        }
+        User loggedInUser = optionalUser.get();
+        session.setAttribute("loggedInUser", loggedInUser);
+        model.addAttribute("user", loggedInUser);
+        model.addAttribute("currentUrl", "/booking_lapangan");
+        model.addAttribute("loggedInUserId", loggedInUser.getId());
+
         return "booking_lapangan";
     }
+
 
     @GetMapping("/history_booking")
     public String daftarPesanan(Model model) {
@@ -175,15 +189,20 @@ public class DashboardController {
     }
 
     @GetMapping("/daftar_reward")
-    public String daftarReward(Model model, HttpSession session) {
-        User loggedInUser = (User) session.getAttribute("loggedInUser");
-        if (loggedInUser == null) {
+    public String daftarReward(Model model, HttpSession session, Principal principal) {
+        String username = principal.getName();
+        Optional<User> optionalUser = userService.findByUsername(username);
+
+        if (optionalUser.isEmpty()) {
             return "redirect:/login";
         }
+        User loggedInUser = optionalUser.get();
+        session.setAttribute("loggedInUser", loggedInUser);
         model.addAttribute("user", loggedInUser);
         model.addAttribute("currentUrl", "/daftar_reward");
         return "daftar_reward";
     }
+
 
     @GetMapping("/history_penukaran_reward")
     public String penukaranReward(Model model) {

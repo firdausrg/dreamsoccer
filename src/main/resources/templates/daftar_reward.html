@@ -47,7 +47,6 @@
                 Pilih reward yang Anda inginkan sesuai dengan poin yang Anda miliki.
               </p>
             </div>
-            <!-- Card Poin Pengguna di Pojok Kanan -->
             <div class="col-auto" style="position: relative;">
               <div class="card" style="width: 250px;">
                 <div class="card-body">
@@ -80,7 +79,6 @@
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     fetchRewards();
-    updateUserPointsDisplay();
   });
 
   async function fetchRewards() {
@@ -151,7 +149,7 @@
         timer: 2000,
         showConfirmButton: false,
       }).then(() => {
-        updateUserPointsDisplay();
+        location.reload();
       });
 
       fetchRewards();
@@ -166,23 +164,20 @@
       });
     }
   }
-
-  async function updateUserPointsDisplay() {
-    try {
-      const response = await fetch('/api/reward/user/points');
-      if (!response.ok) {
-        throw new Error('Gagal mengambil poin pengguna');
-      }
-
-      const result = await response.json();
-      const userPointsDisplay = document.getElementById("userPointsDisplay");
-      userPointsDisplay.textContent = result.updatedPoints;
-    } catch (error) {
-      console.error("Gagal memperbarui poin:", error);
-    }
-  }
 </script>
+<script>
+  function updateUserPoints() {
+    fetch('/api/booking/user/points')
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById("userPointsDisplay").innerText = data;
+      })
+      .catch(error => console.error('Error fetching user points:', error));
+  }
 
+  setInterval(updateUserPoints, 5000);
+  updateUserPoints();
+</script>
 
 </body>
 </html>

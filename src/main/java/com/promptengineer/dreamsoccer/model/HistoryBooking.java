@@ -1,6 +1,9 @@
 package com.promptengineer.dreamsoccer.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 
@@ -10,19 +13,19 @@ public class HistoryBooking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "idBooking")
+    @JoinColumn(name = "idBooking", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     private Booking booking;
     @ManyToOne
     @JoinColumn(name = "id_user")
+    @JsonIgnore
     private User user;
     private LocalDateTime createdAt;
 
     @Enumerated(EnumType.STRING)
-    private PenukaranStatus status;
-
-    enum PenukaranStatus {
-        SELESAI, BELUM_SELESAI,MENUNGGU, BATAL, GAGAL
-    }
+    @Column(name = "Status")
+    private Status status;
 
     public Long getId() {
         return id;
@@ -56,11 +59,11 @@ public class HistoryBooking {
         this.createdAt = createdAt;
     }
 
-    public PenukaranStatus getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(PenukaranStatus status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 }

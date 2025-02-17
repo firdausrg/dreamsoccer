@@ -101,14 +101,6 @@ public class DataRewardController {
         }
     }
 
-    @GetMapping("/user/points")
-    public ResponseEntity<Map<String, Object>> getUserPoints(HttpSession session) {
-        User loggedInUser = (User) session.getAttribute("loggedInUser");
-        Map<String, Object> response = new HashMap<>();
-        response.put("updatedPoints", loggedInUser.getPoint());
-        return ResponseEntity.ok(response);
-    }
-
     @GetMapping("/history-penukaran")
     public List<Map<String, Object>> getHistoryPenukaran(HttpSession httpSession) {
         User user = (User) httpSession.getAttribute("loggedInUser");

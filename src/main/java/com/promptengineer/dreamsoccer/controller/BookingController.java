@@ -1,21 +1,35 @@
 package com.promptengineer.dreamsoccer.controller;
 
-import com.promptengineer.dreamsoccer.model.Booking;
-import com.promptengineer.dreamsoccer.model.Lapangan;
-import com.promptengineer.dreamsoccer.model.User;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.promptengineer.dreamsoccer.model.*;
 import com.promptengineer.dreamsoccer.service.BookingService;
+import com.promptengineer.dreamsoccer.service.HistoryBookingService;
 import com.promptengineer.dreamsoccer.service.LapanganService;
 import com.promptengineer.dreamsoccer.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.security.Principal;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/booking")
@@ -28,50 +42,92 @@ public class BookingController {
     private UserService userService;
 
     @Autowired
+    private HistoryBookingService historyBookingService;
+
+    @Autowired
     private LapanganService lapanganService;
 
+    private final String uploadDir = "src/main/resources/static/uploads/bukti-dp/";
+
     @PostMapping
-    public ResponseEntity<?> createBooking(@RequestBody Booking booking) {
-        String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-        User admin = userService.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User Tidak Ada!"));
+    public ResponseEntity<?> createBooking(
+            @RequestParam("bookingDataJson") String bookingDataJson,
+            @RequestParam(value = "dpFile", required = false) MultipartFile dpFile) {
 
-        User userBooking = userService.findById(booking.getUser().getId())
-                .orElseThrow(() -> new RuntimeException("User yang dibooking tidak ditemukan!"));
+        try {
+            ObjectMapper objectMapper = new ObjectMapper()
+                    .registerModule(new JavaTimeModule())
+                    .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-        booking.setCreatedBy(admin.getNama());
-        booking.setUpdatedBy(admin.getNama());
+            Booking booking = objectMapper.readValue(bookingDataJson, Booking.class);
 
-        boolean isOverlapping = bookingService.isBookingOverlapExists(
-                booking.getTanggalBooking(),
-                booking.getLapangan().getId(),
-                booking.getJamMulai(),
-                booking.getJamSelesai()
-        );
+            if (dpFile != null && !dpFile.isEmpty()) {
+                String fileName = UUID.randomUUID() + "_" + dpFile.getOriginalFilename();
+                Path uploadPath = Paths.get("src/main/resources/static/uploads/bukti-dp/");
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+                Path filePath = uploadPath.resolve(fileName);
+                Files.copy(dpFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-        if (isOverlapping) {
-            return ResponseEntity.badRequest().body(Map.of("gagal", "Jam sudah terisi, silakan pilih jam lain."));
+                booking.setBuktiDp(fileName);
+            }
+
+            String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+            User admin = userService.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("User Tidak Ada!"));
+
+            User userBooking = userService.findById(booking.getUser().getId())
+                    .orElseThrow(() -> new RuntimeException("User yang dibooking tidak ditemukan!"));
+
+            booking.setCreatedBy(admin.getNama());
+            booking.setUpdatedBy(admin.getNama());
+
+            boolean isOverlapping = bookingService.isBookingOverlapExists(
+                    booking.getTanggalBooking(),
+                    booking.getLapangan().getId(),
+                    booking.getJamMulai(),
+                    booking.getJamSelesai()
+            );
+
+            if (isOverlapping) {
+                return ResponseEntity.badRequest().body(Map.of("gagal", "Jam sudah terisi, silakan pilih jam lain."));
+            }
+
+            LocalTime jamMulai = booking.getJamMulai();
+            LocalTime jamSelesai = booking.getJamSelesai();
+            long totalJam = Duration.between(jamMulai, jamSelesai).toHours();
+
+            Lapangan lapangan = lapanganService.findById(booking.getLapangan().getId())
+                    .orElseThrow(() -> new RuntimeException("Lapangan Tidak Ditemukan!"));
+
+            int totalPoin = (int) (totalJam * lapangan.getPoinPerBooking());
+
+            userBooking.setPoint(userBooking.getPoint() + totalPoin);
+            userService.save(userBooking);
+
+            Booking savedBooking = bookingService.saveBooking(booking);
+
+            HistoryBooking historyBooking = new HistoryBooking();
+            historyBooking.setBooking(savedBooking);
+            historyBooking.setUser(userBooking);
+            historyBooking.setCreatedAt(LocalDateTime.now());
+            historyBooking.setStatus(Status.MENUNGGU);
+
+            historyBookingService.save(historyBooking);
+
+            return ResponseEntity.ok(Map.of(
+                    "success", "Booking berhasil!",
+                    "totalPoinDiterima", totalPoin,
+                    "dpFileName", booking.getBuktiDp()
+            ));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Terjadi kesalahan: " + e.getMessage()));
         }
-
-        LocalTime jamMulai = booking.getJamMulai();
-        LocalTime jamSelesai = booking.getJamSelesai();
-        long totalJam = Duration.between(jamMulai, jamSelesai).toHours();
-
-        Lapangan lapangan = lapanganService.findById(booking.getLapangan().getId())
-                .orElseThrow(() -> new RuntimeException("Lapangan Tidak Ditemukan!"));
-
-        int totalPoin = (int) (totalJam * lapangan.getPoinPerBooking());
-
-        userBooking.setPoint(userBooking.getPoint() + totalPoin);
-        userService.save(userBooking);
-
-        Booking savedBooking = bookingService.saveBooking(booking);
-
-        return ResponseEntity.ok(Map.of(
-                "success", "Booking berhasil!",
-                "totalPoinDiterima", totalPoin
-        ));
     }
+
 
     @GetMapping
     public ResponseEntity<List<Booking>> getAllBookings() {
@@ -88,7 +144,8 @@ public class BookingController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateBooking(@PathVariable Long id,
-                                           @RequestBody Booking updatedBooking) {
+                                           @RequestParam(value = "file", required = false) MultipartFile file,
+                                           @RequestPart("booking") Booking updatedBooking) {
         try {
             String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
             User user = userService.findByUsername(username)
@@ -108,9 +165,33 @@ public class BookingController {
                 return ResponseEntity.badRequest().body(Map.of("gagal", "Jam sudah terisi, silakan pilih jam lain."));
             }
 
+            Booking existingBooking = bookingService.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Booking Tidak Ditemukan!"));
+
+            if (file != null && !file.isEmpty()) {
+                String oldFilePath = existingBooking.getBuktiDp();
+                if (oldFilePath != null) {
+                    File oldFile = new File(uploadDir + oldFilePath);
+                    if (oldFile.exists()) {
+                        oldFile.delete();
+                    }
+                }
+
+                String newFileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+                Path filePath = Paths.get(uploadDir, newFileName);
+                Files.write(filePath, file.getBytes());
+
+                updatedBooking.setBuktiDp(newFileName);
+            } else {
+                updatedBooking.setBuktiDp(existingBooking.getBuktiDp());
+            }
+
             Booking updated = bookingService.updateBooking(id, updatedBooking);
             return ResponseEntity.ok(updated);
 
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Gagal menyimpan file: " + e.getMessage()));
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
@@ -118,7 +199,34 @@ public class BookingController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBooking(@PathVariable Long id) {
+        Booking booking = bookingService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Booking tidak ditemukan!"));
+
+        if (booking.getBuktiDp() != null) {
+            Path filePath = Paths.get("src/main/resources/static/uploads/bukti-dp/", booking.getBuktiDp());
+            try {
+                Files.deleteIfExists(filePath);
+            } catch (IOException e) {
+                throw new RuntimeException("Gagal menghapus file: " + filePath, e);
+            }
+        }
+
         bookingService.deleteById(id);
+
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/user/points")
+    @ResponseBody
+    public ResponseEntity<Integer> getUserPoints(Principal principal) {
+        String username = principal.getName();
+        Optional<User> optionalUser = userService.findByUsername(username);
+
+        if (optionalUser.isPresent()) {
+            return ResponseEntity.ok(optionalUser.get().getPoint());
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(0);
+    }
+
 }

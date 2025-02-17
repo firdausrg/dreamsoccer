@@ -116,7 +116,11 @@
                                         </div>
                                         <div class="card-info">
                                             <h4 class="mb-2">Total Poin Anda</h4>
-                                            <h5 class="text-primary mb-3"><span th:text="${user.point}"></span></h5>
+                                            <h5 class="text-primary mb-3">
+                                                <p class="card-text" id="userPointsDisplay">
+                                                    <span th:text="${user.point}"></span>
+                                                </p>
+                                            </h5>
                                             <button onclick="location.href='/daftar_reward'" class="btn btn-primary">Tukar Poin</button>
                                         </div>
                                     </div>
@@ -156,6 +160,19 @@
         </div>
     </div>
 </div>
+<script>
+    function updateUserPoints() {
+      fetch('/api/booking/user/points')
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById("userPointsDisplay").innerText = data;
+        })
+        .catch(error => console.error('Error fetching user points:', error));
+    }
+
+    setInterval(updateUserPoints, 10000);
+    updateUserPoints();
+</script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 <script src="assets/vendor/libs/jquery/jquery.js"></script>
 <script src="assets/vendor/libs/popper/popper.js"></script>

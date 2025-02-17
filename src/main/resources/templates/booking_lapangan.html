@@ -48,15 +48,23 @@
         <div class="container-xxl flex-grow-1 container-p-y">
           <div class="row">
             <div class="card">
-              <div class="card-header d-flex justify-content-between">
+              <div class="card-header d-flex justify-content-between align-items-center">
                 <h4 class="card-title">Data Booking</h4>
+                <div class="card" style="width: 250px;">
+                  <div class="card-body text-end">
+                    <h5 class="card-title mb-0">Jumlah Poin Anda</h5>
+                    <p class="card-text" id="userPointsDisplay">
+                      <span th:text="${user.point}"></span>
+                    </p>
+                  </div>
+                </div>
               </div>
               <div class="card-body">
                 <div class="container">
                   <div id="calendar"></div>
                   <div class="form-container">
                     <h3>Booking Lapangan</h3>
-                    <form id="event-form">
+                    <form id="event-form" enctype="multipart/form-data">
                       <div class="form-group">
                         <label for="nama-user">Nama</label>
                         <input type="text" id="nama-user" class="form-control" required></div>
@@ -87,8 +95,8 @@
                         <label for="dp">DP</label>
                         <input type="text" id="dp" class="form-control" placeholder="Masukkan DP" required></div>
                       <div class="form-group">
-                        <label for="buktiDp">Upload DP</label>
-                        <input type="file" id="buktiDp" class="form-control" accept="image/*">
+                        <label for="dp-file">Upload DP</label>
+                        <input type="file" id="dp-file" name="buktiDp" class="form-control" accept="image/*">
                       </div>
                       <div class="form-group">
                         <label for="sisa-pembayaran">Sisa Pembayaran</label>
@@ -147,9 +155,11 @@
   <script>
     let loggedInUserId = [[${loggedInUserId}]];
     $(document).ready(function() {
-        function populateTimeSelect(selectId) {
+        function populateTimeSelect(selectId, startHour = 7) {
             var select = document.getElementById(selectId);
-            for (var i = 7; i <= 23; i++) {
+            select.innerHTML = '';
+
+            for (var i = startHour; i <= 23; i++) {
                 var time = (i < 10 ? '0' + i : i) + ':00';
                 var option = document.createElement('option');
                 option.value = time;
@@ -160,6 +170,12 @@
 
         populateTimeSelect('jam-mulai');
         populateTimeSelect('jam-selesai');
+
+        document.getElementById('jam-mulai').addEventListener('change', function () {
+            var selectedHour = parseInt(this.value.split(':')[0]);
+            populateTimeSelect('jam-selesai', selectedHour + 1);
+        });
+
 
         $.ajax({
             url: '/api/lapangan/list',
@@ -340,75 +356,115 @@
                          button.addClass('edit');
                       }
 
-                      $('#event-form').off('submit').on('submit', function(e) {
-                         e.preventDefault();
+                      $('#event-form').off('submit').on('submit', function (e) {
+                      e.preventDefault();
 
-                         var updatedBookingData = {
-                            id: event.id,
-                            user: {
-                               id: $('#id-user').val()
-                            },
-                            lapangan: {
-                               id: $('#id-lapangan').val()
-                            },
-                            namaUserBooking: $('#nama-user').val(),
-                            namaLapanganBooking: $('#id-lapangan option:selected').text().split(' (')[0],
-                            hargaPerjamBooking: $('#id-lapangan option:selected').data('price'),
-                            tanggalBooking: $('#tanggal-booking').val(),
-                            jamMulai: $('#jam-mulai').val() + ':00',
-                            jamSelesai: $('#jam-selesai').val() + ':00',
-                            downPayment: $('#dp').val().replace(/[^0-9]/g, ''),
-                            sisaPembayaran: $('#sisa-pembayaran').val().replace(/[^0-9]/g, ''),
-                            totalHarga: $('#total-harga').val().replace(/[^0-9]/g, ''),
-                            status: $('#status').val(),
-                            deskripsi: $('#deskripsi').val()
-                         };
+                      var button = $('#submit-event');
+                      var icon = $('#submit-icon');
 
-                         $.ajax({
-                            url: '/api/booking/' + event.id,
-                            type: 'PUT',
-                            contentType: 'application/json',
-                            data: JSON.stringify(updatedBookingData),
-                            success: function(response) {
-                               console.log('Booking berhasil diperbarui:', response);
+                      button.prop('disabled', true);
+                      button.html('<i id="submit-icon" class="bx bx-loader-alt bx-spin me-2"></i> Menyimpan...');
 
-                               event.userId = updatedBookingData.user.id;
-                               event.lapanganId = updatedBookingData.lapangan.id;
-                               event.namaUserBooking = updatedBookingData.namaUserBooking;
-                               event.namaLapanganBooking = updatedBookingData.namaLapanganBooking;
-                               event.hargaPerjamBooking = updatedBookingData.hargaPerjamBooking;
-                               event.start = updatedBookingData.tanggalBooking + 'T' + updatedBookingData.jamMulai;
-                               event.end = updatedBookingData.tanggalBooking + 'T' + updatedBookingData.jamSelesai;
-                               event.price = updatedBookingData.totalHarga;
-                               event.dp = updatedBookingData.downPayment;
-                               event.remainingBalance = updatedBookingData.sisaPembayaran;
-                               event.status = updatedBookingData.status;
-                               event.description = updatedBookingData.deskripsi;
+                      if (!$('#id-user').val() || !$('#id-lapangan').val() || !$('#tanggal-booking').val() || !$('#jam-mulai').val() || !$('#jam-selesai').val()) {
+                          Swal.fire({
+                              title: 'Peringatan!',
+                              text: 'Harap lengkapi semua data sebelum menyimpan.',
+                              icon: 'warning',
+                              confirmButtonText: 'OK'
+                          });
+                          button.prop('disabled', false);
+                          button.html('<i id="submit-icon" class="bx bx-edit me-2"></i> Edit');
+                          return;
+                      }
 
-                               $('#calendar').fullCalendar('updateEvent', event);
-                               $('#eventModal').modal('hide');
-                               $('#event-form')[0].reset();
-                               Swal.fire({
+                      var formData = new FormData();
+                      var fileInput = $('#dp-file')[0].files[0];
+
+                      if (fileInput) {
+                          formData.append("file", fileInput);
+                      }
+
+                      var updatedBookingData = {
+                          id: event.id,
+                          user: { id: $('#id-user').val() },
+                          lapangan: { id: $('#id-lapangan').val() },
+                          namaUserBooking: $('#nama-user').val(),
+                          namaLapanganBooking: $('#id-lapangan option:selected').text().split(' (')[0],
+                          hargaPerjamBooking: $('#id-lapangan option:selected').data('price'),
+                          tanggalBooking: $('#tanggal-booking').val(),
+                          jamMulai: $('#jam-mulai').val() + ':00',
+                          jamSelesai: $('#jam-selesai').val() + ':00',
+                          downPayment: $('#dp').val().replace(/[^0-9]/g, ''),
+                          sisaPembayaran: $('#sisa-pembayaran').val().replace(/[^0-9]/g, ''),
+                          totalHarga: $('#total-harga').val().replace(/[^0-9]/g, ''),
+                          status: $('#status').val(),
+                          deskripsi: $('#deskripsi').val()
+                      };
+
+                      formData.append("booking", new Blob([JSON.stringify(updatedBookingData)], { type: "application/json" }));
+
+                      $.ajax({
+                          url: '/api/booking/' + event.id,
+                          type: 'PUT',
+                          contentType: false,
+                          processData: false,
+                          data: formData,
+                          success: function (response) {
+                              console.log('Booking berhasil diperbarui:', response);
+
+                              event.userId = updatedBookingData.user.id;
+                              event.lapanganId = updatedBookingData.lapangan.id;
+                              event.namaUserBooking = updatedBookingData.namaUserBooking;
+                              event.namaLapanganBooking = updatedBookingData.namaLapanganBooking;
+                              event.hargaPerjamBooking = updatedBookingData.hargaPerjamBooking;
+                              event.start = updatedBookingData.tanggalBooking + 'T' + updatedBookingData.jamMulai;
+                              event.end = updatedBookingData.tanggalBooking + 'T' + updatedBookingData.jamSelesai;
+                              event.price = updatedBookingData.totalHarga;
+                              event.dp = updatedBookingData.downPayment;
+                              event.remainingBalance = updatedBookingData.sisaPembayaran;
+                              event.status = updatedBookingData.status;
+                              event.description = updatedBookingData.deskripsi;
+
+                              $('#calendar').fullCalendar('updateEvent', event);
+                              $('#eventModal').modal('hide');
+                              $('#event-form')[0].reset();
+
+                              Swal.fire({
                                   title: 'Berhasil!',
                                   text: 'Booking berhasil diperbarui.',
                                   icon: 'success',
                                   timer: 2000,
                                   showConfirmButton: false
-                               }).then(() => {
+                              }).then(() => {
                                   location.reload();
-                                  updateUserPointsDisplay();
-                               });
-                            },
-                            error: function(xhr, status, error) {
-                               Swal.fire({
+                              });
+
+                          },
+                          error: function (xhr, status, error) {
+                              console.error('Error:', xhr.responseText);
+
+                              let errorMessage = 'Terjadi kesalahan. Silakan coba lagi.';
+                              if (xhr.responseJSON && xhr.responseJSON.message) {
+                                  errorMessage = xhr.responseJSON.message;
+                              } else if (xhr.responseText) {
+                                  errorMessage = xhr.responseText;
+                              }
+
+                              Swal.fire({
                                   title: 'Gagal!',
-                                  text: `${xhr.responseText}`,
+                                  text: errorMessage,
                                   icon: 'error',
                                   confirmButtonText: 'Tutup'
-                               });
-                            }
-                         });
+                              });
+
+                          },
+                          complete: function () {
+                              button.prop('disabled', false);
+                              button.html('<i id="submit-icon" class="bx bx-edit me-2"></i> Edit');
+                          }
                       });
+                  });
+
                    });
 
                    $('#cancel-edit').click(function() {
@@ -447,7 +503,6 @@
                                      showConfirmButton: false
                                   }).then(() => {
                                      location.reload();
-                                     updateUserPointsDisplay();
                                   });
                                },
                                error: function(xhr, status, error) {
@@ -524,74 +579,73 @@
 
        $('#event-form').submit(function(e) {
           e.preventDefault();
-          var jamMulai = $('#jam-mulai').val();
-          var jamSelesai = $('#jam-selesai').val();
-          console.log("Jam Mulai: " + jamMulai);
-          console.log("Jam Selesai: " + jamSelesai);
+
+          var formData = new FormData();
+
           var bookingData = {
-             user: {
-                id: $('#id-user').val()
-             },
-             lapangan: {
-                id: $('#id-lapangan').val()
-             },
-             namaUserBooking: $('#nama-user').val(),
-             namaLapanganBooking: $('#id-lapangan').find('option:selected').text().split(' (')[0],
-             hargaPerjamBooking: $('#id-lapangan').find('option:selected').data('price'),
-             tanggalBooking: $('#tanggal-booking').val(),
-             jamMulai: jamMulai,
-             jamSelesai: jamSelesai,
-             downPayment: $('#dp').val().replace(/[^0-9]/g, ''),
-             sisaPembayaran: $('#sisa-pembayaran').val().replace(/[^0-9]/g, ''),
-             totalHarga: $('#total-harga').val().replace(/[^0-9]/g, ''),
-             status: $('#status').val(),
-             deskripsi: $('#deskripsi').val()
+              user: { id: $('#id-user').val() },
+              lapangan: { id: $('#id-lapangan').val() },
+              namaUserBooking: $('#nama-user').val(),
+              namaLapanganBooking: $('#id-lapangan').find('option:selected').text().split(' (')[0],
+              hargaPerjamBooking: $('#id-lapangan').find('option:selected').data('price'),
+              tanggalBooking: $('#tanggal-booking').val(),
+              jamMulai: $('#jam-mulai').val(),
+              jamSelesai: $('#jam-selesai').val(),
+              downPayment: $('#dp').val().replace(/[^0-9]/g, ''),
+              sisaPembayaran: $('#sisa-pembayaran').val().replace(/[^0-9]/g, ''),
+              totalHarga: $('#total-harga').val().replace(/[^0-9]/g, ''),
+              status: $('#status').val(),
+              deskripsi: $('#deskripsi').val()
           };
 
-          $.ajax({
-             url: '/api/booking',
-             type: 'POST',
-             contentType: 'application/json',
-             data: JSON.stringify(bookingData),
-             success: function(response) {
-                $('#calendar').fullCalendar('renderEvent', {
-                   title: bookingData.namaUserBooking,
-                   start: bookingData.tanggalBooking + 'T' + bookingData.jamMulai,
-                   end: bookingData.tanggalBooking + 'T' + bookingData.jamSelesai,
-                   description: bookingData.deskripsi,
-                   price: bookingData.totalHarga,
-                   dp: bookingData.downPayment,
-                   remainingBalance: bookingData.sisaPembayaran,
-                   idLapangan: bookingData.lapangan.id,
-                   lapanganNama: bookingData.namaLapanganBooking,
-                   status: bookingData.status
-                }, true);
-                $('#calendar').fullCalendar('updateEvent', event);
-                $('#eventModal').modal('hide');
-                $('#event-form')[0].reset();
-                Swal.fire({
-                   title: 'Berhasil!',
-                   text: 'Booking berhasil ditambahkan!.' totalPoin,
-                   icon: 'success',
-                   timer: 2000,
-                   showConfirmButton: false
-                }).then(() => {
-                   location.reload();
-                   updateUserPointsDisplay();
-                });
-             },
-             error: function(xhr, status, error) {
-                console.error('Error saving booking:', error);
-                Swal.fire({
-                   title: 'Gagal!',
-                   text: `${xhr.responseText}`,
-                   icon: 'error',
-                   confirmButtonText: 'Tutup'
-                });
-             }
-          });
-       });
+          formData.append("bookingDataJson", JSON.stringify(bookingData));
 
+          var dpFile = $('#dp-file')[0].files[0];
+          if (dpFile) {
+              formData.append("dpFile", dpFile);
+          }
+
+          $.ajax({
+              url: '/api/booking',
+              type: 'POST',
+              contentType: false,
+              processData: false,
+              data: formData,
+              success: function(response) {
+                  $('#calendar').fullCalendar('renderEvent', {
+                      title: bookingData.namaUserBooking,
+                      start: bookingData.tanggalBooking + 'T' + bookingData.jamMulai,
+                      end: bookingData.tanggalBooking + 'T' + bookingData.jamSelesai,
+                      description: bookingData.deskripsi,
+                      price: bookingData.totalHarga,
+                      dp: bookingData.downPayment,
+                      remainingBalance: bookingData.sisaPembayaran,
+                      idLapangan: bookingData.lapangan.id,
+                      lapanganNama: bookingData.namaLapanganBooking,
+                      status: bookingData.status
+                  }, true);
+                  $('#eventModal').modal('hide');
+                  $('#event-form')[0].reset();
+                  Swal.fire({
+                      title: 'Berhasil!',
+                      text: `Booking berhasil ditambahkan! Anda mendapatkan ${response.totalPoinDiterima} Poin.`,
+                      icon: 'success',
+                      timer: 2000,
+                      showConfirmButton: false
+                  }).then(() => {
+                      location.reload();
+                  });
+              },
+              error: function(xhr) {
+                  Swal.fire({
+                      title: 'Gagal!',
+                      text: xhr.responseText,
+                      icon: 'error',
+                      confirmButtonText: 'Tutup'
+                  });
+              }
+          });
+      });
        $('#id-lapangan').change(function() {
           updatePrice();
        });
@@ -659,20 +713,19 @@
           $('#status').val(statusPembayaran);
        });
     });
-    async function updateUserPointsDisplay() {
-    try {
-      const response = await fetch('/api/reward/user/points');
-      if (!response.ok) {
-        throw new Error('Gagal mengambil poin pengguna');
-      }
-
-      const result = await response.json();
-      const userPointsDisplay = document.getElementById("userPointsDisplay");
-      userPointsDisplay.textContent = result.updatedPoints;
-    } catch (error) {
-      console.error("Gagal memperbarui poin:", error);
+  </script>
+  <script>
+    function updateUserPoints() {
+      fetch('/api/booking/user/points')
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById("userPointsDisplay").innerText = data;
+        })
+        .catch(error => console.error('Error fetching user points:', error));
     }
-  }
+
+    setInterval(updateUserPoints, 1000000);
+    updateUserPoints();
   </script>
 
 </div>
