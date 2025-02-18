@@ -60,10 +60,10 @@ public class DashboardController {
         return "daftar_penukaran_reward";
     }
 
-    @GetMapping("/laporan")
-    public String adminLaporan(Model model) {
-        model.addAttribute("currentUrl", "/laporan");
-        return "laporan";
+    @GetMapping("/daftar_booking_user")
+    public String adminDaftarbooking(Model model) {
+        model.addAttribute("currentUrl", "/daftar_booking_user");
+        return "daftar_booking_user";
     }
 
     @GetMapping("/profile_admin")

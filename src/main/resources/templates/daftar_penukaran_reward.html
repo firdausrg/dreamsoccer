@@ -137,14 +137,6 @@
                 </tr>`);
         });
 
-        var table = $('#tabel-custom').DataTable({
-            "paging": true,
-            "pageLength": 5,
-            "lengthMenu": [5, 10, 15, 20],
-            "ordering": true,
-            "info": true
-        });
-
         function showConfirmDialog(id, newStatus) {
             Swal.fire({
                 title: `Apakah Anda yakin ingin mengubah status ke ${newStatus}?`,

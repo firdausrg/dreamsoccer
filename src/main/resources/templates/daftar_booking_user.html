@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="assets/" data-template="vertical-menu-template" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+    <title>Data Penukaran Reward | DreamSoccer</title>
+    <meta name="description" content=""/>
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon/favicon.ico"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="assets/vendor/fonts/fontawesome.css"/>
+    <link rel="stylesheet" href="assets/vendor/fonts/tabler-icons.css"/>
+    <link rel="stylesheet" href="assets/vendor/css/rtl/core.css" class="template-customizer-core-css"/>
+    <link rel="stylesheet" href="assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css"/>
+    <link rel="stylesheet" href="assets/css/demo.css"/>
+    <link rel="stylesheet" href="style.css"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css"/>
+    <script src="assets/vendor/js/helpers.js"></script>
+    <script src="assets/js/config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<style>
+    .detail-container {
+     display: grid;
+     grid-template-columns: 2fr 3fr;
+     gap: 16px;
+     font-family: 'Arial', sans-serif;
+     color: #333;
+     background-color: #fff;
+     padding: 20px;
+     border-radius: 10px;
+     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+ }
+
+ .detail-row {
+     display: contents;
+     border-bottom: 1px solid #eee;
+     padding: 12px 0;
+ }
+
+ .detail-label {
+     font-weight: 600;
+     color: #0066cc;
+     font-size: 16px;
+     padding-right: 16px;
+     margin-left: 16px;
+ }
+
+ .detail-value {
+     font-size: 16px;
+     padding-left: 16px;
+     color: #333;
+     text-align: left;
+ }
+
+ .bukti-dp {
+     display: flex;
+     justify-content: center;
+     margin-top: 10px;
+ }
+
+ .bukti-dp-img {
+     max-width: 100%;
+     height: auto;
+     border-radius: 8px;
+     border: 2px solid #ddd;
+     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+     transition: transform 0.3s ease, box-shadow 0.3s ease;
+     cursor: zoom-in;
+ }
+
+ .bukti-dp-img:hover {
+     transform: scale(2);
+     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+     cursor: zoom-out;
+ }
+
+ @media (max-width: 768px) {
+     .detail-container {
+         grid-template-columns: 1fr;
+         padding: 15px;
+     }
+     .detail-label {
+         font-size: 14px;
+     }
+     .detail-value {
+         font-size: 14px;
+     }
+     .bukti-dp-img {
+         max-width: 90%;
+     }
+ }
+
+ .status-button {
+         cursor: pointer;
+         padding: 5px 15px;
+         border-radius: 5px;
+         font-weight: bold;
+         margin: 0 5px;
+ }
+
+ .status-button.success {
+         background-color: #28a745;
+         color: white;
+ }
+
+ .status-button.danger {
+         background-color: #dc3545;
+         color: white;
+ }
+
+ .status-button[disabled] {
+         background-color: #6c757d;
+         cursor: not-allowed;
+ }
+
+ .status-button i {
+         font-size: 16px;
+ }
+
+</style>
+<body>
+<div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+        <div th:replace="~{pisah/sidebar.html}">
+        </div>
+        <div class="layout-page">
+            <div th:replace="~{pisah/navbar.html}">
+            </div>
+            <div class="content-wrapper">
+                <div class="container-xxl flex-grow-1 container-p-y">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between">
+                                    <h4 class="card-title">Menu Daftar Penukaran Reward</h4>
+                                </div>
+                                <div class="card-body">
+                                    <table id="tabel-custom" class="table table-striped table-bordered text-center">
+                                        <thead class="table-dark">
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Nama</th>
+                                            <th>Tanggal Booking</th>
+                                            <th>Status</th>
+                                            <th>Detail</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="historyTablebooking"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="detailModalLabel">Detail Booking</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body" id="modalDetailContent">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div th:replace="~{pisah/footer.html}">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/vendor/js/bootstrap.js"></script>
+    <script src="assets/vendor/js/menu.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+     $.ajax({
+         url: "/api/history-booking",
+         type: "GET",
+         success: function(data) {
+             let tbody = $("#historyTablebooking");
+             tbody.empty();
+             data.forEach((history, index) => {
+                 let statusClass = "";
+                 let isDisabled = history.status !== "Menunggu" ? "disabled" : "";
+
+                 if (history.status === "Menunggu") {
+                     statusClass = "badge bg-warning text-dark";
+                 } else if (history.status === "Berhasil") {
+                     statusClass = "badge bg-success";
+                 } else if (history.status === "Gagal") {
+                     statusClass = "badge bg-danger";
+                 } else if (history.status === "Batal") {
+                     statusClass = "badge bg-secondary";
+                 }
+
+                 let row = `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${history.namaUserBooking}</td>
+                            <td>${history.tanggalBooking}</td>
+                            <td><span class="${statusClass}">${history.status}</span></td>
+                            <td>
+                                <button class="btn btn-info" onclick='showDetail(${JSON.stringify(history)})'>Detail</button>
+                            </td>
+                            <td>
+                              <button class="btn btn-success" onclick="updateStatus(${history.id}, 'BERHASIL', this)" ${isDisabled}>BERHASIL</button>
+                              <button class="btn btn-danger" onclick="updateStatus(${history.id}, 'GAGAL', this)" ${isDisabled}>GAGAL</button>
+                              <button class="btn btn-secondary" onclick="updateStatus(${history.id}, 'BATAL', this)" ${isDisabled}>BATAL</button>
+                          </td>
+                        </tr>`;
+                 tbody.append(row);
+             });
+         },
+         error: function(error) {
+             console.error("Gagal mengambil data:", error);
+         }
+     });
+ });
+
+ function showDetail(history) {
+     let detailHtml = `
+        <div class="detail-container">
+             <div class="detail-row">
+                <div class="detail-label"><strong>Nama:</strong></div>
+                <div class="detail-value">${history.namaUserBooking}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label"><strong>Tanggal Booking:</strong></div>
+                <div class="detail-value">${history.tanggalBooking}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label"><strong>Jam Mulai:</strong></div>
+                <div class="detail-value">${history.jamMulai}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label"><strong>Jam Selesai:</strong></div>
+                <div class="detail-value">${history.jamSelesai}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label"><strong>Lapangan:</strong></div>
+                <div class="detail-value">${history.namaLapangan}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label"><strong>Total Harga:</strong></div>
+                <div class="detail-value">Rp ${history.totalHarga.toLocaleString()}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label"><strong>DP:</strong></div>
+                <div class="detail-value">Rp ${history.downPayment.toLocaleString()}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label"><strong>Status:</strong></div>
+                <div class="detail-value">${history.status}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label"><strong>Bukti DP:</strong></div>
+                <div class="detail-value">
+                    ${history.buktiDP ?
+                        `<div class="bukti-dp">
+                            <img src="${history.buktiDP}" alt="Bukti DP" class="bukti-dp-img" />
+                        </div>` :
+                        "Tidak Ada"
+                    }
+                </div>
+            </div>
+        </div>
+    `;
+     $("#modalDetailContent").html(detailHtml);
+     $("#detailModal").modal("show");
+ }
+
+ function updateStatus(id, status, button) {
+     Swal.fire({
+         title: 'Konfirmasi Perubahan Status',
+         text: `Apakah Anda yakin ingin ingin mengkonfirmasi menjadi "${status}"?`,
+         icon: 'question',
+         showCancelButton: true,
+         confirmButtonColor: '#3085d6',
+         cancelButtonColor: '#d33',
+         confirmButtonText: 'Ya, Ubah Status!',
+         cancelButtonText: 'Batal'
+     }).then((result) => {
+         if (result.isConfirmed) {
+             $.ajax({
+                 url: `/api/booking/update-status/${id}`,
+                 type: "PUT",
+                 data: JSON.stringify({
+                     newStatus: status
+                 }),
+                 contentType: "application/json",
+                 success: function(response) {
+                     Swal.fire(
+                         'Berhasil!',
+                         'Status booking berhasil diubah.',
+                         'success'
+                     );
+
+                     $(button).closest('tr').find('.badge').removeClass().addClass(`badge ${response.statusClass}`).text(response.status);
+                     $(button).closest('tr').find('.btn').attr('disabled', 'disabled');
+
+                     setTimeout(function() {
+                         location.reload();
+                     }, 2000);
+                 },
+                 error: function(error) {
+                     Swal.fire(
+                         'Gagal!',
+                         'Terjadi kesalahan saat mengubah status booking.',
+                         'error'
+                     );
+                 }
+             });
+         }
+     });
+ }
+    </script>
+</div>
+</body>
+</html>

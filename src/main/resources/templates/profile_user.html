@@ -210,7 +210,7 @@
                                 <form id="change-password-form">
                                     <div class="mb-3">
                                         <label>Password Lama</label>
-                                        <input type="password" name="currentPassword" id="current-password" placeholder="Masukkan password lama" class="form-control">
+                                        <input type="password" name="currentPassword" id="password" placeholder="Masukkan password lama" class="form-control">
                                     </div>
                                     <div class="mb-3">
                                         <label>Password Baru</label>
@@ -313,7 +313,7 @@
     document.getElementById('change-password-form').addEventListener('submit', function(event) {
         event.preventDefault();
 
-        let currentPassword = document.getElementById('current-password').value;
+        let currentPassword = document.getElementById('password').value;
         let newPassword = document.getElementById('new-password').value;
         let confirmNewPassword = document.getElementById('confirm-new-password').value;
         let feedback = document.getElementById('password-feedback');

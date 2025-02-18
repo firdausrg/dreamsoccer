@@ -175,7 +175,7 @@
           onBeforeOpen: () => {
             Swal.showLoading();
             const confirmButton = Swal.getConfirmButton();
-            confirmButton.disabled = true;
+            confirmButton.disabled = true; // Disable the button
           }
         });
 
@@ -227,35 +227,35 @@
 </script>
 
 <script>
-    document.getElementById("password").addEventListener("input", function() {
-        var password = this.value;
-        var passwordHelp = document.getElementById("passwordHelp");
+  document.getElementById("password").addEventListener("input", function() {
+      var password = this.value;
+      var passwordHelp = document.getElementById("passwordHelp");
 
-        if (password.length > 0) {
-            passwordHelp.classList.remove("hidden");
-        } else {
-            passwordHelp.classList.add("hidden");
-        }
+      if (password.length > 0) {
+          passwordHelp.classList.remove("hidden");
+      } else {
+          passwordHelp.classList.add("hidden");
+      }
 
-        var hasUpperCase = document.getElementById("hasUpperCase");
-        var hasLowerCase = document.getElementById("hasLowerCase");
-        var hasNumber = document.getElementById("hasNumber");
-        var hasSpecialChar = document.getElementById("hasSpecialChar");
+      var hasUpperCase = document.getElementById("hasUpperCase");
+      var hasLowerCase = document.getElementById("hasLowerCase");
+      var hasNumber = document.getElementById("hasNumber");
+      var hasSpecialChar = document.getElementById("hasSpecialChar");
 
-        hasUpperCase.checked = /[A-Z]/.test(password);
-        hasLowerCase.checked = /[a-z]/.test(password);
-        hasNumber.checked = /\d/.test(password);
-        hasSpecialChar.checked = /[!@#$%^&*(),.?":{}|<>_]/.test(password);
-    });
+      hasUpperCase.checked = /[A-Z]/.test(password);
+      hasLowerCase.checked = /[a-z]/.test(password);
+      hasNumber.checked = /\d/.test(password);
+      hasSpecialChar.checked = /[!@#$%^&*(),.?":{}|<>_]/.test(password);
+  });
 
-    window.addEventListener('DOMContentLoaded', (event) => {
-        var passwordHelp = document.getElementById("passwordHelp");
-        var password = document.getElementById("password").value;
+  window.addEventListener('DOMContentLoaded', (event) => {
+      var passwordHelp = document.getElementById("passwordHelp");
+      var password = document.getElementById("password").value;
 
-        if (password.length === 0) {
-            passwordHelp.classList.add("hidden");
-        }
-    });
+      if (password.length === 0) {
+          passwordHelp.classList.add("hidden");
+      }
+  });
 </script>
 
 <script src="/assets/vendor/libs/jquery/jquery.js"></script>

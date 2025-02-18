@@ -4,7 +4,6 @@ import com.promptengineer.dreamsoccer.dto.validasi.ValLoginDTO;
 import com.promptengineer.dreamsoccer.dto.validasi.ValOtpDTO;
 import com.promptengineer.dreamsoccer.dto.validasi.ValRegisDTO;
 import com.promptengineer.dreamsoccer.model.User;
-import com.promptengineer.dreamsoccer.repository.UserRepository;
 import com.promptengineer.dreamsoccer.service.UserService;
 import com.promptengineer.dreamsoccer.util.EncryptionUtil;
 import jakarta.servlet.http.HttpSession;
@@ -50,9 +49,7 @@ public class AuthController {
         }
 
         try {
-            User user = userService.registerUser(
-                    valRegisDTO.getNama(),
-                    valRegisDTO.getUsername(),
+            User user = userService.registerUser(valRegisDTO.getNama(), valRegisDTO.getUsername(),
                     valRegisDTO.getEmail(), password);
             userService.sendOtpEmail(user);
             String encryptedUserId = EncryptionUtil.encrypt(String.valueOf(user.getId()));
@@ -138,7 +135,6 @@ public class AuthController {
 
         return "login";
     }
-
 
     @PostMapping("/resend-otp")
     public ResponseEntity<Map<String, Object>> resendOtp(@RequestParam Long userId) {

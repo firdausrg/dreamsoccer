@@ -4,6 +4,7 @@ import com.promptengineer.dreamsoccer.model.Booking;
 import com.promptengineer.dreamsoccer.model.Lapangan;
 import com.promptengineer.dreamsoccer.model.User;
 import com.promptengineer.dreamsoccer.repository.BookingRepository;
+import com.promptengineer.dreamsoccer.repository.HistoryBookingRepository;
 import com.promptengineer.dreamsoccer.repository.LapanganRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class BookingService {
 
     @Autowired
     private LapanganRepository lapanganRepository;
+
+    @Autowired
+    private HistoryBookingRepository historyBookingRepository;
 
     @Autowired
     private UserService userService;

@@ -16,7 +16,7 @@ public class SecurityPage {
 
     public static final String[] ADMIN_URLS = {
             "/admin_dashboard", "/lapangan", "/api/lapangan", "/user/list", "/booking", "/api/booking", "/reward",
-            "/laporan", "/profile_admin", "/updateProfile", "/iklan"
+            "/daftar_booking_user", "/profile_admin", "/updateProfile", "/iklan"
     };
 
     public static final String[] USER_URLS = {

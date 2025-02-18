@@ -55,15 +55,23 @@ public class HistoryBookingController {
 
             Booking booking = history.getBooking();
             if (booking != null) {
+                result.put("namaUserBooking", booking.getNamaUserBooking());
                 result.put("tanggalBooking", booking.getTanggalBooking());
                 result.put("jamMulai", booking.getJamMulai());
                 result.put("jamSelesai", booking.getJamSelesai());
                 result.put("totalHarga", booking.getTotalHarga());
+                result.put("downPayment", booking.getDownPayment());
 
                 if (booking.getLapangan() != null) {
                     result.put("namaLapangan", booking.getLapangan().getNamaLapangan());
                 } else {
                     result.put("namaLapangan", "Tidak Diketahui");
+                }
+                String buktiDPFileName = booking.getBuktiDp();
+                if (buktiDPFileName != null) {
+                    result.put("buktiDP", "/uploads/bukti-dp/" + buktiDPFileName);
+                } else {
+                    result.put("buktiDP", null);
                 }
             }
             return result;

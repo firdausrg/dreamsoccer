@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class HistoryBookingService {
@@ -23,5 +24,9 @@ public class HistoryBookingService {
 
     public List<HistoryBooking> getAllHistory() {
         return historyBookingRepository.findAll();
+    }
+
+    public Optional<HistoryBooking> findById(Long id) {
+        return historyBookingRepository.findById(id);
     }
 }

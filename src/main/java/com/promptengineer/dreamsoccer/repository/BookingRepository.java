@@ -36,5 +36,4 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             @Param("jamSelesai") LocalTime jamSelesai,
             @Param("jamMulai") LocalTime jamMulai,
             @Param("bookingId") Long bookingId);
-
 }

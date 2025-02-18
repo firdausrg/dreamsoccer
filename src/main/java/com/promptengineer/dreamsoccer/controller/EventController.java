@@ -19,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -33,7 +32,6 @@ public class EventController {
         Event event = eventService.getDetailEvent(id);
         return ResponseEntity.ok(event);
     }
-
 
     @GetMapping("/list")
     public List<Event> getAllEvent() {

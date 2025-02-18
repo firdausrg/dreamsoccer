@@ -27,6 +27,9 @@ public class HistoryBooking {
     @Column(name = "Status")
     private Status status;
 
+    @Column(name = "Point")
+    private int point;
+
     public Long getId() {
         return id;
     }
@@ -65,5 +68,12 @@ public class HistoryBooking {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+    public int getPoinDiperoleh() {
+        return point;
+    }
+
+    public void setPoinDiperoleh(int point) {
+        this.point = point;
     }
 }

@@ -3,7 +3,6 @@ package com.promptengineer.dreamsoccer.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 public class Event {

@@ -103,9 +103,6 @@ public class BookingController {
 
             int totalPoin = (int) (totalJam * lapangan.getPoinPerBooking());
 
-            userBooking.setPoint(userBooking.getPoint() + totalPoin);
-            userService.save(userBooking);
-
             Booking savedBooking = bookingService.saveBooking(booking);
 
             HistoryBooking historyBooking = new HistoryBooking();
@@ -113,6 +110,7 @@ public class BookingController {
             historyBooking.setUser(userBooking);
             historyBooking.setCreatedAt(LocalDateTime.now());
             historyBooking.setStatus(Status.MENUNGGU);
+            historyBooking.setPoinDiperoleh(totalPoin);
 
             historyBookingService.save(historyBooking);
 
@@ -128,6 +126,44 @@ public class BookingController {
         }
     }
 
+    @PutMapping("/update-status/{id}")
+    public ResponseEntity<?> updateBookingStatus(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> requestBody) {
+        String newStatus = requestBody.get("newStatus").toUpperCase();
+        Status status = Status.valueOf(newStatus);
+
+        try {
+            HistoryBooking historyBooking = historyBookingService.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Data booking tidak ditemukan!"));
+
+            User user = historyBooking.getUser();
+
+            if (status == Status.BERHASIL) {
+                int poinDiperoleh = historyBooking.getPoinDiperoleh();
+                user.setPoint(user.getPoint() + poinDiperoleh);
+                userService.save(user);
+            }
+
+            historyBooking.setStatus(status);
+            historyBookingService.save(historyBooking);
+
+            return ResponseEntity.ok(Map.of(
+                    "success", "Status booking berhasil diperbarui menjadi " + status,
+                    "poinDiberikan", status == Status.BERHASIL ? historyBooking.getPoinDiperoleh() : 0
+            ));
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Status yang diberikan tidak valid"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Kesalahan: " + e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Terjadi kesalahan: " + e.getMessage()));
+        }
+    }
 
     @GetMapping
     public ResponseEntity<List<Booking>> getAllBookings() {

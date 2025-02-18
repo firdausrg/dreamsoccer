@@ -1,10 +1,12 @@
 package com.promptengineer.dreamsoccer.repository;
 
 import com.promptengineer.dreamsoccer.model.HistoryBooking;
+import com.promptengineer.dreamsoccer.model.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /*
 Created By IntelliJ IDEA 2024.3 (Community Edition)
@@ -17,5 +19,6 @@ Version 1.0
 @Repository
 public interface HistoryBookingRepository extends JpaRepository<HistoryBooking, Long> {
     List<HistoryBooking> findByUserUsername(String username);
+    long countByStatus(Status status);
 }
 

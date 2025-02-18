@@ -187,44 +187,45 @@
             $.get("/user/list", function(users) {
                 let tableContent = "";
                 users.forEach((user, index) => {
-                    let verifiedText = user.verified.toUpperCase();
-                    let verifiedClass = verifiedText === "AKTIF"
-                        ? "bg-success text-white fw-bold px-2 py-1 d-inline-block rounded"
-                        : "bg-danger text-white fw-bold px-2 py-1 d-inline-block rounded";
+                    if (user.role !== "ADMIN") {
+                        let verifiedText = user.verified.toUpperCase();
+                        let verifiedClass = verifiedText === "AKTIF"
+                            ? "bg-success text-white fw-bold px-2 py-1 d-inline-block rounded"
+                            : "bg-danger text-white fw-bold px-2 py-1 d-inline-block rounded";
 
-                    tableContent += `
-                        <tr>
-                            <td>${index + 1}</td>
-                            <td>${user.nama}</td>
-                            <td>${user.email}</td>
-                            <td>${user.noTelpon}</td>
-                            <td class="text-center">
-                                <span class="${verifiedClass}">${verifiedText}</span>
-                            </td>
-                            <td>
-                                <button class="btn btn-primary btn-sm btn-edit"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#editUserModal"
-                                    data-id="${user.id}"
-                                    data-nama="${user.nama}"
-                                    data-email="${user.email}"
-                                    data-telepon="${user.noTelpon}"
-                                    data-alamat="${user.alamat}"
-                                    data-verified="${user.verified}">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-danger btn-sm btn-delete"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#deleteConfirmationModal"
-                                    data-id="${user.id}">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </td>
-                        </tr>`;
+                        tableContent += `
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${user.nama}</td>
+                                <td>${user.email}</td>
+                                <td>${user.noTelpon}</td>
+                                <td class="text-center">
+                                    <span class="${verifiedClass}">${verifiedText}</span>
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm btn-edit"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#editUserModal"
+                                        data-id="${user.id}"
+                                        data-nama="${user.nama}"
+                                        data-email="${user.email}"
+                                        data-telepon="${user.noTelpon}"
+                                        data-alamat="${user.alamat}"
+                                        data-verified="${user.verified}">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-danger btn-sm btn-delete"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteConfirmationModal"
+                                        data-id="${user.id}">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>`;
+                    }
                 });
                 $("#userTable").html(tableContent);
             });
-
         }
 
         $(document).ready(function() {
@@ -368,19 +369,7 @@
                     });
                 }
             });
-            var table = $('#tabel-custom').DataTable({
-                "paging": true,
-                "pageLength": 5,
-                "lengthMenu": [5, 10, 15, 20],
-                "ordering": true,
-                "info": true
-            });
-            $('#tabel-custom_length').css('margin-bottom', '15px');
-            $('#tabel-custom_filter').css('margin-bottom', '15px');
-            $('#tabel-custom_info').css('margin-top', '10px');
         });
-
-
     </script>
 </div>
 </body>
